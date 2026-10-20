@@ -1,0 +1,362 @@
+{
+  "id": "world-navigation",
+  "version": 8,
+  "background": "#a7d6fe",
+  "water": {
+    "fill": "#efebe7",
+    "outline": "#a7d6fe"
+  },
+  "waterway": {
+    "line": "#a7d6fe"
+  },
+  "land": {
+    "base": "#ffffff"
+  },
+  "greenery": {
+    "wood": "#bdf2af",
+    "park": [
+      [
+        3,
+        "#e1ecc7"
+      ],
+      [
+        8,
+        "#bdf2af"
+      ]
+    ]
+  },
+  "urban": {
+    "urban_area": [
+      [
+        5,
+        "#e9dfd7"
+      ],
+      [
+        12,
+        "#f6f0e9"
+      ]
+    ],
+    "cemetery": "#bdf2af",
+    "school": "#d3f4cb"
+  },
+  "building": {
+    "fill": "#bab4a3",
+    "outline": [
+      [
+        15,
+        "#e9e8e8"
+      ],
+      [
+        18,
+        "#b6b5b3"
+      ]
+    ]
+  },
+  "roads": {
+    "minor": {
+      "casing": "#d9d9d9",
+      "casing_width": {
+        "base": 1.2,
+        "stops": [
+          [
+            14,
+            1
+          ],
+          [
+            18,
+            6
+          ]
+        ]
+      },
+      "fill": "#e9e9e9",
+      "fill_width": {
+        "base": 1.2,
+        "stops": [
+          [
+            14,
+            1
+          ],
+          [
+            18,
+            6
+          ]
+        ]
+      }
+    },
+    "service": {
+      "casing": "#dbdbdb",
+      "casing_width": {
+        "base": 1.2,
+        "stops": [
+          [
+            13,
+            2.5
+          ],
+          [
+            18,
+            17
+          ],
+          [
+            20,
+            44
+          ]
+        ]
+      },
+      "fill": "#ffffff",
+      "fill_width": {
+        "base": 1.2,
+        "stops": [
+          [
+            13,
+            1.5
+          ],
+          [
+            18,
+            15
+          ],
+          [
+            20,
+            40
+          ]
+        ]
+      }
+    },
+    "path": {
+      "fill": "#ffffff",
+      "fill_width": {
+        "base": 1.2,
+        "stops": [
+          [
+            15,
+            1
+          ],
+          [
+            17,
+            3
+          ]
+        ]
+      }
+    },
+    "primary": {
+      "casing": [
+        [
+          8,
+          "#ffffff"
+        ],
+        [
+          9,
+          "#f8bd72"
+        ],
+        [
+          15,
+          "#f48c30"
+        ]
+      ],
+      "casing_width": {
+        "base": 1.2,
+        "stops": [
+          [
+            8,
+            1.5
+          ],
+          [
+            9,
+            2.5
+          ],
+          [
+            11,
+            3.5
+          ],
+          [
+            13,
+            7
+          ],
+          [
+            15,
+            10
+          ],
+          [
+            18,
+            27
+          ],
+          [
+            22,
+            62
+          ]
+        ]
+      },
+      "fill": [
+        [
+          8,
+          "#ffffff"
+        ],
+        [
+          9,
+          "#fff8c8"
+        ]
+      ],
+      "fill_width": {
+        "base": 1.2,
+        "stops": [
+          [
+            8,
+            0.75
+          ],
+          [
+            9,
+            1
+          ],
+          [
+            11,
+            2
+          ],
+          [
+            13,
+            5
+          ],
+          [
+            15,
+            8
+          ],
+          [
+            18,
+            25
+          ],
+          [
+            22,
+            60
+          ]
+        ]
+      }
+    },
+    "motorway": {
+      "casing": [
+        [
+          4,
+          "#ffffff"
+        ],
+        [
+          5,
+          "#f6be8e"
+        ],
+        [
+          8,
+          "#f48c30"
+        ]
+      ],
+      "casing_width": {
+        "base": 1.2,
+        "stops": [
+          [
+            4,
+            1.75
+          ],
+          [
+            14,
+            8
+          ],
+          [
+            15,
+            12
+          ],
+          [
+            16,
+            22
+          ],
+          [
+            18,
+            40
+          ],
+          [
+            22,
+            74
+          ]
+        ]
+      },
+      "fill": [
+        [
+          4,
+          "#ffee8b"
+        ],
+        [
+          7,
+          "#fae564"
+        ]
+      ],
+      "fill_width": {
+        "base": 1.2,
+        "stops": [
+          [
+            4,
+            0.5
+          ],
+          [
+            14,
+            6
+          ],
+          [
+            15,
+            10
+          ],
+          [
+            16,
+            18
+          ],
+          [
+            18,
+            36
+          ],
+          [
+            22,
+            70
+          ]
+        ]
+      }
+    }
+  },
+  "boundaries": {
+    "state": "#d4c9eb",
+    "country": [
+      [
+        0,
+        "#d5d1e3"
+      ],
+      [
+        10,
+        "#ada6be"
+      ]
+    ]
+  },
+  "labels": {
+    "water": {
+      "text_color": "#436fb3",
+      "halo_color": "#ffffff",
+      "halo_width": 0.7
+    },
+    "general": {
+      "text_color": "#436fb3",
+      "halo_color": "#ffffff",
+      "halo_width": 0.7
+    },
+    "road": {
+      "text_color": "#7e7e7e",
+      "halo_color": "#ffffff",
+      "halo_width": 0.7
+    },
+    "state": {
+      "text_color": "#309730",
+      "halo_color": "#ffffff",
+      "halo_width": 0.7
+    },
+    "country": {
+      "text_color": "#309730",
+      "halo_color": "#ffffff",
+      "halo_width": 0.7
+    },
+    "city": {
+      "text_color": "#819199",
+      "halo_color": "rgba(255,255,255,0.8)",
+      "halo_width": 1
+    }
+  }
+}

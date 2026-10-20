@@ -1,0 +1,256 @@
+{
+  "id": "world-street-map-night",
+  "version": 8,
+  "background": "#000f1a",
+  "water": {
+    "fill": "#000F1A"
+  },
+  "waterway": {
+    "line": "#000F23"
+  },
+  "land": {
+    "base": "#2a2a28"
+  },
+  "greenery": {
+    "wood": "#263323",
+    "park": [
+      [
+        5,
+        "#282f26"
+      ],
+      [
+        6,
+        "#263323"
+      ]
+    ]
+  },
+  "urban": {
+    "urban_area": "#323230",
+    "school": "#402C2E",
+    "cemetery": "#283827"
+  },
+  "building": {
+    "fill": "#373845",
+    "outline": "#515461"
+  },
+  "roads": {
+    "minor": {
+      "casing": "#506880",
+      "casing_width": 3.33,
+      "fill": "#28282A",
+      "fill_width": 1.33
+    },
+    "service": {
+      "casing": "#3161a0",
+      "casing_width": {
+        "base": 1.2,
+        "stops": [
+          [
+            13,
+            1.33
+          ],
+          [
+            14,
+            2
+          ],
+          [
+            18,
+            21
+          ],
+          [
+            22,
+            36
+          ]
+        ]
+      },
+      "fill": "#152d4d",
+      "fill_width": {
+        "base": 1.2,
+        "stops": [
+          [
+            11,
+            0.75
+          ],
+          [
+            14,
+            1
+          ],
+          [
+            18,
+            18
+          ],
+          [
+            22,
+            33
+          ]
+        ]
+      }
+    },
+    "primary": {
+      "casing": "#4697ff",
+      "casing_width": {
+        "base": 1.2,
+        "stops": [
+          [
+            11,
+            3
+          ],
+          [
+            14,
+            7.33
+          ],
+          [
+            18,
+            29
+          ],
+          [
+            22,
+            44
+          ]
+        ]
+      },
+      "fill": "#26528c",
+      "fill_width": {
+        "base": 1.2,
+        "stops": [
+          [
+            8,
+            0.75
+          ],
+          [
+            14,
+            5.33
+          ],
+          [
+            18,
+            26
+          ],
+          [
+            22,
+            41
+          ]
+        ]
+      }
+    },
+    "motorway": {
+      "casing": "#58b9ff",
+      "casing_width": {
+        "base": 1.2,
+        "stops": [
+          [
+            9,
+            1.5
+          ],
+          [
+            14,
+            7.3
+          ],
+          [
+            18,
+            33
+          ],
+          [
+            22,
+            48
+          ]
+        ]
+      },
+      "fill": "#2a6b99",
+      "fill_width": {
+        "base": 1.2,
+        "stops": [
+          [
+            4,
+            0.75
+          ],
+          [
+            14,
+            5.33
+          ],
+          [
+            18,
+            30
+          ],
+          [
+            22,
+            45
+          ]
+        ]
+      }
+    },
+    "path": {
+      "fill": "#403e38",
+      "fill_width": {
+        "base": 1.2,
+        "stops": [
+          [
+            14,
+            1.6
+          ],
+          [
+            18,
+            8
+          ],
+          [
+            22,
+            22
+          ]
+        ]
+      }
+    }
+  },
+  "boundaries": {
+    "state": [
+      [
+        1,
+        "#625866"
+      ],
+      [
+        8,
+        "#847689"
+      ]
+    ],
+    "country": [
+      [
+        1,
+        "#625866"
+      ],
+      [
+        5,
+        "#847689"
+      ]
+    ]
+  },
+  "labels": {
+    "general": {
+      "text_color": "#5785B3",
+      "halo_color": "#2A2A28",
+      "halo_width": 1
+    },
+    "water": {
+      "text_color": "#5C9BD9",
+      "halo_color": "#2a2a28",
+      "halo_width": 1
+    },
+    "road": {
+      "text_color": "#95BDE6",
+      "halo_color": "#2A2A28",
+      "halo_width": 1.5
+    },
+    "state": {
+      "text_color": "#6a9963",
+      "halo_color": "#262624",
+      "halo_width": 1
+    },
+    "country": {
+      "text_color": "#6a9963",
+      "halo_color": "#262624",
+      "halo_width": 1
+    },
+    "city": {
+      "text_color": "#b3b3b3",
+      "halo_color": "#2f2e2c",
+      "halo_width": 1
+    }
+  }
+}

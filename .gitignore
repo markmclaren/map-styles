@@ -1,0 +1,11 @@
+# Overrule global gitignore to track distribution styles
+!dist/
+!dist/**
+!docs/dist/
+!docs/dist/**
+
+# Temporary files
+scratch_style_explorer.html
+.DS_Store
+__pycache__/
+*.pyc

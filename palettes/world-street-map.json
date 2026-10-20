@@ -1,0 +1,257 @@
+{
+  "id": "world-street-map",
+  "version": 8,
+  "background": "#ffffff",
+  "water": {
+    "fill": "#E3E2CE",
+    "outline": "#DAD9C5"
+  },
+  "waterway": {
+    "line": "#99D9F2"
+  },
+  "land": {
+    "base": "#FFFFFF"
+  },
+  "greenery": {
+    "wood": "#dee3bc",
+    "park": "#dee3bc"
+  },
+  "urban": {
+    "urban_area": [
+      [
+        9,
+        "#e3debe"
+      ],
+      [
+        12,
+        "#f7f6d5"
+      ]
+    ],
+    "school": "#E9E9AB",
+    "cemetery": "#E3ECBF"
+  },
+  "building": {
+    "fill": "#A6A697",
+    "outline": "#D9D1B8"
+  },
+  "roads": {
+    "minor": {
+      "casing": "#F2F0CF",
+      "casing_width": 3.33,
+      "fill": "#d2cfc6",
+      "fill_width": 1.33
+    },
+    "service": {
+      "casing": "#F8F6D9",
+      "casing_width": {
+        "base": 1.2,
+        "stops": [
+          [
+            13,
+            1.33
+          ],
+          [
+            14,
+            2
+          ],
+          [
+            18,
+            21
+          ],
+          [
+            22,
+            36
+          ]
+        ]
+      },
+      "fill": "#e3e3c5",
+      "fill_width": {
+        "base": 1.2,
+        "stops": [
+          [
+            13,
+            1
+          ],
+          [
+            14,
+            1
+          ],
+          [
+            18,
+            18
+          ],
+          [
+            22,
+            33
+          ]
+        ]
+      }
+    },
+    "primary": {
+      "casing": "#CC8460",
+      "casing_width": {
+        "base": 1.2,
+        "stops": [
+          [
+            10,
+            1
+          ],
+          [
+            14,
+            7.3
+          ],
+          [
+            18,
+            29
+          ],
+          [
+            22,
+            44
+          ]
+        ]
+      },
+      "fill": "#F2BDA2",
+      "fill_width": {
+        "base": 1.2,
+        "stops": [
+          [
+            9,
+            0.4
+          ],
+          [
+            14,
+            5.3
+          ],
+          [
+            18,
+            26
+          ],
+          [
+            22,
+            41
+          ]
+        ]
+      }
+    },
+    "motorway": {
+      "casing": "#B36D54",
+      "casing_width": {
+        "base": 1.2,
+        "stops": [
+          [
+            9,
+            2
+          ],
+          [
+            14,
+            7.3
+          ],
+          [
+            18,
+            33
+          ],
+          [
+            22,
+            48
+          ]
+        ]
+      },
+      "fill": [
+        [
+          4,
+          "#e6beac"
+        ],
+        [
+          6,
+          "#e69973"
+        ]
+      ],
+      "fill_width": {
+        "base": 1.2,
+        "stops": [
+          [
+            4,
+            0.4
+          ],
+          [
+            14,
+            5.3
+          ],
+          [
+            18,
+            30
+          ],
+          [
+            22,
+            45
+          ]
+        ]
+      }
+    },
+    "path": {
+      "fill": "#FDFDFD",
+      "fill_width": {
+        "base": 1.2,
+        "stops": [
+          [
+            15,
+            1.6
+          ],
+          [
+            18,
+            8
+          ],
+          [
+            22,
+            22
+          ]
+        ]
+      }
+    }
+  },
+  "boundaries": {
+    "state": "#9DA0A2",
+    "country": [
+      [
+        1,
+        "#d1caae"
+      ],
+      [
+        3,
+        "#9DA0A2"
+      ]
+    ]
+  },
+  "labels": {
+    "general": {
+      "text_color": "#5785B3",
+      "halo_color": "#CAECFA",
+      "halo_width": 0.93
+    },
+    "water": {
+      "text_color": "#497AAB",
+      "halo_color": null,
+      "halo_width": null
+    },
+    "road": {
+      "text_color": "#B3AB9D",
+      "halo_color": "#F2F0CF",
+      "halo_width": 0.67
+    },
+    "city": {
+      "text_color": "#819199",
+      "halo_color": "rgba(255,255,255,0.8)",
+      "halo_width": 1
+    },
+    "state": {
+      "text_color": "#797859",
+      "halo_color": "#dee3bc",
+      "halo_width": 0.67
+    },
+    "country": {
+      "text_color": "#797859",
+      "halo_color": "#dee3bc",
+      "halo_width": 0.67
+    }
+  }
+}

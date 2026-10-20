@@ -1,0 +1,72 @@
+{
+  "Streets": [
+    "ArcGIS Navigation",
+    "ArcGIS Navigation Night",
+    "ArcGIS Streets",
+    "ArcGIS Streets Night",
+    "ArcGIS Streets Relief",
+    "ArcGIS Streets Relief Base",
+    "ArcGIS Community",
+    "Open Basemaps OpenStreetMap Style",
+    "Open Basemaps OpenStreetMap Style Relief",
+    "Open Basemaps OpenStreetMap Style Relief Base",
+    "Open Basemaps Navigation",
+    "Open Basemaps Navigation Dark",
+    "Open Basemaps Streets",
+    "Open Basemaps Streets Relief",
+    "Open Basemaps Streets Night"
+  ],
+  "Topography": [
+    "ArcGIS Topograhic",
+    "ArcGIS Topographic Base",
+    "ArcGIS Oceans",
+    "ArcGIS Oceans Base",
+    "ArcGIS Oceans Labels",
+    "ArcGIS Terrain",
+    "ArcGIS Terrain Base",
+    "ArcGIS Terrain Detail",
+    "ArcGIS Outdoor",
+    "ArcGIS Hillshade Light",
+    "ArcGIS Hillshade Dark"
+  ],
+  "Satellite": [
+    "ArcGIS Imagery",
+    "ArcGIS Imagery Standard",
+    "ArcGIS Imagery Labels",
+    "Open Basemaps Hybrid",
+    "Open Basemaps Hybrid Detail"
+  ],
+  "Reference": [
+    "ArcGIS Light Gray",
+    "ArcGIS Light Gray Base",
+    "ArcGIS Light Gray Labels",
+    "ArcGIS Dark Gray",
+    "ArcGIS Dark Gray Labels",
+    "ArcGIS Dark Gray Base",
+    "ArcGIS Human Geography",
+    "ArcGIS Human Geography Base",
+    "ArcGIS Human Geography Detail",
+    "ArcGIS Human Geography Labels",
+    "ArcGIS Human Geography Dark",
+    "ArcGIS Human Geography Dark Base",
+    "ArcGIS Human Geography Detail",
+    "ArcGIS Human Geography Labels",
+    "Open Basemaps Light Gray",
+    "Open Basemaps Light Gray Base",
+    "Open Basemaps Light Gray Labels",
+    "Open Basemaps Dark Gray",
+    "Open Basemaps Dark Gray Base",
+    "Open Basemaps Dark Gray Labels"
+  ],
+  "Creative": [
+    "ArcGIS Charted Territory",
+    "ArcGIS Charted Territory Base",
+    "ArcGIS Colored Pencil",
+    "ArcGIS Nova",
+    "ArcGIS Modern Antique",
+    "ArcGIS Modern Antique Base",
+    "ArcGIS Midcentury",
+    "ArcGIS Newspaper",
+    "Open Basemaps Blueprint"
+  ]
+}

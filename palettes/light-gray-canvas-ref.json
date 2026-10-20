@@ -1,0 +1,45 @@
+{
+  "id": "light-gray-canvas-ref",
+  "version": 8,
+  "background": "#ffffff",
+  "water": {},
+  "waterway": {},
+  "land": {},
+  "greenery": {},
+  "urban": {},
+  "building": {},
+  "roads": {},
+  "boundaries": {},
+  "labels": {
+    "water": {
+      "text_color": "#888f91",
+      "halo_color": "#efefef",
+      "halo_width": 1
+    },
+    "general": {
+      "text_color": "#888f91",
+      "halo_color": null,
+      "halo_width": null
+    },
+    "road": {
+      "text_color": "#808080",
+      "halo_color": "#efefef",
+      "halo_width": 1
+    },
+    "state": {
+      "text_color": "#939d8c",
+      "halo_color": "#EBEDEB",
+      "halo_width": 1
+    },
+    "country": {
+      "text_color": "#939d8c",
+      "halo_color": "#EBEDEB",
+      "halo_width": 1
+    },
+    "city": {
+      "text_color": "#353635",
+      "halo_color": "#efefef",
+      "halo_width": 1
+    }
+  }
+}

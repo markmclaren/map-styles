@@ -1,0 +1,275 @@
+{
+  "id": "light-gray-canvas-base",
+  "version": 8,
+  "background": "#cfd3d4",
+  "water": {
+    "fill": "#cfd3d4",
+    "outline": "#efefef"
+  },
+  "waterway": {
+    "line": "#d6dadb"
+  },
+  "land": {
+    "base": [
+      [
+        0,
+        "#f4f4f4"
+      ],
+      [
+        7,
+        "#efefef"
+      ]
+    ]
+  },
+  "greenery": {
+    "wood": [
+      [
+        6,
+        "#ECEEEA"
+      ],
+      [
+        11,
+        "#e4e8e4"
+      ]
+    ],
+    "park": [
+      [
+        6,
+        "#ECEEEA"
+      ],
+      [
+        11,
+        "#e4e8e4"
+      ]
+    ]
+  },
+  "urban": {
+    "urban_area": [
+      [
+        5,
+        "#e5e8e7"
+      ],
+      [
+        10,
+        "#ECEDEC"
+      ]
+    ]
+  },
+  "building": {
+    "fill": "#dcddde",
+    "outline": "#efefef"
+  },
+  "roads": {
+    "minor": {
+      "fill": "#EFEFEF",
+      "fill_width": {
+        "base": 1.2,
+        "stops": [
+          [
+            12,
+            1.5
+          ],
+          [
+            14,
+            2.5
+          ],
+          [
+            17,
+            3
+          ]
+        ]
+      },
+      "casing": "#dcddda",
+      "casing_width": {
+        "base": 1.2,
+        "stops": [
+          [
+            12,
+            0.5
+          ],
+          [
+            14,
+            1
+          ],
+          [
+            17,
+            1.5
+          ]
+        ]
+      }
+    },
+    "service": {
+      "casing": "#E3E5E2",
+      "casing_width": {
+        "base": 1.2,
+        "stops": [
+          [
+            11,
+            1.5
+          ],
+          [
+            14,
+            3.3
+          ],
+          [
+            18,
+            8.3
+          ]
+        ]
+      },
+      "fill": "#FFFFFF",
+      "fill_width": {
+        "base": 1.2,
+        "stops": [
+          [
+            11,
+            0.75
+          ],
+          [
+            14,
+            1.3
+          ],
+          [
+            18,
+            6.3
+          ]
+        ]
+      }
+    },
+    "path": {
+      "casing": "#E3E5E2",
+      "casing_width": {
+        "base": 1.2,
+        "stops": [
+          [
+            14,
+            1.5
+          ],
+          [
+            16,
+            3.3
+          ],
+          [
+            18,
+            4
+          ]
+        ]
+      },
+      "fill": "#FFFFFF",
+      "fill_width": {
+        "base": 1.2,
+        "stops": [
+          [
+            14,
+            1.3
+          ],
+          [
+            16,
+            2
+          ],
+          [
+            18,
+            2.3
+          ]
+        ]
+      }
+    },
+    "primary": {
+      "casing": "#E3E5E2",
+      "casing_width": {
+        "base": 1.2,
+        "stops": [
+          [
+            9,
+            1.5
+          ],
+          [
+            14,
+            7.3
+          ],
+          [
+            16,
+            10.3
+          ],
+          [
+            18,
+            18
+          ]
+        ]
+      },
+      "fill": "#ffffff",
+      "fill_width": {
+        "base": 1.2,
+        "stops": [
+          [
+            9,
+            0.75
+          ],
+          [
+            14,
+            5.3
+          ],
+          [
+            16,
+            8.3
+          ],
+          [
+            18,
+            16
+          ]
+        ]
+      }
+    },
+    "motorway": {
+      "casing": "#E3E5E2",
+      "casing_width": {
+        "base": 1.0,
+        "stops": [
+          [
+            9,
+            0.3
+          ],
+          [
+            14,
+            8.3
+          ],
+          [
+            16,
+            12.3
+          ],
+          [
+            18,
+            26
+          ]
+        ]
+      },
+      "fill": "#ffffff",
+      "fill_width": {
+        "base": 1.2,
+        "stops": [
+          [
+            9,
+            0.3
+          ],
+          [
+            14,
+            6.3
+          ],
+          [
+            16,
+            10.3
+          ],
+          [
+            18,
+            24
+          ]
+        ]
+      }
+    }
+  },
+  "boundaries": {
+    "state": "#dddedb",
+    "country": "#dddedb"
+  },
+  "labels": {}
+}

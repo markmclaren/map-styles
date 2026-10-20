@@ -1,0 +1,90 @@
+{
+  "openstreetmap-esri": {
+    "item_id": "3e1a00aeae81496587988075fe529f71",
+    "file": "source-styles/openstreetmap-esri.json",
+    "layers": 1524,
+    "version": 8,
+    "sprite": "https://cdn.arcgis.com/sharing/rest/content/items/3e1a00aeae81496587988075fe529f71/resources/styles/../sprites/sprite",
+    "glyphs": "https://basemaps.arcgis.com/arcgis/rest/services/OpenStreetMap_v2/VectorTileServer/resources/fonts/{fontstack}/{range}.pbf"
+  },
+  "world-navigation": {
+    "item_id": "63c47b7177f946b49902c24129b87252",
+    "file": "source-styles/world-navigation.json",
+    "layers": 915,
+    "version": 8,
+    "sprite": "https://cdn.arcgis.com/sharing/rest/content/items/63c47b7177f946b49902c24129b87252/resources/styles/../sprites/sprite",
+    "glyphs": "https://basemaps.arcgis.com/arcgis/rest/services/World_Basemap_v2/VectorTileServer/resources/fonts/{fontstack}/{range}.pbf"
+  },
+  "world-navigation-dark": {
+    "item_id": "b69e76a446ac479998ff31de839ba323",
+    "file": "source-styles/world-navigation-dark.json",
+    "layers": 915,
+    "version": 8,
+    "sprite": "https://cdn.arcgis.com/sharing/rest/content/items/b69e76a446ac479998ff31de839ba323/resources/styles/../sprites/sprite",
+    "glyphs": "https://basemaps.arcgis.com/arcgis/rest/services/World_Basemap_v2/VectorTileServer/resources/fonts/{fontstack}/{range}.pbf"
+  },
+  "world-street-map": {
+    "item_id": "de26a3cf4cc9451298ea173c4b324736",
+    "file": "source-styles/world-street-map.json",
+    "layers": 916,
+    "version": 8,
+    "sprite": "https://cdn.arcgis.com/sharing/rest/content/items/de26a3cf4cc9451298ea173c4b324736/resources/styles/../sprites/sprite",
+    "glyphs": "https://basemaps.arcgis.com/arcgis/rest/services/World_Basemap_v2/VectorTileServer/resources/fonts/{fontstack}/{range}.pbf"
+  },
+  "world-street-map-relief": {
+    "item_id": "b266e6d17fc345b498345613930fbd76",
+    "file": "source-styles/world-street-map-relief.json",
+    "layers": 337,
+    "version": 8,
+    "sprite": "https://cdn.arcgis.com/sharing/rest/content/items/b266e6d17fc345b498345613930fbd76/resources/styles/../sprites/sprite",
+    "glyphs": "https://basemaps.arcgis.com/arcgis/rest/services/World_Basemap_v2/VectorTileServer/resources/fonts/{fontstack}/{range}.pbf"
+  },
+  "world-street-map-night": {
+    "item_id": "86f556a2d1fd468181855a35e344567f",
+    "file": "source-styles/world-street-map-night.json",
+    "layers": 904,
+    "version": 8,
+    "sprite": "https://cdn.arcgis.com/sharing/rest/content/items/86f556a2d1fd468181855a35e344567f/resources/styles/../sprites/sprite",
+    "glyphs": "https://basemaps.arcgis.com/arcgis/rest/services/World_Basemap_v2/VectorTileServer/resources/fonts/{fontstack}/{range}.pbf"
+  },
+  "world-topographic": {
+    "item_id": "7dc6cea0b1764a1f9af2e679f642f0f5",
+    "file": "source-styles/world-topographic.json",
+    "layers": 398,
+    "version": 8,
+    "sprite": "https://cdn.arcgis.com/sharing/rest/content/items/7dc6cea0b1764a1f9af2e679f642f0f5/resources/styles/../sprites/sprite",
+    "glyphs": "https://basemaps.arcgis.com/arcgis/rest/services/World_Basemap_v2/VectorTileServer/resources/fonts/{fontstack}/{range}.pbf"
+  },
+  "dark-gray-canvas-base": {
+    "item_id": "5e9b3685f4c24d8781073dd928ebda50",
+    "file": "source-styles/dark-gray-canvas-base.json",
+    "layers": 121,
+    "version": 8,
+    "sprite": "https://cdn.arcgis.com/sharing/rest/content/items/5e9b3685f4c24d8781073dd928ebda50/resources/styles/../sprites/sprite",
+    "glyphs": "https://basemaps.arcgis.com/arcgis/rest/services/World_Basemap_v2/VectorTileServer/resources/fonts/{fontstack}/{range}.pbf"
+  },
+  "dark-gray-canvas-ref": {
+    "item_id": "747cb7a5329c478cbe6981076cc879c5",
+    "file": "source-styles/dark-gray-canvas-ref.json",
+    "layers": 123,
+    "version": 8,
+    "sprite": "https://cdn.arcgis.com/sharing/rest/content/items/747cb7a5329c478cbe6981076cc879c5/resources/styles/../sprites/sprite",
+    "glyphs": "https://basemaps.arcgis.com/arcgis/rest/services/World_Basemap_v2/VectorTileServer/resources/fonts/{fontstack}/{range}.pbf"
+  },
+  "light-gray-canvas-base": {
+    "item_id": "291da5eab3a0412593b66d384379f89f",
+    "file": "source-styles/light-gray-canvas-base.json",
+    "layers": 121,
+    "version": 8,
+    "sprite": "https://cdn.arcgis.com/sharing/rest/content/items/291da5eab3a0412593b66d384379f89f/resources/styles/../sprites/sprite",
+    "glyphs": "https://basemaps.arcgis.com/arcgis/rest/services/World_Basemap_v2/VectorTileServer/resources/fonts/{fontstack}/{range}.pbf"
+  },
+  "light-gray-canvas-ref": {
+    "item_id": "1768e8369a214dfab4e2167d5c5f2454",
+    "file": "source-styles/light-gray-canvas-ref.json",
+    "layers": 123,
+    "version": 8,
+    "sprite": "https://cdn.arcgis.com/sharing/rest/content/items/1768e8369a214dfab4e2167d5c5f2454/resources/styles/../sprites/sprite",
+    "glyphs": "https://basemaps.arcgis.com/arcgis/rest/services/World_Basemap_v2/VectorTileServer/resources/fonts/{fontstack}/{range}.pbf"
+  }
+}

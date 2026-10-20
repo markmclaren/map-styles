@@ -1,0 +1,6328 @@
+{
+  "glyphs": "https://basemaps-api.arcgis.com/arcgis/rest/services/World_Basemap_v2/VectorTileServer/resources/fonts/{fontstack}/{range}.pbf?token=AAPTxy8BH1VEsoebNVZXo8HurM3_nZ73M27aFFX0iQeX7752-HERj42SFXmuuYoMr2AZ3BQCNW8ok1NwPvjy1aBZOXrhc-H4crP8-iDNuF4jFUlOiWyoOutLNSAnqbhROFeNNQybKpbXHd2DZngFMmok50vbvqpOgg_KHoPkYG_8tKrwodCKR3Ks3I-IvaUVBvk5Up_10Hr4Xt1iXwOVwyFQGBKiu7JBeGdGQJusJXAQgwc.AT1_XXc76sNo",
+  "layers": [
+    {
+      "id": "1e126e7520f9466c9ca28b8f28b5e500",
+      "type": "raster",
+      "source": "1e126e7520f9466c9ca28b8f28b5e500",
+      "maxzoom": 16,
+      "minzoom": 0
+    },
+    {
+      "id": "Boundary line/Disputed admin1/1",
+      "type": "line",
+      "source": "esri",
+      "filter": [
+        "all",
+        [
+          "==",
+          "_symbol",
+          7
+        ],
+        [
+          "!in",
+          "Viz",
+          2
+        ]
+      ],
+      "minzoom": 3,
+      "layout": {
+        "line-join": "round"
+      },
+      "paint": {
+        "line-color": "#E9E8E4",
+        "line-opacity": 0.95,
+        "line-width": {
+          "base": 1.0,
+          "stops": [
+            [
+              4,
+              0.5
+            ],
+            [
+              14,
+              7
+            ],
+            [
+              17,
+              7
+            ]
+          ]
+        }
+      },
+      "source-layer": "Boundary line"
+    },
+    {
+      "id": "Boundary line/Disputed admin0/1",
+      "type": "line",
+      "source": "esri",
+      "filter": [
+        "all",
+        [
+          "==",
+          "_symbol",
+          6
+        ],
+        [
+          "!in",
+          "Viz",
+          2
+        ],
+        [
+          "!in",
+          "DisputeID",
+          8,
+          16,
+          90,
+          96,
+          0
+        ]
+      ],
+      "minzoom": 1,
+      "layout": {
+        "line-join": "round"
+      },
+      "paint": {
+        "line-color": "#E9E8E4",
+        "line-opacity": 0.95,
+        "line-width": {
+          "base": 1.0,
+          "stops": [
+            [
+              1,
+              0.5
+            ],
+            [
+              14,
+              9.3
+            ],
+            [
+              17,
+              9.3
+            ]
+          ]
+        }
+      },
+      "source-layer": "Boundary line"
+    },
+    {
+      "id": "Boundary line/Disputed admin1/0",
+      "type": "line",
+      "source": "esri",
+      "filter": [
+        "all",
+        [
+          "==",
+          "_symbol",
+          7
+        ],
+        [
+          "!in",
+          "Viz",
+          2
+        ]
+      ],
+      "minzoom": 3,
+      "layout": {
+        "line-join": "round"
+      },
+      "paint": {
+        "line-color": {
+          "stops": [
+            [
+              1,
+              "#c8c8c8"
+            ],
+            [
+              3,
+              "#9C9C9C"
+            ]
+          ]
+        },
+        "line-dasharray": [
+          7.0,
+          5.0
+        ],
+        "line-width": {
+          "base": 1.2,
+          "stops": [
+            [
+              1,
+              0.65
+            ],
+            [
+              14,
+              1.3
+            ],
+            [
+              17,
+              2.5
+            ]
+          ]
+        }
+      },
+      "source-layer": "Boundary line"
+    },
+    {
+      "id": "Boundary line/Disputed admin0/0",
+      "type": "line",
+      "source": "esri",
+      "filter": [
+        "all",
+        [
+          "==",
+          "_symbol",
+          6
+        ],
+        [
+          "!in",
+          "Viz",
+          2
+        ],
+        [
+          "!in",
+          "DisputeID",
+          8,
+          16,
+          90,
+          96,
+          0
+        ]
+      ],
+      "minzoom": 1,
+      "layout": {
+        "line-join": "round"
+      },
+      "paint": {
+        "line-color": {
+          "stops": [
+            [
+              1,
+              "#c8c8c8"
+            ],
+            [
+              3,
+              "#9C9C9C"
+            ]
+          ]
+        },
+        "line-dasharray": [
+          7.0,
+          5.0
+        ],
+        "line-width": {
+          "base": 1.2,
+          "stops": [
+            [
+              1,
+              0.65
+            ],
+            [
+              14,
+              1.3
+            ],
+            [
+              17,
+              2.5
+            ]
+          ]
+        }
+      },
+      "source-layer": "Boundary line"
+    },
+    {
+      "id": "Boundary line/Admin1/1",
+      "type": "line",
+      "source": "esri",
+      "filter": [
+        "all",
+        [
+          "==",
+          "_symbol",
+          1
+        ],
+        [
+          "!in",
+          "Viz",
+          2
+        ]
+      ],
+      "minzoom": 3,
+      "layout": {
+        "line-join": "round",
+        "line-cap": "round"
+      },
+      "paint": {
+        "line-color": "#d3d3d3",
+        "line-width": {
+          "base": 1.0,
+          "stops": [
+            [
+              4,
+              0.5
+            ],
+            [
+              14,
+              7
+            ],
+            [
+              17,
+              7
+            ]
+          ]
+        }
+      },
+      "source-layer": "Boundary line"
+    },
+    {
+      "id": "Boundary line/Admin0/1",
+      "type": "line",
+      "source": "esri",
+      "filter": [
+        "all",
+        [
+          "==",
+          "_symbol",
+          0
+        ],
+        [
+          "!in",
+          "Viz",
+          2
+        ]
+      ],
+      "minzoom": 1,
+      "layout": {
+        "line-join": "round",
+        "line-cap": "round"
+      },
+      "paint": {
+        "line-color": "#cecece",
+        "line-width": {
+          "base": 1.0,
+          "stops": [
+            [
+              1,
+              0.5
+            ],
+            [
+              14,
+              9.3
+            ],
+            [
+              17,
+              9.3
+            ]
+          ]
+        }
+      },
+      "source-layer": "Boundary line"
+    },
+    {
+      "id": "Boundary line/Admin1/0",
+      "type": "line",
+      "source": "esri",
+      "filter": [
+        "all",
+        [
+          "==",
+          "_symbol",
+          1
+        ],
+        [
+          "!in",
+          "Viz",
+          2
+        ]
+      ],
+      "minzoom": 3,
+      "layout": {
+        "line-join": "round",
+        "line-cap": "round"
+      },
+      "paint": {
+        "line-color": {
+          "stops": [
+            [
+              3,
+              "#c8c8c8"
+            ],
+            [
+              4,
+              "#9C9C9C"
+            ]
+          ]
+        },
+        "line-dasharray": [
+          7,
+          5.3
+        ],
+        "line-width": {
+          "base": 1.0,
+          "stops": [
+            [
+              4,
+              0.325
+            ],
+            [
+              14,
+              1.3
+            ],
+            [
+              17,
+              1.3
+            ]
+          ]
+        }
+      },
+      "source-layer": "Boundary line"
+    },
+    {
+      "id": "Boundary line/Admin0/0",
+      "type": "line",
+      "source": "esri",
+      "filter": [
+        "all",
+        [
+          "==",
+          "_symbol",
+          0
+        ],
+        [
+          "!in",
+          "Viz",
+          2
+        ]
+      ],
+      "minzoom": 1,
+      "layout": {
+        "line-join": "round",
+        "line-cap": "round"
+      },
+      "paint": {
+        "line-color": {
+          "stops": [
+            [
+              1,
+              "#cccccc"
+            ],
+            [
+              7,
+              "#4e4e4e"
+            ]
+          ]
+        },
+        "line-dasharray": [
+          7,
+          5.3
+        ],
+        "line-width": {
+          "base": 1.2,
+          "stops": [
+            [
+              1,
+              0.5
+            ],
+            [
+              14,
+              1.3
+            ],
+            [
+              17,
+              1.3
+            ]
+          ]
+        }
+      },
+      "source-layer": "Boundary line"
+    },
+    {
+      "id": "Water point/Sea or ocean",
+      "type": "symbol",
+      "source": "esri",
+      "filter": [
+        "==",
+        "_label_class",
+        0
+      ],
+      "minzoom": 9,
+      "layout": {
+        "symbol-avoid-edges": true,
+        "text-field": "{_name_global}",
+        "text-font": [
+          "Noto Serif Italic"
+        ],
+        "text-anchor": "center",
+        "text-letter-spacing": 0.3,
+        "text-max-width": 4,
+        "text-size": {
+          "stops": [
+            [
+              9,
+              8.5
+            ],
+            [
+              15,
+              15.5
+            ]
+          ]
+        },
+        "text-allow-overlap": false,
+        "text-padding": 15,
+        "text-line-height": 1.6
+      },
+      "paint": {
+        "text-color": "#0068B3",
+        "text-halo-blur": 1,
+        "text-halo-color": {
+          "stops": [
+            [
+              0,
+              "#E9E8E4"
+            ],
+            [
+              7,
+              "#F4F3EE"
+            ]
+          ]
+        },
+        "text-halo-width": 1
+      },
+      "source-layer": "Water point"
+    },
+    {
+      "id": "Water point/Island",
+      "type": "symbol",
+      "source": "esri",
+      "filter": [
+        "==",
+        "_label_class",
+        7
+      ],
+      "minzoom": 9,
+      "layout": {
+        "symbol-avoid-edges": true,
+        "text-field": "{_name_global}",
+        "text-font": [
+          "Arial Unicode MS Regular"
+        ],
+        "text-anchor": "center",
+        "text-letter-spacing": 0.1,
+        "text-max-width": 4,
+        "text-size": {
+          "stops": [
+            [
+              9,
+              8.5
+            ],
+            [
+              15,
+              10
+            ]
+          ]
+        },
+        "text-allow-overlap": false,
+        "text-padding": 15
+      },
+      "paint": {
+        "text-color": "#595959",
+        "text-halo-blur": 1,
+        "text-halo-color": {
+          "stops": [
+            [
+              0,
+              "#E9E8E4"
+            ],
+            [
+              7,
+              "#F4F3EE"
+            ]
+          ]
+        },
+        "text-halo-width": 1
+      },
+      "source-layer": "Water point"
+    },
+    {
+      "id": "Water point/Dam or weir",
+      "type": "symbol",
+      "source": "esri",
+      "filter": [
+        "==",
+        "_label_class",
+        5
+      ],
+      "minzoom": 9,
+      "layout": {
+        "symbol-avoid-edges": true,
+        "text-field": "{_name_global}",
+        "text-font": [
+          "Arial Unicode MS Regular"
+        ],
+        "text-anchor": "center",
+        "text-letter-spacing": 0.1,
+        "text-max-width": 4,
+        "text-size": {
+          "stops": [
+            [
+              9,
+              8.5
+            ],
+            [
+              15,
+              10
+            ]
+          ]
+        },
+        "text-allow-overlap": false,
+        "text-padding": 15
+      },
+      "paint": {
+        "text-color": "#262317",
+        "text-halo-blur": 1,
+        "text-halo-color": {
+          "stops": [
+            [
+              0,
+              "#E9E8E4"
+            ],
+            [
+              7,
+              "#F4F3EE"
+            ]
+          ]
+        },
+        "text-halo-width": 0.7
+      },
+      "source-layer": "Water point"
+    },
+    {
+      "id": "Water point/Playa",
+      "type": "symbol",
+      "source": "esri",
+      "filter": [
+        "==",
+        "_label_class",
+        6
+      ],
+      "minzoom": 9,
+      "layout": {
+        "symbol-avoid-edges": true,
+        "text-field": "{_name_global}",
+        "text-font": [
+          "Arial Unicode MS Regular"
+        ],
+        "text-anchor": "center",
+        "text-letter-spacing": 0.1,
+        "text-max-width": 4,
+        "text-size": {
+          "stops": [
+            [
+              9,
+              8.5
+            ],
+            [
+              15,
+              10
+            ]
+          ]
+        },
+        "text-allow-overlap": false,
+        "text-padding": 15
+      },
+      "paint": {
+        "text-color": "#262317",
+        "text-halo-blur": 1,
+        "text-halo-color": {
+          "stops": [
+            [
+              0,
+              "#E9E8E4"
+            ],
+            [
+              7,
+              "#F4F3EE"
+            ]
+          ]
+        },
+        "text-halo-width": 0.7
+      },
+      "source-layer": "Water point"
+    },
+    {
+      "id": "Water point/Canal or ditch",
+      "type": "symbol",
+      "source": "esri",
+      "filter": [
+        "==",
+        "_label_class",
+        4
+      ],
+      "minzoom": 9,
+      "layout": {
+        "symbol-avoid-edges": true,
+        "text-field": "{_name_global}",
+        "text-font": [
+          "Noto Serif Italic"
+        ],
+        "text-anchor": "center",
+        "text-letter-spacing": 0.13,
+        "text-max-width": 4,
+        "text-size": {
+          "stops": [
+            [
+              9,
+              8.5
+            ],
+            [
+              15,
+              10
+            ]
+          ]
+        },
+        "text-allow-overlap": false,
+        "text-padding": 15
+      },
+      "paint": {
+        "text-color": "#0068B3",
+        "text-halo-blur": 1,
+        "text-halo-color": {
+          "stops": [
+            [
+              0,
+              "#E9E8E4"
+            ],
+            [
+              7,
+              "#F4F3EE"
+            ]
+          ]
+        },
+        "text-halo-width": 1
+      },
+      "source-layer": "Water point"
+    },
+    {
+      "id": "Water point/Stream or river",
+      "type": "symbol",
+      "source": "esri",
+      "filter": [
+        "==",
+        "_label_class",
+        3
+      ],
+      "minzoom": 9,
+      "layout": {
+        "symbol-avoid-edges": true,
+        "text-field": "{_name_global}",
+        "text-font": [
+          "Noto Serif Italic"
+        ],
+        "text-anchor": "center",
+        "text-letter-spacing": 0.1,
+        "text-max-width": 4,
+        "text-size": {
+          "stops": [
+            [
+              9,
+              8.5
+            ],
+            [
+              15,
+              10
+            ]
+          ]
+        },
+        "text-allow-overlap": false,
+        "text-padding": 15
+      },
+      "paint": {
+        "text-color": "#0068B3",
+        "text-halo-blur": 1,
+        "text-halo-color": {
+          "stops": [
+            [
+              0,
+              "#E9E8E4"
+            ],
+            [
+              7,
+              "#F4F3EE"
+            ]
+          ]
+        },
+        "text-halo-width": 0.5
+      },
+      "source-layer": "Water point"
+    },
+    {
+      "id": "Water point/Lake or reservoir",
+      "type": "symbol",
+      "source": "esri",
+      "filter": [
+        "==",
+        "_label_class",
+        2
+      ],
+      "minzoom": 9,
+      "layout": {
+        "symbol-avoid-edges": true,
+        "text-field": "{_name_global}",
+        "text-font": [
+          "Noto Serif Italic"
+        ],
+        "text-anchor": "center",
+        "text-letter-spacing": 0.1,
+        "text-max-width": 4,
+        "text-size": {
+          "stops": [
+            [
+              9,
+              8.5
+            ],
+            [
+              15,
+              10
+            ]
+          ]
+        },
+        "text-allow-overlap": false,
+        "text-padding": 15
+      },
+      "paint": {
+        "text-color": "#0068B3",
+        "text-halo-blur": 1,
+        "text-halo-color": {
+          "stops": [
+            [
+              0,
+              "#E9E8E4"
+            ],
+            [
+              7,
+              "#F4F3EE"
+            ]
+          ]
+        },
+        "text-halo-width": 0.5
+      },
+      "source-layer": "Water point"
+    },
+    {
+      "id": "Water point/Bay or inlet",
+      "type": "symbol",
+      "source": "esri",
+      "filter": [
+        "==",
+        "_label_class",
+        1
+      ],
+      "minzoom": 9,
+      "layout": {
+        "symbol-avoid-edges": true,
+        "text-field": "{_name_global}",
+        "text-font": [
+          "Noto Serif Italic"
+        ],
+        "text-anchor": "center",
+        "text-letter-spacing": 0.1,
+        "text-max-width": 4,
+        "text-size": {
+          "stops": [
+            [
+              9,
+              8.5
+            ],
+            [
+              15,
+              10
+            ]
+          ]
+        },
+        "text-allow-overlap": false,
+        "text-padding": 15
+      },
+      "paint": {
+        "text-color": "#0068B3",
+        "text-halo-blur": 1,
+        "text-halo-color": {
+          "stops": [
+            [
+              0,
+              "#E9E8E4"
+            ],
+            [
+              7,
+              "#F4F3EE"
+            ]
+          ]
+        },
+        "text-halo-width": 1
+      },
+      "source-layer": "Water point"
+    },
+    {
+      "id": "Water line/label/Default",
+      "type": "symbol",
+      "source": "esri",
+      "minzoom": 11,
+      "layout": {
+        "symbol-avoid-edges": true,
+        "symbol-placement": "line",
+        "symbol-spacing": 800,
+        "text-field": "{_name_global}",
+        "text-font": [
+          "Noto Serif Italic"
+        ],
+        "text-letter-spacing": 0.07,
+        "text-max-width": 8,
+        "text-size": 9.5,
+        "text-offset": [
+          0,
+          -0.5
+        ],
+        "text-padding": 1,
+        "text-max-angle": 35
+      },
+      "paint": {
+        "text-color": "#409bcc",
+        "text-halo-blur": 1,
+        "text-halo-color": {
+          "stops": [
+            [
+              0,
+              "#E9E8E4"
+            ],
+            [
+              7,
+              "#F4F3EE"
+            ]
+          ]
+        },
+        "text-halo-width": 0.5
+      },
+      "source-layer": "Water line/label"
+    },
+    {
+      "id": "Water line large scale/label/Default",
+      "type": "symbol",
+      "source": "esri",
+      "maxzoom": 11,
+      "minzoom": 7,
+      "layout": {
+        "symbol-avoid-edges": true,
+        "symbol-placement": "line",
+        "symbol-spacing": 800,
+        "text-field": "{_name}",
+        "text-font": [
+          "Noto Serif Italic"
+        ],
+        "text-letter-spacing": 0.01,
+        "text-max-width": 8,
+        "text-size": 9.3,
+        "text-offset": [
+          0,
+          -0.5
+        ],
+        "text-padding": 1,
+        "text-max-angle": {
+          "stops": [
+            [
+              7,
+              25
+            ],
+            [
+              11,
+              35
+            ]
+          ]
+        }
+      },
+      "paint": {
+        "text-color": "#409bcc",
+        "text-halo-blur": 1,
+        "text-halo-color": {
+          "stops": [
+            [
+              0,
+              "#E9E8E4"
+            ],
+            [
+              7,
+              "#F4F3EE"
+            ]
+          ]
+        },
+        "text-halo-width": 0.5
+      },
+      "source-layer": "Water line large scale/label"
+    },
+    {
+      "id": "Water line medium scale/label/Default",
+      "type": "symbol",
+      "source": "esri",
+      "maxzoom": 7,
+      "minzoom": 6,
+      "layout": {
+        "symbol-avoid-edges": true,
+        "symbol-placement": "line",
+        "symbol-spacing": 800,
+        "text-field": "{_name}",
+        "text-font": [
+          "Noto Serif Italic"
+        ],
+        "text-letter-spacing": 0.1,
+        "text-max-width": 8,
+        "text-size": 9.3,
+        "text-offset": [
+          0,
+          -0.5
+        ],
+        "text-padding": 1,
+        "text-max-angle": {
+          "stops": [
+            [
+              5,
+              15
+            ],
+            [
+              6,
+              25
+            ]
+          ]
+        }
+      },
+      "paint": {
+        "text-color": "#409bcc",
+        "text-halo-blur": 1,
+        "text-halo-color": {
+          "stops": [
+            [
+              0,
+              "#E9E8E4"
+            ],
+            [
+              7,
+              "#F4F3EE"
+            ]
+          ]
+        },
+        "text-halo-width": 1
+      },
+      "source-layer": "Water line medium scale/label"
+    },
+    {
+      "id": "Marine park/label/Default",
+      "type": "symbol",
+      "source": "esri",
+      "minzoom": 11,
+      "layout": {
+        "symbol-avoid-edges": true,
+        "text-field": "{_name_global}",
+        "text-font": [
+          "Arial Unicode MS Regular"
+        ],
+        "text-letter-spacing": 0.05,
+        "text-max-width": 8,
+        "text-size": 9.5,
+        "text-allow-overlap": false,
+        "text-padding": 15
+      },
+      "paint": {
+        "text-color": "#409bcc"
+      },
+      "source-layer": "Marine park/label"
+    },
+    {
+      "id": "Water area/label/Dam or weir",
+      "type": "symbol",
+      "source": "esri",
+      "filter": [
+        "==",
+        "_label_class",
+        8
+      ],
+      "minzoom": 11,
+      "layout": {
+        "symbol-avoid-edges": true,
+        "text-field": "{_name_global}",
+        "text-font": [
+          "Arial Unicode MS Regular"
+        ],
+        "text-letter-spacing": 0.08,
+        "text-max-width": 8,
+        "text-size": 9.5,
+        "text-allow-overlap": false,
+        "text-padding": 15
+      },
+      "paint": {
+        "text-color": "#262317",
+        "text-halo-blur": 1,
+        "text-halo-color": {
+          "stops": [
+            [
+              0,
+              "#E9E8E4"
+            ],
+            [
+              7,
+              "#F4F3EE"
+            ]
+          ]
+        },
+        "text-halo-width": 0.7
+      },
+      "source-layer": "Water area/label"
+    },
+    {
+      "id": "Water area/label/Playa",
+      "type": "symbol",
+      "source": "esri",
+      "filter": [
+        "==",
+        "_label_class",
+        9
+      ],
+      "minzoom": 11,
+      "layout": {
+        "symbol-avoid-edges": true,
+        "text-field": "{_name_global}",
+        "text-font": [
+          "Noto Serif Italic"
+        ],
+        "text-letter-spacing": 0.08,
+        "text-max-width": 8,
+        "text-size": 9.5,
+        "text-allow-overlap": false,
+        "text-padding": 15
+      },
+      "paint": {
+        "text-color": "#262317",
+        "text-halo-blur": 1,
+        "text-halo-color": {
+          "stops": [
+            [
+              0,
+              "#E9E8E4"
+            ],
+            [
+              7,
+              "#F4F3EE"
+            ]
+          ]
+        },
+        "text-halo-width": 0.7
+      },
+      "source-layer": "Water area/label"
+    },
+    {
+      "id": "Water area/label/Canal or ditch",
+      "type": "symbol",
+      "source": "esri",
+      "filter": [
+        "==",
+        "_label_class",
+        2
+      ],
+      "minzoom": 11,
+      "layout": {
+        "symbol-avoid-edges": true,
+        "symbol-placement": "line",
+        "symbol-spacing": 1000,
+        "text-field": "{_name_global}",
+        "text-font": [
+          "Noto Serif Italic"
+        ],
+        "text-letter-spacing": 0.13,
+        "text-max-width": 5,
+        "text-size": 10.5,
+        "text-allow-overlap": false,
+        "text-padding": 15
+      },
+      "paint": {
+        "text-color": "#0068B3",
+        "text-halo-blur": 1,
+        "text-halo-color": {
+          "stops": [
+            [
+              0,
+              "#E9E8E4"
+            ],
+            [
+              7,
+              "#F4F3EE"
+            ]
+          ]
+        },
+        "text-halo-width": 1
+      },
+      "source-layer": "Water area/label"
+    },
+    {
+      "id": "Water area/label/Small river",
+      "type": "symbol",
+      "source": "esri",
+      "filter": [
+        "==",
+        "_label_class",
+        7
+      ],
+      "minzoom": 11,
+      "layout": {
+        "symbol-avoid-edges": true,
+        "symbol-placement": "line",
+        "symbol-spacing": 1000,
+        "text-field": "{_name_global}",
+        "text-font": [
+          "Noto Serif Italic"
+        ],
+        "text-letter-spacing": 0.13,
+        "text-max-width": 8,
+        "text-size": 10.5,
+        "text-allow-overlap": false,
+        "text-padding": 15
+      },
+      "paint": {
+        "text-color": "#0068B3",
+        "text-halo-blur": 1,
+        "text-halo-color": {
+          "stops": [
+            [
+              0,
+              "#E9E8E4"
+            ],
+            [
+              7,
+              "#F4F3EE"
+            ]
+          ]
+        },
+        "text-halo-width": 1
+      },
+      "source-layer": "Water area/label"
+    },
+    {
+      "id": "Water area/label/Large river",
+      "type": "symbol",
+      "source": "esri",
+      "filter": [
+        "==",
+        "_label_class",
+        4
+      ],
+      "minzoom": 11,
+      "layout": {
+        "symbol-avoid-edges": true,
+        "symbol-placement": "line",
+        "symbol-spacing": 1000,
+        "text-field": "{_name_global}",
+        "text-font": [
+          "Noto Serif Italic"
+        ],
+        "text-letter-spacing": 0.13,
+        "text-max-width": 8,
+        "text-size": 10.5,
+        "text-allow-overlap": false,
+        "text-padding": 15
+      },
+      "paint": {
+        "text-color": "#0068B3",
+        "text-halo-blur": 1,
+        "text-halo-color": {
+          "stops": [
+            [
+              0,
+              "#E9E8E4"
+            ],
+            [
+              7,
+              "#F4F3EE"
+            ]
+          ]
+        },
+        "text-halo-width": 1
+      },
+      "source-layer": "Water area/label"
+    },
+    {
+      "id": "Water area/label/Small lake or reservoir",
+      "type": "symbol",
+      "source": "esri",
+      "filter": [
+        "==",
+        "_label_class",
+        6
+      ],
+      "minzoom": 11,
+      "layout": {
+        "symbol-avoid-edges": true,
+        "text-field": "{_name_global}",
+        "text-font": [
+          "Noto Serif Italic"
+        ],
+        "text-letter-spacing": 0.13,
+        "text-max-width": 4,
+        "text-size": 10.5,
+        "text-allow-overlap": false,
+        "text-padding": 15,
+        "text-line-height": 1
+      },
+      "paint": {
+        "text-color": "#0068B3",
+        "text-halo-blur": 1,
+        "text-halo-color": {
+          "stops": [
+            [
+              0,
+              "#E9E8E4"
+            ],
+            [
+              7,
+              "#F4F3EE"
+            ]
+          ]
+        },
+        "text-halo-width": 1
+      },
+      "source-layer": "Water area/label"
+    },
+    {
+      "id": "Water area/label/Large lake or reservoir",
+      "type": "symbol",
+      "source": "esri",
+      "filter": [
+        "==",
+        "_label_class",
+        3
+      ],
+      "minzoom": 11,
+      "layout": {
+        "symbol-avoid-edges": true,
+        "text-field": "{_name_global}",
+        "text-font": [
+          "Noto Serif Italic"
+        ],
+        "text-letter-spacing": 0.13,
+        "text-max-width": 4,
+        "text-size": 10.5,
+        "text-allow-overlap": false,
+        "text-padding": 15,
+        "text-line-height": 1.5
+      },
+      "paint": {
+        "text-color": "#0068B3",
+        "text-halo-blur": 1,
+        "text-halo-color": {
+          "stops": [
+            [
+              0,
+              "#E9E8E4"
+            ],
+            [
+              7,
+              "#F4F3EE"
+            ]
+          ]
+        },
+        "text-halo-width": 1
+      },
+      "source-layer": "Water area/label"
+    },
+    {
+      "id": "Water area/label/Bay or inlet",
+      "type": "symbol",
+      "source": "esri",
+      "filter": [
+        "==",
+        "_label_class",
+        1
+      ],
+      "minzoom": 11,
+      "layout": {
+        "symbol-avoid-edges": true,
+        "text-field": "{_name_global}",
+        "text-font": [
+          "Noto Serif Italic"
+        ],
+        "text-letter-spacing": 0.13,
+        "text-max-width": 4,
+        "text-size": 10.5,
+        "text-allow-overlap": false,
+        "text-padding": 15,
+        "text-line-height": 1.5
+      },
+      "paint": {
+        "text-color": "#0068B3",
+        "text-halo-blur": 1,
+        "text-halo-color": {
+          "stops": [
+            [
+              0,
+              "#E9E8E4"
+            ],
+            [
+              7,
+              "#F4F3EE"
+            ]
+          ]
+        },
+        "text-halo-width": 1
+      },
+      "source-layer": "Water area/label"
+    },
+    {
+      "id": "Water area/label/Small island",
+      "type": "symbol",
+      "source": "esri",
+      "filter": [
+        "==",
+        "_label_class",
+        0
+      ],
+      "minzoom": 11,
+      "layout": {
+        "symbol-avoid-edges": true,
+        "text-field": "{_name_global}",
+        "text-font": [
+          "Arial Unicode MS Regular"
+        ],
+        "text-letter-spacing": 0.1,
+        "text-max-width": 4,
+        "text-size": 10.5,
+        "text-allow-overlap": false,
+        "text-padding": 15
+      },
+      "paint": {
+        "text-color": "#595959",
+        "text-halo-blur": 1,
+        "text-halo-color": {
+          "stops": [
+            [
+              0,
+              "#E9E8E4"
+            ],
+            [
+              7,
+              "#F4F3EE"
+            ]
+          ]
+        },
+        "text-halo-width": 1
+      },
+      "source-layer": "Water area/label"
+    },
+    {
+      "id": "Water area/label/Large island",
+      "type": "symbol",
+      "source": "esri",
+      "filter": [
+        "==",
+        "_label_class",
+        5
+      ],
+      "minzoom": 11,
+      "layout": {
+        "symbol-avoid-edges": true,
+        "text-field": "{_name_global}",
+        "text-font": [
+          "Arial Unicode MS Regular"
+        ],
+        "text-letter-spacing": 0.13,
+        "text-max-width": 4,
+        "text-size": 10.5,
+        "text-allow-overlap": false,
+        "text-padding": 15,
+        "text-line-height": 1.5
+      },
+      "paint": {
+        "text-color": "#595959",
+        "text-halo-blur": 1,
+        "text-halo-color": {
+          "stops": [
+            [
+              0,
+              "#E9E8E4"
+            ],
+            [
+              7,
+              "#F4F3EE"
+            ]
+          ]
+        },
+        "text-halo-width": 1
+      },
+      "source-layer": "Water area/label"
+    },
+    {
+      "id": "Water area large scale/label/River",
+      "type": "symbol",
+      "source": "esri",
+      "filter": [
+        "==",
+        "_label_class",
+        1
+      ],
+      "maxzoom": 11,
+      "minzoom": 7,
+      "layout": {
+        "symbol-avoid-edges": true,
+        "symbol-placement": "line",
+        "symbol-spacing": 1000,
+        "text-field": "{_name}",
+        "text-font": [
+          "Noto Serif Italic"
+        ],
+        "text-letter-spacing": 0.1,
+        "text-max-width": 4,
+        "text-size": 9.3,
+        "text-allow-overlap": false,
+        "text-padding": 15
+      },
+      "paint": {
+        "text-color": "#0068B3",
+        "text-halo-blur": 1,
+        "text-halo-color": {
+          "stops": [
+            [
+              0,
+              "#E9E8E4"
+            ],
+            [
+              7,
+              "#F4F3EE"
+            ]
+          ]
+        },
+        "text-halo-width": 1
+      },
+      "source-layer": "Water area large scale/label"
+    },
+    {
+      "id": "Water area large scale/label/Lake or lake intermittent",
+      "type": "symbol",
+      "source": "esri",
+      "filter": [
+        "==",
+        "_label_class",
+        0
+      ],
+      "maxzoom": 11,
+      "minzoom": 7,
+      "layout": {
+        "symbol-avoid-edges": true,
+        "text-field": "{_name}",
+        "text-font": [
+          "Noto Serif Italic"
+        ],
+        "text-letter-spacing": 0.1,
+        "text-max-width": 4,
+        "text-size": 9.3,
+        "text-allow-overlap": false,
+        "text-padding": 15
+      },
+      "paint": {
+        "text-color": "#0068B3",
+        "text-halo-blur": 1,
+        "text-halo-color": {
+          "stops": [
+            [
+              0,
+              "#E9E8E4"
+            ],
+            [
+              7,
+              "#F4F3EE"
+            ]
+          ]
+        },
+        "text-halo-width": 1
+      },
+      "source-layer": "Water area large scale/label"
+    },
+    {
+      "id": "Water area medium scale/label/Default",
+      "type": "symbol",
+      "source": "esri",
+      "maxzoom": 7,
+      "minzoom": 5,
+      "layout": {
+        "symbol-avoid-edges": true,
+        "text-field": "{_name}",
+        "text-font": [
+          "Noto Serif Italic"
+        ],
+        "text-letter-spacing": 0.08,
+        "text-max-width": 4,
+        "text-size": 9.3,
+        "text-allow-overlap": false,
+        "text-padding": 15
+      },
+      "paint": {
+        "text-color": "#0068B3",
+        "text-halo-blur": 1,
+        "text-halo-color": {
+          "stops": [
+            [
+              0,
+              "#E9E8E4"
+            ],
+            [
+              7,
+              "#F4F3EE"
+            ]
+          ]
+        },
+        "text-halo-width": 1
+      },
+      "source-layer": "Water area medium scale/label"
+    },
+    {
+      "id": "Water area small scale/label/Default",
+      "type": "symbol",
+      "source": "esri",
+      "maxzoom": 5,
+      "minzoom": 1,
+      "layout": {
+        "symbol-avoid-edges": true,
+        "text-field": "{_name}",
+        "text-font": [
+          "Noto Serif Italic"
+        ],
+        "text-letter-spacing": 0.08,
+        "text-max-width": 4,
+        "text-size": 9.3,
+        "text-allow-overlap": false,
+        "text-padding": 15
+      },
+      "paint": {
+        "text-color": "#0068B3",
+        "text-halo-blur": 1,
+        "text-halo-color": {
+          "stops": [
+            [
+              0,
+              "#E9E8E4"
+            ],
+            [
+              7,
+              "#F4F3EE"
+            ]
+          ]
+        },
+        "text-halo-width": 1
+      },
+      "source-layer": "Water area small scale/label"
+    },
+    {
+      "id": "Admin1 area/label/x small",
+      "type": "symbol",
+      "source": "esri",
+      "filter": [
+        "==",
+        "_label_class",
+        5
+      ],
+      "maxzoom": 10,
+      "minzoom": 5,
+      "layout": {
+        "symbol-avoid-edges": true,
+        "text-field": "{_name}",
+        "text-font": [
+          "Arial Unicode MS Bold"
+        ],
+        "text-letter-spacing": {
+          "stops": [
+            [
+              4,
+              0.1
+            ],
+            [
+              8,
+              0.18
+            ]
+          ]
+        },
+        "text-max-width": 8,
+        "text-size": {
+          "stops": [
+            [
+              4,
+              8.5
+            ],
+            [
+              5,
+              8.5
+            ],
+            [
+              6,
+              9.3
+            ],
+            [
+              9,
+              10
+            ]
+          ]
+        },
+        "text-allow-overlap": false,
+        "text-padding": 1
+      },
+      "paint": {
+        "text-color": "#9f9f9f",
+        "text-halo-blur": 1,
+        "text-halo-color": {
+          "stops": [
+            [
+              0,
+              "#E9E8E4"
+            ],
+            [
+              7,
+              "#F4F3EE"
+            ]
+          ]
+        },
+        "text-halo-width": 1
+      },
+      "source-layer": "Admin1 area/label"
+    },
+    {
+      "id": "Admin1 area/label/small",
+      "type": "symbol",
+      "source": "esri",
+      "filter": [
+        "==",
+        "_label_class",
+        4
+      ],
+      "maxzoom": 10,
+      "minzoom": 5,
+      "layout": {
+        "symbol-avoid-edges": true,
+        "text-field": "{_name}",
+        "text-font": [
+          "Arial Unicode MS Bold"
+        ],
+        "text-letter-spacing": {
+          "stops": [
+            [
+              4,
+              0.1
+            ],
+            [
+              8,
+              0.18
+            ]
+          ]
+        },
+        "text-max-width": 8,
+        "text-size": {
+          "stops": [
+            [
+              4,
+              8.5
+            ],
+            [
+              5,
+              8.5
+            ],
+            [
+              6,
+              9.5
+            ],
+            [
+              9,
+              10.5
+            ]
+          ]
+        },
+        "text-allow-overlap": false,
+        "text-padding": 1
+      },
+      "paint": {
+        "text-color": "#9f9f9f",
+        "text-halo-blur": 1,
+        "text-halo-color": {
+          "stops": [
+            [
+              0,
+              "#E9E8E4"
+            ],
+            [
+              7,
+              "#F4F3EE"
+            ]
+          ]
+        },
+        "text-halo-width": 1
+      },
+      "source-layer": "Admin1 area/label"
+    },
+    {
+      "id": "Admin1 area/label/medium",
+      "type": "symbol",
+      "source": "esri",
+      "filter": [
+        "==",
+        "_label_class",
+        3
+      ],
+      "maxzoom": 10,
+      "minzoom": 5,
+      "layout": {
+        "symbol-avoid-edges": true,
+        "text-field": "{_name}",
+        "text-font": [
+          "Arial Unicode MS Bold"
+        ],
+        "text-letter-spacing": {
+          "stops": [
+            [
+              4,
+              0.1
+            ],
+            [
+              8,
+              0.18
+            ]
+          ]
+        },
+        "text-max-width": 8,
+        "text-size": {
+          "stops": [
+            [
+              4,
+              9.5
+            ],
+            [
+              5,
+              9.5
+            ],
+            [
+              6,
+              10.3
+            ],
+            [
+              9,
+              11
+            ]
+          ]
+        },
+        "text-allow-overlap": false,
+        "text-padding": 1
+      },
+      "paint": {
+        "text-color": "#9f9f9f",
+        "text-halo-blur": 1,
+        "text-halo-color": {
+          "stops": [
+            [
+              0,
+              "#E9E8E4"
+            ],
+            [
+              7,
+              "#F4F3EE"
+            ]
+          ]
+        },
+        "text-halo-width": 1
+      },
+      "source-layer": "Admin1 area/label"
+    },
+    {
+      "id": "Admin1 area/label/large",
+      "type": "symbol",
+      "source": "esri",
+      "filter": [
+        "==",
+        "_label_class",
+        2
+      ],
+      "maxzoom": 10,
+      "minzoom": 5,
+      "layout": {
+        "symbol-avoid-edges": true,
+        "text-field": "{_name}",
+        "text-font": [
+          "Arial Unicode MS Bold"
+        ],
+        "text-letter-spacing": {
+          "stops": [
+            [
+              4,
+              0.1
+            ],
+            [
+              8,
+              0.18
+            ]
+          ]
+        },
+        "text-max-width": 8,
+        "text-size": {
+          "stops": [
+            [
+              4,
+              9.5
+            ],
+            [
+              5,
+              10.3
+            ],
+            [
+              6,
+              11
+            ],
+            [
+              9,
+              14
+            ]
+          ]
+        },
+        "text-allow-overlap": false,
+        "text-padding": 1
+      },
+      "paint": {
+        "text-color": "#9f9f9f",
+        "text-halo-blur": 1,
+        "text-halo-color": {
+          "stops": [
+            [
+              0,
+              "#E9E8E4"
+            ],
+            [
+              7,
+              "#F4F3EE"
+            ]
+          ]
+        },
+        "text-halo-width": 1
+      },
+      "source-layer": "Admin1 area/label"
+    },
+    {
+      "id": "Admin1 area/label/x large",
+      "type": "symbol",
+      "source": "esri",
+      "filter": [
+        "==",
+        "_label_class",
+        1
+      ],
+      "maxzoom": 10,
+      "minzoom": 5,
+      "layout": {
+        "symbol-avoid-edges": true,
+        "text-field": "{_name}",
+        "text-font": [
+          "Arial Unicode MS Bold"
+        ],
+        "text-letter-spacing": {
+          "stops": [
+            [
+              4,
+              0.13
+            ],
+            [
+              8,
+              0.25
+            ]
+          ]
+        },
+        "text-max-width": 8,
+        "text-size": {
+          "stops": [
+            [
+              4,
+              10.3
+            ],
+            [
+              5,
+              11
+            ],
+            [
+              6,
+              11.5
+            ],
+            [
+              9,
+              16
+            ]
+          ]
+        },
+        "text-allow-overlap": false,
+        "text-padding": 1
+      },
+      "paint": {
+        "text-color": "#9f9f9f",
+        "text-halo-blur": 1,
+        "text-halo-color": {
+          "stops": [
+            [
+              0,
+              "#E9E8E4"
+            ],
+            [
+              7,
+              "#F4F3EE"
+            ]
+          ]
+        },
+        "text-halo-width": 1
+      },
+      "source-layer": "Admin1 area/label"
+    },
+    {
+      "id": "Admin1 area/label/2x large",
+      "type": "symbol",
+      "source": "esri",
+      "filter": [
+        "==",
+        "_label_class",
+        0
+      ],
+      "maxzoom": 10,
+      "minzoom": 5,
+      "layout": {
+        "symbol-avoid-edges": true,
+        "text-field": "{_name}",
+        "text-font": [
+          "Arial Unicode MS Bold"
+        ],
+        "text-letter-spacing": {
+          "stops": [
+            [
+              4,
+              0.13
+            ],
+            [
+              8,
+              0.35
+            ]
+          ]
+        },
+        "text-max-width": 8,
+        "text-size": {
+          "stops": [
+            [
+              4,
+              10.5
+            ],
+            [
+              5,
+              11.3
+            ],
+            [
+              6,
+              12
+            ],
+            [
+              9,
+              16
+            ]
+          ]
+        },
+        "text-allow-overlap": false,
+        "text-padding": 1
+      },
+      "paint": {
+        "text-color": "#9f9f9f",
+        "text-halo-blur": 1,
+        "text-halo-color": {
+          "stops": [
+            [
+              0,
+              "#E9E8E4"
+            ],
+            [
+              7,
+              "#F4F3EE"
+            ]
+          ]
+        },
+        "text-halo-width": 1
+      },
+      "source-layer": "Admin1 area/label"
+    },
+    {
+      "id": "Neighborhood",
+      "type": "symbol",
+      "source": "esri",
+      "maxzoom": 17,
+      "minzoom": 14,
+      "layout": {
+        "symbol-avoid-edges": true,
+        "text-field": "{_name_global}",
+        "text-font": [
+          "Arial Unicode MS Regular"
+        ],
+        "text-letter-spacing": 0.08,
+        "text-max-width": 8,
+        "text-size": {
+          "stops": [
+            [
+              10,
+              8
+            ],
+            [
+              16,
+              11
+            ]
+          ]
+        },
+        "text-allow-overlap": false,
+        "text-padding": 1
+      },
+      "paint": {
+        "text-color": "#585858",
+        "text-halo-blur": 1,
+        "text-halo-color": {
+          "stops": [
+            [
+              0,
+              "#E9E8E4"
+            ],
+            [
+              7,
+              "#F4F3EE"
+            ]
+          ]
+        },
+        "text-halo-width": 1
+      },
+      "source-layer": "Neighborhood"
+    },
+    {
+      "id": "City large scale/town small",
+      "type": "symbol",
+      "source": "esri",
+      "filter": [
+        "==",
+        "_label_class",
+        5
+      ],
+      "maxzoom": 17,
+      "minzoom": 10,
+      "layout": {
+        "symbol-avoid-edges": true,
+        "text-field": "{_name_global}",
+        "text-font": [
+          "Arial Unicode MS Regular"
+        ],
+        "text-letter-spacing": 0.08,
+        "text-max-width": 8,
+        "text-size": {
+          "stops": [
+            [
+              10,
+              8
+            ],
+            [
+              16,
+              13
+            ]
+          ]
+        },
+        "text-allow-overlap": false,
+        "text-padding": 15
+      },
+      "paint": {
+        "text-color": "#585858",
+        "text-halo-blur": 1,
+        "text-halo-color": {
+          "stops": [
+            [
+              0,
+              "#E9E8E4"
+            ],
+            [
+              7,
+              "#F4F3EE"
+            ]
+          ]
+        },
+        "text-halo-width": 1
+      },
+      "source-layer": "City large scale"
+    },
+    {
+      "id": "City large scale/town large",
+      "type": "symbol",
+      "source": "esri",
+      "filter": [
+        "==",
+        "_label_class",
+        4
+      ],
+      "maxzoom": 17,
+      "minzoom": 10,
+      "layout": {
+        "symbol-avoid-edges": true,
+        "text-field": "{_name_global}",
+        "text-font": [
+          "Arial Unicode MS Regular"
+        ],
+        "text-letter-spacing": 0.09,
+        "text-max-width": 8,
+        "text-size": {
+          "stops": [
+            [
+              10,
+              8
+            ],
+            [
+              16,
+              15
+            ]
+          ]
+        },
+        "text-allow-overlap": false,
+        "text-padding": 1
+      },
+      "paint": {
+        "text-color": "#585858",
+        "text-halo-blur": 1,
+        "text-halo-color": {
+          "stops": [
+            [
+              0,
+              "#E9E8E4"
+            ],
+            [
+              7,
+              "#F4F3EE"
+            ]
+          ]
+        },
+        "text-halo-width": 1
+      },
+      "source-layer": "City large scale"
+    },
+    {
+      "id": "City large scale/small",
+      "type": "symbol",
+      "source": "esri",
+      "filter": [
+        "==",
+        "_label_class",
+        3
+      ],
+      "maxzoom": 17,
+      "minzoom": 10,
+      "layout": {
+        "symbol-avoid-edges": true,
+        "text-field": "{_name_global}",
+        "text-font": [
+          "Arial Unicode MS Regular"
+        ],
+        "text-letter-spacing": 0.1,
+        "text-max-width": 8,
+        "text-size": {
+          "stops": [
+            [
+              10,
+              10
+            ],
+            [
+              16,
+              15.5
+            ]
+          ]
+        },
+        "text-allow-overlap": false,
+        "text-padding": 1
+      },
+      "paint": {
+        "text-color": "#585858",
+        "text-halo-blur": 1,
+        "text-halo-color": {
+          "stops": [
+            [
+              0,
+              "#E9E8E4"
+            ],
+            [
+              7,
+              "#F4F3EE"
+            ]
+          ]
+        },
+        "text-halo-width": 1
+      },
+      "source-layer": "City large scale"
+    },
+    {
+      "id": "City large scale/medium",
+      "type": "symbol",
+      "source": "esri",
+      "filter": [
+        "==",
+        "_label_class",
+        2
+      ],
+      "maxzoom": 17,
+      "minzoom": 10,
+      "layout": {
+        "symbol-avoid-edges": true,
+        "text-field": "{_name_global}",
+        "text-font": [
+          "Arial Unicode MS Regular"
+        ],
+        "text-letter-spacing": 0.1,
+        "text-max-width": 8,
+        "text-size": {
+          "stops": [
+            [
+              10,
+              11
+            ],
+            [
+              16,
+              17.5
+            ]
+          ]
+        },
+        "text-allow-overlap": false,
+        "text-padding": 1
+      },
+      "paint": {
+        "text-color": "#585858",
+        "text-halo-blur": 1,
+        "text-halo-color": {
+          "stops": [
+            [
+              0,
+              "#E9E8E4"
+            ],
+            [
+              7,
+              "#F4F3EE"
+            ]
+          ]
+        },
+        "text-halo-width": 1
+      },
+      "source-layer": "City large scale"
+    },
+    {
+      "id": "City large scale/large",
+      "type": "symbol",
+      "source": "esri",
+      "filter": [
+        "==",
+        "_label_class",
+        1
+      ],
+      "maxzoom": 17,
+      "minzoom": 10,
+      "layout": {
+        "symbol-avoid-edges": true,
+        "text-field": "{_name_global}",
+        "text-font": [
+          "Arial Unicode MS Regular"
+        ],
+        "text-letter-spacing": 0.1,
+        "text-max-width": 8,
+        "text-size": {
+          "stops": [
+            [
+              10,
+              14
+            ],
+            [
+              16,
+              20
+            ]
+          ]
+        },
+        "text-allow-overlap": false,
+        "text-padding": 1
+      },
+      "paint": {
+        "text-color": "#585858",
+        "text-halo-blur": 1,
+        "text-halo-color": {
+          "stops": [
+            [
+              0,
+              "#E9E8E4"
+            ],
+            [
+              7,
+              "#F4F3EE"
+            ]
+          ]
+        },
+        "text-halo-width": 1
+      },
+      "source-layer": "City large scale"
+    },
+    {
+      "id": "City large scale/x large",
+      "type": "symbol",
+      "source": "esri",
+      "filter": [
+        "==",
+        "_label_class",
+        0
+      ],
+      "maxzoom": 17,
+      "minzoom": 10,
+      "layout": {
+        "symbol-avoid-edges": true,
+        "text-field": "{_name_global}",
+        "text-font": [
+          "Arial Unicode MS Regular"
+        ],
+        "text-letter-spacing": 0.1,
+        "text-max-width": 8,
+        "text-size": {
+          "stops": [
+            [
+              10,
+              14
+            ],
+            [
+              16,
+              22
+            ]
+          ]
+        },
+        "text-allow-overlap": false,
+        "text-padding": 1
+      },
+      "paint": {
+        "text-color": "#585858",
+        "text-halo-blur": 1,
+        "text-halo-color": {
+          "stops": [
+            [
+              0,
+              "#E9E8E4"
+            ],
+            [
+              7,
+              "#F4F3EE"
+            ]
+          ]
+        },
+        "text-halo-width": 1
+      },
+      "source-layer": "City large scale"
+    },
+    {
+      "id": "City small scale/town small non capital",
+      "type": "symbol",
+      "source": "esri",
+      "filter": [
+        "==",
+        "_symbol",
+        17
+      ],
+      "maxzoom": 10,
+      "minzoom": 8,
+      "layout": {
+        "symbol-avoid-edges": true,
+        "text-field": "{_name}",
+        "text-font": [
+          "Arial Unicode MS Regular"
+        ],
+        "text-anchor": "bottom-left",
+        "text-max-width": 8,
+        "text-size": 8,
+        "text-allow-overlap": false,
+        "text-offset": [
+          0.31,
+          -0.2
+        ],
+        "text-padding": 1,
+        "text-justify": "left",
+        "icon-image": "City small scale/town small non capital",
+        "icon-padding": 1
+      },
+      "paint": {
+        "text-color": "#585858",
+        "text-halo-blur": 1,
+        "text-halo-color": {
+          "stops": [
+            [
+              0,
+              "#E9E8E4"
+            ],
+            [
+              7,
+              "#F4F3EE"
+            ]
+          ]
+        },
+        "text-halo-width": 0.5
+      },
+      "source-layer": "City small scale"
+    },
+    {
+      "id": "City small scale/town large non capital",
+      "type": "symbol",
+      "source": "esri",
+      "filter": [
+        "==",
+        "_symbol",
+        15
+      ],
+      "maxzoom": 10,
+      "minzoom": 8,
+      "layout": {
+        "symbol-avoid-edges": true,
+        "text-field": "{_name}",
+        "text-font": [
+          "Arial Unicode MS Regular"
+        ],
+        "text-anchor": "bottom-left",
+        "text-max-width": 8,
+        "text-size": 8,
+        "text-allow-overlap": false,
+        "text-offset": [
+          0.31,
+          -0.2
+        ],
+        "text-padding": 1,
+        "text-justify": "left",
+        "icon-image": "City small scale/town large non capital",
+        "icon-padding": 1
+      },
+      "paint": {
+        "text-color": "#585858",
+        "text-halo-blur": 1,
+        "text-halo-color": {
+          "stops": [
+            [
+              0,
+              "#E9E8E4"
+            ],
+            [
+              7,
+              "#F4F3EE"
+            ]
+          ]
+        },
+        "text-halo-width": 0.5
+      },
+      "source-layer": "City small scale"
+    },
+    {
+      "id": "City small scale/small non capital",
+      "type": "symbol",
+      "source": "esri",
+      "filter": [
+        "==",
+        "_symbol",
+        12
+      ],
+      "maxzoom": 10,
+      "minzoom": 8,
+      "layout": {
+        "symbol-avoid-edges": true,
+        "text-field": "{_name}",
+        "text-font": [
+          "Arial Unicode MS Regular"
+        ],
+        "text-anchor": "bottom-left",
+        "text-max-width": 8,
+        "text-size": 8.5,
+        "text-allow-overlap": false,
+        "text-offset": [
+          0.31,
+          -0.2
+        ],
+        "text-padding": 1,
+        "text-justify": "left",
+        "icon-image": "City small scale/small non capital",
+        "icon-padding": 1
+      },
+      "paint": {
+        "text-color": "#585858",
+        "text-halo-blur": 1,
+        "text-halo-color": {
+          "stops": [
+            [
+              0,
+              "#E9E8E4"
+            ],
+            [
+              7,
+              "#F4F3EE"
+            ]
+          ]
+        },
+        "text-halo-width": 0.5
+      },
+      "source-layer": "City small scale"
+    },
+    {
+      "id": "City small scale/medium non capital",
+      "type": "symbol",
+      "source": "esri",
+      "filter": [
+        "==",
+        "_symbol",
+        9
+      ],
+      "maxzoom": 10,
+      "minzoom": 7,
+      "layout": {
+        "symbol-avoid-edges": true,
+        "text-field": "{_name}",
+        "text-font": [
+          "Arial Unicode MS Regular"
+        ],
+        "text-anchor": "bottom-left",
+        "text-max-width": 8,
+        "text-size": {
+          "stops": [
+            [
+              4,
+              9.3
+            ],
+            [
+              6,
+              9.3
+            ],
+            [
+              8,
+              10
+            ]
+          ]
+        },
+        "text-allow-overlap": false,
+        "text-offset": [
+          0.31,
+          -0.2
+        ],
+        "text-padding": 1,
+        "text-justify": "left",
+        "icon-image": "City small scale/medium non capital",
+        "icon-padding": 1
+      },
+      "paint": {
+        "text-color": "#585858",
+        "text-halo-blur": 1,
+        "text-halo-color": {
+          "stops": [
+            [
+              0,
+              "#E9E8E4"
+            ],
+            [
+              7,
+              "#F4F3EE"
+            ]
+          ]
+        },
+        "text-halo-width": 0.5
+      },
+      "source-layer": "City small scale"
+    },
+    {
+      "id": "City small scale/other capital",
+      "type": "symbol",
+      "source": "esri",
+      "filter": [
+        "==",
+        "_symbol",
+        18
+      ],
+      "maxzoom": 10,
+      "minzoom": 7,
+      "layout": {
+        "symbol-avoid-edges": true,
+        "text-field": "{_name}",
+        "text-font": [
+          "Arial Unicode MS Regular"
+        ],
+        "text-anchor": "bottom-left",
+        "text-max-width": 8,
+        "text-size": 8.5,
+        "text-allow-overlap": false,
+        "text-offset": [
+          0.31,
+          -0.2
+        ],
+        "text-padding": 1,
+        "text-justify": "left",
+        "icon-image": "City small scale/other capital",
+        "icon-padding": 1
+      },
+      "paint": {
+        "text-color": "#585858",
+        "text-halo-blur": 1,
+        "text-halo-color": {
+          "stops": [
+            [
+              0,
+              "#E9E8E4"
+            ],
+            [
+              7,
+              "#F4F3EE"
+            ]
+          ]
+        },
+        "text-halo-width": 0.5
+      },
+      "source-layer": "City small scale"
+    },
+    {
+      "id": "City small scale/town large other capital",
+      "type": "symbol",
+      "source": "esri",
+      "filter": [
+        "==",
+        "_symbol",
+        14
+      ],
+      "maxzoom": 10,
+      "minzoom": 8,
+      "layout": {
+        "symbol-avoid-edges": true,
+        "text-field": "{_name}",
+        "text-font": [
+          "Arial Unicode MS Regular"
+        ],
+        "text-anchor": "bottom-left",
+        "text-max-width": 8,
+        "text-size": 8.5,
+        "text-allow-overlap": false,
+        "text-offset": [
+          0.31,
+          -0.2
+        ],
+        "text-padding": 1,
+        "text-justify": "left",
+        "icon-image": "City small scale/town large other capital",
+        "icon-padding": 1
+      },
+      "paint": {
+        "text-color": "#585858",
+        "text-halo-blur": 1,
+        "text-halo-color": {
+          "stops": [
+            [
+              0,
+              "#E9E8E4"
+            ],
+            [
+              7,
+              "#F4F3EE"
+            ]
+          ]
+        },
+        "text-halo-width": 0.5
+      },
+      "source-layer": "City small scale"
+    },
+    {
+      "id": "City small scale/small other capital",
+      "type": "symbol",
+      "source": "esri",
+      "filter": [
+        "==",
+        "_symbol",
+        11
+      ],
+      "maxzoom": 10,
+      "minzoom": 7,
+      "layout": {
+        "symbol-avoid-edges": true,
+        "text-field": "{_name}",
+        "text-font": [
+          "Arial Unicode MS Regular"
+        ],
+        "text-anchor": "bottom-left",
+        "text-max-width": 8,
+        "text-size": 8.5,
+        "text-allow-overlap": false,
+        "text-offset": [
+          0.31,
+          -0.2
+        ],
+        "text-padding": 1,
+        "text-justify": "left",
+        "icon-image": "City small scale/small other capital",
+        "icon-padding": 1
+      },
+      "paint": {
+        "text-color": "#585858",
+        "text-halo-blur": 1,
+        "text-halo-color": {
+          "stops": [
+            [
+              0,
+              "#E9E8E4"
+            ],
+            [
+              7,
+              "#F4F3EE"
+            ]
+          ]
+        },
+        "text-halo-width": 0.5
+      },
+      "source-layer": "City small scale"
+    },
+    {
+      "id": "City small scale/medium other capital",
+      "type": "symbol",
+      "source": "esri",
+      "filter": [
+        "==",
+        "_symbol",
+        8
+      ],
+      "maxzoom": 10,
+      "minzoom": 7,
+      "layout": {
+        "symbol-avoid-edges": true,
+        "text-field": "{_name}",
+        "text-font": [
+          "Arial Unicode MS Regular"
+        ],
+        "text-anchor": "bottom-left",
+        "text-max-width": 8,
+        "text-size": {
+          "stops": [
+            [
+              4,
+              9.3
+            ],
+            [
+              6,
+              9.3
+            ],
+            [
+              8,
+              10
+            ]
+          ]
+        },
+        "text-allow-overlap": false,
+        "text-offset": [
+          0.31,
+          -0.2
+        ],
+        "text-padding": 1,
+        "text-justify": "left",
+        "icon-image": "City small scale/medium other capital",
+        "icon-padding": 1
+      },
+      "paint": {
+        "text-color": "#585858",
+        "text-halo-blur": 1,
+        "text-halo-color": {
+          "stops": [
+            [
+              0,
+              "#E9E8E4"
+            ],
+            [
+              7,
+              "#F4F3EE"
+            ]
+          ]
+        },
+        "text-halo-width": 0.5
+      },
+      "source-layer": "City small scale"
+    },
+    {
+      "id": "Admin0 point/x small",
+      "type": "symbol",
+      "source": "esri",
+      "filter": [
+        "==",
+        "_label_class",
+        5
+      ],
+      "maxzoom": 10,
+      "minzoom": 5,
+      "layout": {
+        "symbol-avoid-edges": true,
+        "text-field": "{_name}",
+        "text-font": [
+          "Arial Unicode MS Bold"
+        ],
+        "text-letter-spacing": {
+          "stops": [
+            [
+              5,
+              0.13
+            ],
+            [
+              8,
+              0.5
+            ]
+          ]
+        },
+        "text-max-width": 8,
+        "text-size": {
+          "stops": [
+            [
+              5,
+              12
+            ],
+            [
+              10,
+              14.5
+            ]
+          ]
+        },
+        "text-allow-overlap": false,
+        "text-padding": 1
+      },
+      "paint": {
+        "text-color": {
+          "stops": [
+            [
+              4,
+              "#9d9d9d"
+            ],
+            [
+              6,
+              "#7b7b7b"
+            ]
+          ]
+        },
+        "text-halo-blur": 1,
+        "text-halo-color": {
+          "stops": [
+            [
+              0,
+              "#E9E8E4"
+            ],
+            [
+              7,
+              "#F4F3EE"
+            ]
+          ]
+        },
+        "text-halo-width": 1
+      },
+      "source-layer": "Admin0 point"
+    },
+    {
+      "id": "Admin0 point/small",
+      "type": "symbol",
+      "source": "esri",
+      "filter": [
+        "==",
+        "_label_class",
+        4
+      ],
+      "maxzoom": 10,
+      "minzoom": 4,
+      "layout": {
+        "symbol-avoid-edges": true,
+        "text-field": "{_name}",
+        "text-font": [
+          "Arial Unicode MS Bold"
+        ],
+        "text-letter-spacing": {
+          "stops": [
+            [
+              4,
+              0.13
+            ],
+            [
+              8,
+              0.5
+            ]
+          ]
+        },
+        "text-max-width": 8,
+        "text-size": {
+          "stops": [
+            [
+              4,
+              12
+            ],
+            [
+              10,
+              14.5
+            ]
+          ]
+        },
+        "text-allow-overlap": false,
+        "text-padding": 1
+      },
+      "paint": {
+        "text-color": {
+          "stops": [
+            [
+              4,
+              "#9d9d9d"
+            ],
+            [
+              6,
+              "#7b7b7b"
+            ]
+          ]
+        },
+        "text-halo-blur": 1,
+        "text-halo-color": {
+          "stops": [
+            [
+              0,
+              "#E9E8E4"
+            ],
+            [
+              7,
+              "#F4F3EE"
+            ]
+          ]
+        },
+        "text-halo-width": 1
+      },
+      "source-layer": "Admin0 point"
+    },
+    {
+      "id": "Admin0 point/medium",
+      "type": "symbol",
+      "source": "esri",
+      "filter": [
+        "==",
+        "_label_class",
+        3
+      ],
+      "maxzoom": 10,
+      "minzoom": 2,
+      "layout": {
+        "symbol-avoid-edges": true,
+        "text-field": "{_name}",
+        "text-font": [
+          "Arial Unicode MS Bold"
+        ],
+        "text-letter-spacing": {
+          "stops": [
+            [
+              2,
+              0.13
+            ],
+            [
+              8,
+              0.5
+            ]
+          ]
+        },
+        "text-max-width": 8,
+        "text-size": {
+          "stops": [
+            [
+              2,
+              10
+            ],
+            [
+              4,
+              12
+            ],
+            [
+              10,
+              18
+            ]
+          ]
+        },
+        "text-allow-overlap": false,
+        "text-padding": 1
+      },
+      "paint": {
+        "text-color": {
+          "stops": [
+            [
+              4,
+              "#9d9d9d"
+            ],
+            [
+              6,
+              "#7b7b7b"
+            ]
+          ]
+        },
+        "text-halo-blur": 1,
+        "text-halo-color": {
+          "stops": [
+            [
+              0,
+              "#E9E8E4"
+            ],
+            [
+              7,
+              "#F4F3EE"
+            ]
+          ]
+        },
+        "text-halo-width": 1
+      },
+      "source-layer": "Admin0 point"
+    },
+    {
+      "id": "Admin0 point/large",
+      "type": "symbol",
+      "source": "esri",
+      "filter": [
+        "==",
+        "_label_class",
+        2
+      ],
+      "maxzoom": 10,
+      "minzoom": 2,
+      "layout": {
+        "symbol-avoid-edges": true,
+        "text-field": "{_name}",
+        "text-font": [
+          "Arial Unicode MS Bold"
+        ],
+        "text-letter-spacing": {
+          "stops": [
+            [
+              2,
+              0.13
+            ],
+            [
+              8,
+              0.5
+            ]
+          ]
+        },
+        "text-max-width": 8,
+        "text-size": {
+          "stops": [
+            [
+              2,
+              10.5
+            ],
+            [
+              4,
+              12
+            ],
+            [
+              6,
+              18
+            ]
+          ]
+        },
+        "text-allow-overlap": false,
+        "text-padding": 1
+      },
+      "paint": {
+        "text-color": {
+          "stops": [
+            [
+              4,
+              "#9d9d9d"
+            ],
+            [
+              6,
+              "#7b7b7b"
+            ]
+          ]
+        },
+        "text-halo-blur": 1,
+        "text-halo-color": {
+          "stops": [
+            [
+              0,
+              "#E9E8E4"
+            ],
+            [
+              7,
+              "#F4F3EE"
+            ]
+          ]
+        },
+        "text-halo-width": 1
+      },
+      "source-layer": "Admin0 point"
+    },
+    {
+      "id": "Admin0 point/x large",
+      "type": "symbol",
+      "source": "esri",
+      "filter": [
+        "==",
+        "_label_class",
+        1
+      ],
+      "maxzoom": 8,
+      "minzoom": 2,
+      "layout": {
+        "symbol-avoid-edges": true,
+        "text-field": "{_name}",
+        "text-font": [
+          "Arial Unicode MS Bold"
+        ],
+        "text-letter-spacing": {
+          "stops": [
+            [
+              2,
+              0.15
+            ],
+            [
+              6,
+              0.5
+            ]
+          ]
+        },
+        "text-max-width": 8,
+        "text-size": {
+          "stops": [
+            [
+              2,
+              10.5
+            ],
+            [
+              4,
+              12
+            ],
+            [
+              6,
+              18
+            ]
+          ]
+        },
+        "text-allow-overlap": false,
+        "text-padding": 1,
+        "text-line-height": 1.5
+      },
+      "paint": {
+        "text-color": {
+          "stops": [
+            [
+              4,
+              "#9d9d9d"
+            ],
+            [
+              6,
+              "#7b7b7b"
+            ]
+          ]
+        },
+        "text-halo-blur": 1,
+        "text-halo-color": {
+          "stops": [
+            [
+              0,
+              "#E9E8E4"
+            ],
+            [
+              7,
+              "#F4F3EE"
+            ]
+          ]
+        },
+        "text-halo-width": 1
+      },
+      "source-layer": "Admin0 point"
+    },
+    {
+      "id": "City small scale/town small admin0 capital",
+      "type": "symbol",
+      "source": "esri",
+      "filter": [
+        "==",
+        "_symbol",
+        16
+      ],
+      "maxzoom": 10,
+      "minzoom": 3,
+      "layout": {
+        "symbol-avoid-edges": true,
+        "text-field": "{_name}",
+        "text-font": [
+          "Arial Unicode MS Regular"
+        ],
+        "text-anchor": "bottom-left",
+        "text-max-width": 8,
+        "text-size": {
+          "stops": [
+            [
+              4,
+              9.5
+            ],
+            [
+              6,
+              12
+            ],
+            [
+              8,
+              14
+            ]
+          ]
+        },
+        "text-allow-overlap": false,
+        "text-offset": [
+          0.31,
+          -0.2
+        ],
+        "text-padding": 1,
+        "text-justify": "left",
+        "icon-image": "City small scale/town small admin0 capital",
+        "icon-padding": 1
+      },
+      "paint": {
+        "text-color": "#585858",
+        "text-halo-blur": 1,
+        "text-halo-color": {
+          "stops": [
+            [
+              0,
+              "#E9E8E4"
+            ],
+            [
+              7,
+              "#F4F3EE"
+            ]
+          ]
+        },
+        "text-halo-width": 0.5
+      },
+      "source-layer": "City small scale"
+    },
+    {
+      "id": "City small scale/town large admin0 capital",
+      "type": "symbol",
+      "source": "esri",
+      "filter": [
+        "==",
+        "_symbol",
+        13
+      ],
+      "maxzoom": 10,
+      "minzoom": 3,
+      "layout": {
+        "symbol-avoid-edges": true,
+        "text-field": "{_name}",
+        "text-font": [
+          "Arial Unicode MS Regular"
+        ],
+        "text-anchor": "bottom-left",
+        "text-max-width": 8,
+        "text-size": {
+          "stops": [
+            [
+              4,
+              9.5
+            ],
+            [
+              6,
+              12
+            ],
+            [
+              8,
+              14
+            ]
+          ]
+        },
+        "text-allow-overlap": false,
+        "text-offset": [
+          0.31,
+          -0.2
+        ],
+        "text-padding": 1,
+        "text-justify": "left",
+        "icon-image": "City small scale/town large admin0 capital",
+        "icon-padding": 1
+      },
+      "paint": {
+        "text-color": "#585858",
+        "text-halo-blur": 1,
+        "text-halo-color": {
+          "stops": [
+            [
+              0,
+              "#E9E8E4"
+            ],
+            [
+              7,
+              "#F4F3EE"
+            ]
+          ]
+        },
+        "text-halo-width": 0.5
+      },
+      "source-layer": "City small scale"
+    },
+    {
+      "id": "City small scale/small admin0 capital",
+      "type": "symbol",
+      "source": "esri",
+      "filter": [
+        "==",
+        "_symbol",
+        10
+      ],
+      "maxzoom": 10,
+      "minzoom": 3,
+      "layout": {
+        "symbol-avoid-edges": true,
+        "text-field": "{_name}",
+        "text-font": [
+          "Arial Unicode MS Regular"
+        ],
+        "text-anchor": "bottom-left",
+        "text-max-width": 8,
+        "text-size": {
+          "stops": [
+            [
+              4,
+              9.5
+            ],
+            [
+              6,
+              12
+            ],
+            [
+              8,
+              14
+            ]
+          ]
+        },
+        "text-allow-overlap": false,
+        "text-offset": [
+          0.31,
+          -0.2
+        ],
+        "text-padding": 1,
+        "text-justify": "left",
+        "icon-image": "City small scale/small admin0 capital",
+        "icon-padding": 1
+      },
+      "paint": {
+        "text-color": "#585858",
+        "text-halo-blur": 1,
+        "text-halo-color": {
+          "stops": [
+            [
+              0,
+              "#E9E8E4"
+            ],
+            [
+              7,
+              "#F4F3EE"
+            ]
+          ]
+        },
+        "text-halo-width": 0.5
+      },
+      "source-layer": "City small scale"
+    },
+    {
+      "id": "City small scale/medium admin0 capital",
+      "type": "symbol",
+      "source": "esri",
+      "filter": [
+        "==",
+        "_symbol",
+        7
+      ],
+      "maxzoom": 10,
+      "minzoom": 3,
+      "layout": {
+        "symbol-avoid-edges": true,
+        "text-field": "{_name}",
+        "text-font": [
+          "Arial Unicode MS Regular"
+        ],
+        "text-anchor": "bottom-left",
+        "text-max-width": 8,
+        "text-size": {
+          "stops": [
+            [
+              4,
+              9.5
+            ],
+            [
+              6,
+              12
+            ],
+            [
+              8,
+              14
+            ]
+          ]
+        },
+        "text-allow-overlap": false,
+        "text-offset": [
+          0.31,
+          -0.2
+        ],
+        "text-padding": 1,
+        "text-justify": "left",
+        "icon-image": "City small scale/medium admin0 capital",
+        "icon-padding": 1
+      },
+      "paint": {
+        "text-color": "#585858",
+        "text-halo-blur": 1,
+        "text-halo-color": {
+          "stops": [
+            [
+              0,
+              "#E9E8E4"
+            ],
+            [
+              7,
+              "#F4F3EE"
+            ]
+          ]
+        },
+        "text-halo-width": 0.5
+      },
+      "source-layer": "City small scale"
+    },
+    {
+      "id": "City small scale/large other capital",
+      "type": "symbol",
+      "source": "esri",
+      "filter": [
+        "==",
+        "_symbol",
+        5
+      ],
+      "maxzoom": 10,
+      "minzoom": 6,
+      "layout": {
+        "symbol-avoid-edges": true,
+        "text-field": "{_name}",
+        "text-font": [
+          "Arial Unicode MS Regular"
+        ],
+        "text-anchor": "bottom-left",
+        "text-max-width": 8,
+        "text-size": {
+          "stops": [
+            [
+              4,
+              9.3
+            ],
+            [
+              6,
+              9.3
+            ],
+            [
+              8,
+              10
+            ]
+          ]
+        },
+        "text-allow-overlap": false,
+        "text-offset": [
+          0.31,
+          -0.2
+        ],
+        "text-padding": 1,
+        "text-justify": "left",
+        "icon-image": "City small scale/large other capital",
+        "icon-padding": 1
+      },
+      "paint": {
+        "text-color": "#585858",
+        "text-halo-blur": 1,
+        "text-halo-color": {
+          "stops": [
+            [
+              0,
+              "#E9E8E4"
+            ],
+            [
+              7,
+              "#F4F3EE"
+            ]
+          ]
+        },
+        "text-halo-width": 0.5
+      },
+      "source-layer": "City small scale"
+    },
+    {
+      "id": "City small scale/x large admin2 capital",
+      "type": "symbol",
+      "source": "esri",
+      "filter": [
+        "==",
+        "_symbol",
+        2
+      ],
+      "maxzoom": 10,
+      "minzoom": 6,
+      "layout": {
+        "symbol-avoid-edges": true,
+        "text-field": "{_name}",
+        "text-font": [
+          "Arial Unicode MS Regular"
+        ],
+        "text-anchor": "bottom-left",
+        "text-max-width": 8,
+        "text-size": {
+          "stops": [
+            [
+              4,
+              9.5
+            ],
+            [
+              6,
+              12
+            ],
+            [
+              8,
+              14
+            ]
+          ]
+        },
+        "text-allow-overlap": false,
+        "text-offset": [
+          0.31,
+          -0.2
+        ],
+        "text-padding": 1,
+        "text-justify": "left",
+        "icon-image": "City small scale/x large admin2 capital",
+        "icon-padding": 1
+      },
+      "paint": {
+        "text-color": "#585858",
+        "text-halo-blur": 1,
+        "text-halo-color": {
+          "stops": [
+            [
+              0,
+              "#E9E8E4"
+            ],
+            [
+              7,
+              "#F4F3EE"
+            ]
+          ]
+        },
+        "text-halo-width": 0.5
+      },
+      "source-layer": "City small scale"
+    },
+    {
+      "id": "City small scale/large non capital",
+      "type": "symbol",
+      "source": "esri",
+      "filter": [
+        "==",
+        "_symbol",
+        6
+      ],
+      "maxzoom": 10,
+      "minzoom": 6,
+      "layout": {
+        "symbol-avoid-edges": true,
+        "text-field": "{_name}",
+        "text-font": [
+          "Arial Unicode MS Regular"
+        ],
+        "text-anchor": "bottom-left",
+        "text-max-width": 8,
+        "text-size": {
+          "stops": [
+            [
+              4,
+              9.3
+            ],
+            [
+              6,
+              9.3
+            ],
+            [
+              8,
+              10
+            ]
+          ]
+        },
+        "text-allow-overlap": false,
+        "text-offset": [
+          0.31,
+          -0.2
+        ],
+        "text-padding": 1,
+        "text-justify": "left",
+        "icon-image": "City small scale/large non capital",
+        "icon-padding": 1
+      },
+      "paint": {
+        "text-color": "#585858",
+        "text-halo-blur": 1,
+        "text-halo-color": {
+          "stops": [
+            [
+              0,
+              "#E9E8E4"
+            ],
+            [
+              7,
+              "#F4F3EE"
+            ]
+          ]
+        },
+        "text-halo-width": 0.5
+      },
+      "source-layer": "City small scale"
+    },
+    {
+      "id": "City small scale/large admin0 capital",
+      "type": "symbol",
+      "source": "esri",
+      "filter": [
+        "==",
+        "_symbol",
+        4
+      ],
+      "maxzoom": 10,
+      "minzoom": 3,
+      "layout": {
+        "symbol-avoid-edges": true,
+        "text-field": "{_name}",
+        "text-font": [
+          "Arial Unicode MS Regular"
+        ],
+        "text-anchor": "bottom-left",
+        "text-max-width": 8,
+        "text-size": {
+          "stops": [
+            [
+              4,
+              9.5
+            ],
+            [
+              6,
+              12
+            ],
+            [
+              8,
+              14
+            ]
+          ]
+        },
+        "text-allow-overlap": false,
+        "text-offset": [
+          0.31,
+          -0.2
+        ],
+        "text-padding": 1,
+        "text-justify": "left",
+        "icon-image": "City small scale/large admin0 capital",
+        "icon-padding": 1
+      },
+      "paint": {
+        "text-color": "#585858",
+        "text-halo-blur": 1,
+        "text-halo-color": {
+          "stops": [
+            [
+              0,
+              "#E9E8E4"
+            ],
+            [
+              7,
+              "#F4F3EE"
+            ]
+          ]
+        },
+        "text-halo-width": 0.5
+      },
+      "source-layer": "City small scale"
+    },
+    {
+      "id": "City small scale/x large non capital",
+      "type": "symbol",
+      "source": "esri",
+      "filter": [
+        "==",
+        "_symbol",
+        3
+      ],
+      "maxzoom": 10,
+      "minzoom": 3,
+      "layout": {
+        "symbol-avoid-edges": true,
+        "text-field": "{_name}",
+        "text-font": [
+          "Arial Unicode MS Regular"
+        ],
+        "text-anchor": "bottom-left",
+        "text-max-width": 8,
+        "text-size": {
+          "stops": [
+            [
+              4,
+              9.5
+            ],
+            [
+              6,
+              12
+            ],
+            [
+              8,
+              14
+            ]
+          ]
+        },
+        "text-allow-overlap": false,
+        "text-offset": [
+          0.31,
+          -0.2
+        ],
+        "text-padding": 1,
+        "text-justify": "left",
+        "icon-image": "City small scale/x large non capital",
+        "icon-padding": 1
+      },
+      "paint": {
+        "text-color": "#585858",
+        "text-halo-blur": 1,
+        "text-halo-color": {
+          "stops": [
+            [
+              0,
+              "#E9E8E4"
+            ],
+            [
+              7,
+              "#F4F3EE"
+            ]
+          ]
+        },
+        "text-halo-width": 0.5
+      },
+      "source-layer": "City small scale"
+    },
+    {
+      "id": "City small scale/x large admin1 capital",
+      "type": "symbol",
+      "source": "esri",
+      "filter": [
+        "==",
+        "_symbol",
+        1
+      ],
+      "maxzoom": 10,
+      "minzoom": 3,
+      "layout": {
+        "symbol-avoid-edges": true,
+        "text-field": "{_name}",
+        "text-font": [
+          "Arial Unicode MS Regular"
+        ],
+        "text-anchor": "bottom-left",
+        "text-max-width": 8,
+        "text-size": {
+          "stops": [
+            [
+              4,
+              9.5
+            ],
+            [
+              6,
+              12
+            ],
+            [
+              8,
+              14
+            ]
+          ]
+        },
+        "text-allow-overlap": false,
+        "text-offset": [
+          0.31,
+          -0.2
+        ],
+        "text-padding": 1,
+        "text-justify": "left",
+        "icon-image": "City small scale/x large admin1 capital",
+        "icon-padding": 1
+      },
+      "paint": {
+        "text-color": "#585858",
+        "text-halo-blur": 1,
+        "text-halo-color": {
+          "stops": [
+            [
+              0,
+              "#E9E8E4"
+            ],
+            [
+              7,
+              "#F4F3EE"
+            ]
+          ]
+        },
+        "text-halo-width": 0.5
+      },
+      "source-layer": "City small scale"
+    },
+    {
+      "id": "City small scale/x large admin0 capital",
+      "type": "symbol",
+      "source": "esri",
+      "filter": [
+        "==",
+        "_symbol",
+        0
+      ],
+      "maxzoom": 10,
+      "minzoom": 3,
+      "layout": {
+        "symbol-avoid-edges": true,
+        "text-field": "{_name}",
+        "text-font": [
+          "Arial Unicode MS Regular"
+        ],
+        "text-anchor": "bottom-left",
+        "text-max-width": 8,
+        "text-size": {
+          "stops": [
+            [
+              4,
+              9.5
+            ],
+            [
+              6,
+              12
+            ],
+            [
+              8,
+              14
+            ]
+          ]
+        },
+        "text-allow-overlap": false,
+        "text-offset": [
+          0.31,
+          -0.2
+        ],
+        "text-padding": 1,
+        "text-justify": "left",
+        "icon-image": "City small scale/x large admin0 capital",
+        "icon-padding": 1
+      },
+      "paint": {
+        "text-color": "#585858",
+        "text-halo-blur": 1,
+        "text-halo-color": {
+          "stops": [
+            [
+              0,
+              "#E9E8E4"
+            ],
+            [
+              7,
+              "#F4F3EE"
+            ]
+          ]
+        },
+        "text-halo-width": 0.5
+      },
+      "source-layer": "City small scale"
+    },
+    {
+      "id": "Admin0 point/2x large",
+      "type": "symbol",
+      "source": "esri",
+      "filter": [
+        "==",
+        "_label_class",
+        0
+      ],
+      "maxzoom": 6,
+      "minzoom": 2,
+      "layout": {
+        "symbol-avoid-edges": true,
+        "text-field": "{_name}",
+        "text-font": [
+          "Arial Unicode MS Bold"
+        ],
+        "text-letter-spacing": {
+          "stops": [
+            [
+              2,
+              0.3
+            ],
+            [
+              5,
+              0.5
+            ]
+          ]
+        },
+        "text-max-width": 8,
+        "text-size": {
+          "stops": [
+            [
+              2,
+              12
+            ],
+            [
+              4,
+              17.5
+            ],
+            [
+              5,
+              20
+            ]
+          ]
+        },
+        "text-allow-overlap": false,
+        "text-padding": 1,
+        "text-line-height": 1.7
+      },
+      "paint": {
+        "text-color": {
+          "stops": [
+            [
+              4,
+              "#9d9d9d"
+            ],
+            [
+              6,
+              "#7b7b7b"
+            ]
+          ]
+        },
+        "text-halo-blur": 1,
+        "text-halo-color": {
+          "stops": [
+            [
+              0,
+              "#E9E8E4"
+            ],
+            [
+              7,
+              "#F4F3EE"
+            ]
+          ]
+        },
+        "text-halo-width": 1
+      },
+      "source-layer": "Admin0 point"
+    },
+    {
+      "id": "Continent",
+      "type": "symbol",
+      "source": "esri",
+      "layout": {
+        "symbol-avoid-edges": true,
+        "text-field": "{_name_global}",
+        "text-font": [
+          "Arial Unicode MS Bold"
+        ],
+        "text-anchor": "center",
+        "text-letter-spacing": {
+          "stops": [
+            [
+              0,
+              0.35
+            ],
+            [
+              1,
+              0.5
+            ]
+          ]
+        },
+        "text-max-width": 8,
+        "text-size": {
+          "stops": [
+            [
+              0,
+              7
+            ],
+            [
+              1,
+              11
+            ]
+          ]
+        },
+        "text-allow-overlap": false,
+        "text-padding": 1,
+        "text-transform": "uppercase",
+        "text-line-height": 1.75
+      },
+      "paint": {
+        "text-color": "#969696",
+        "text-halo-blur": 1,
+        "text-halo-color": {
+          "stops": [
+            [
+              0,
+              "#E9E8E4"
+            ],
+            [
+              7,
+              "#F4F3EE"
+            ]
+          ]
+        },
+        "text-halo-width": 0.5
+      },
+      "source-layer": "Continent"
+    },
+    {
+      "id": "Disputed label point/Island",
+      "type": "symbol",
+      "source": "esri",
+      "filter": [
+        "all",
+        [
+          "==",
+          "_label_class",
+          1
+        ],
+        [
+          "in",
+          "DisputeID",
+          0
+        ]
+      ],
+      "minzoom": 6,
+      "layout": {
+        "symbol-avoid-edges": true,
+        "text-field": "{_name}",
+        "text-font": [
+          "Arial Unicode MS Regular"
+        ],
+        "text-anchor": "center",
+        "text-letter-spacing": 0.13,
+        "text-max-width": 4,
+        "text-size": {
+          "stops": [
+            [
+              6,
+              7
+            ],
+            [
+              15,
+              10
+            ]
+          ]
+        },
+        "text-padding": 1,
+        "text-line-height": 1.5
+      },
+      "paint": {
+        "text-color": "#595959",
+        "text-halo-blur": 1,
+        "text-halo-color": {
+          "stops": [
+            [
+              0,
+              "#E9E8E4"
+            ],
+            [
+              7,
+              "#F4F3EE"
+            ]
+          ]
+        },
+        "text-halo-width": 1
+      },
+      "source-layer": "Disputed label point"
+    },
+    {
+      "id": "Disputed label point/Waterbody",
+      "type": "symbol",
+      "source": "esri",
+      "filter": [
+        "all",
+        [
+          "==",
+          "_label_class",
+          0
+        ],
+        [
+          "in",
+          "DisputeID",
+          1006
+        ]
+      ],
+      "maxzoom": 10,
+      "minzoom": 2,
+      "layout": {
+        "symbol-avoid-edges": true,
+        "text-field": "{_name}",
+        "text-font": [
+          "Noto Serif Italic"
+        ],
+        "text-anchor": "center",
+        "text-letter-spacing": 0.1,
+        "text-max-width": 6,
+        "text-size": {
+          "stops": [
+            [
+              2,
+              8
+            ],
+            [
+              6,
+              9.3
+            ]
+          ]
+        },
+        "text-padding": 1
+      },
+      "paint": {
+        "text-color": "#0068B3",
+        "text-halo-blur": 1,
+        "text-halo-color": "#f2fcff",
+        "text-halo-width": 0.5
+      },
+      "source-layer": "Disputed label point"
+    },
+    {
+      "id": "Disputed label point/Admin0",
+      "type": "symbol",
+      "source": "esri",
+      "filter": [
+        "all",
+        [
+          "==",
+          "_label_class",
+          2
+        ],
+        [
+          "in",
+          "DisputeID",
+          1021
+        ]
+      ],
+      "minzoom": 2,
+      "layout": {
+        "symbol-avoid-edges": true,
+        "text-field": "{_name}",
+        "text-font": [
+          "Arial Unicode MS Bold"
+        ],
+        "text-anchor": "center",
+        "text-letter-spacing": {
+          "stops": [
+            [
+              2,
+              0.13
+            ],
+            [
+              8,
+              0.5
+            ]
+          ]
+        },
+        "text-max-width": 8,
+        "text-size": {
+          "stops": [
+            [
+              2,
+              10
+            ],
+            [
+              4,
+              12
+            ],
+            [
+              10,
+              18
+            ]
+          ]
+        },
+        "text-padding": 1
+      },
+      "paint": {
+        "text-color": {
+          "stops": [
+            [
+              4,
+              "#9d9d9d"
+            ],
+            [
+              6,
+              "#7b7b7b"
+            ]
+          ]
+        },
+        "text-halo-blur": 1,
+        "text-halo-color": {
+          "stops": [
+            [
+              0,
+              "#E9E8E4"
+            ],
+            [
+              7,
+              "#F4F3EE"
+            ]
+          ]
+        },
+        "text-halo-width": 1
+      },
+      "source-layer": "Disputed label point"
+    },
+    {
+      "id": "Ocean point/Depth",
+      "type": "symbol",
+      "source": "esri",
+      "filter": [
+        "==",
+        "_symbol",
+        4
+      ],
+      "layout": {
+        "text-field": "{_name}",
+        "text-font": [
+          "Arial Unicode MS Regular"
+        ],
+        "text-anchor": "bottom-left",
+        "text-letter-spacing": {
+          "stops": [
+            [
+              4,
+              0.1
+            ],
+            [
+              8,
+              0.18
+            ]
+          ]
+        },
+        "text-size": {
+          "stops": [
+            [
+              0,
+              8
+            ],
+            [
+              10,
+              10
+            ]
+          ]
+        },
+        "text-offset": [
+          0.3,
+          -0.3
+        ],
+        "text-optional": true,
+        "icon-allow-overlap": true
+      },
+      "paint": {
+        "text-color": "#000000",
+        "text-halo-blur": 1,
+        "text-halo-color": {
+          "stops": [
+            [
+              0,
+              "#ABC9E3"
+            ],
+            [
+              7,
+              "#CBDEEF"
+            ]
+          ]
+        },
+        "text-halo-width": 0.5
+      },
+      "source-layer": "Ocean point"
+    },
+    {
+      "id": "Ocean point/Seamount depression",
+      "type": "symbol",
+      "source": "esri",
+      "filter": [
+        "==",
+        "_symbol",
+        3
+      ],
+      "layout": {
+        "text-field": "{_name}",
+        "text-font": [
+          "Arial Unicode MS Regular"
+        ],
+        "text-anchor": "bottom-left",
+        "text-letter-spacing": {
+          "stops": [
+            [
+              4,
+              0.1
+            ],
+            [
+              8,
+              0.18
+            ]
+          ]
+        },
+        "text-size": {
+          "stops": [
+            [
+              0,
+              8
+            ],
+            [
+              10,
+              12
+            ]
+          ]
+        },
+        "text-offset": [
+          0.3,
+          -0.3
+        ],
+        "text-optional": true,
+        "icon-image": "Ocean point/Seamount depression",
+        "icon-allow-overlap": true,
+        "icon-rotate": -180
+      },
+      "paint": {
+        "icon-color": "#343434",
+        "text-color": "#000000",
+        "text-halo-blur": 1,
+        "text-halo-color": {
+          "stops": [
+            [
+              0,
+              "#ABC9E3"
+            ],
+            [
+              7,
+              "#CBDEEF"
+            ]
+          ]
+        },
+        "text-halo-width": 0.5
+      },
+      "source-layer": "Ocean point"
+    },
+    {
+      "id": "Ocean point/Seamount rise",
+      "type": "symbol",
+      "source": "esri",
+      "filter": [
+        "==",
+        "_symbol",
+        2
+      ],
+      "layout": {
+        "text-field": "{_name}",
+        "text-font": [
+          "Arial Unicode MS Regular"
+        ],
+        "text-anchor": "bottom-left",
+        "text-letter-spacing": {
+          "stops": [
+            [
+              4,
+              0.1
+            ],
+            [
+              8,
+              0.18
+            ]
+          ]
+        },
+        "text-size": {
+          "stops": [
+            [
+              0,
+              8
+            ],
+            [
+              10,
+              12
+            ]
+          ]
+        },
+        "text-offset": [
+          0.3,
+          -0.3
+        ],
+        "text-optional": true,
+        "icon-image": "Ocean point/Seamount rise",
+        "icon-allow-overlap": true
+      },
+      "paint": {
+        "icon-color": "#343434",
+        "text-color": "#000000",
+        "text-halo-blur": 1,
+        "text-halo-color": {
+          "stops": [
+            [
+              0,
+              "#ABC9E3"
+            ],
+            [
+              7,
+              "#CBDEEF"
+            ]
+          ]
+        },
+        "text-halo-width": 0.5
+      },
+      "source-layer": "Ocean point"
+    },
+    {
+      "id": "Ocean point/Landform",
+      "type": "symbol",
+      "source": "esri",
+      "filter": [
+        "==",
+        "_symbol",
+        1
+      ],
+      "layout": {
+        "text-field": "{_name}",
+        "text-font": [
+          "Arial Unicode MS Regular"
+        ],
+        "text-anchor": "bottom-left",
+        "text-letter-spacing": {
+          "stops": [
+            [
+              4,
+              0.1
+            ],
+            [
+              8,
+              0.18
+            ]
+          ]
+        },
+        "text-size": {
+          "stops": [
+            [
+              0,
+              8
+            ],
+            [
+              10,
+              12
+            ]
+          ]
+        },
+        "text-offset": [
+          0.3,
+          -0.3
+        ],
+        "text-optional": true,
+        "icon-allow-overlap": true
+      },
+      "paint": {
+        "text-color": "#000000",
+        "text-halo-blur": 1,
+        "text-halo-color": {
+          "stops": [
+            [
+              0,
+              "#ABC9E3"
+            ],
+            [
+              7,
+              "#CBDEEF"
+            ]
+          ]
+        },
+        "text-halo-width": 0.5
+      },
+      "source-layer": "Ocean point"
+    },
+    {
+      "id": "Ocean point/Waterbody",
+      "type": "symbol",
+      "source": "esri",
+      "filter": [
+        "==",
+        "_symbol",
+        0
+      ],
+      "layout": {
+        "text-field": "{_name}",
+        "text-font": [
+          "Noto Serif Bold Italic"
+        ],
+        "text-anchor": "bottom-left",
+        "text-letter-spacing": {
+          "stops": [
+            [
+              4,
+              0.1
+            ],
+            [
+              8,
+              0.18
+            ]
+          ]
+        },
+        "text-size": {
+          "stops": [
+            [
+              0,
+              8
+            ],
+            [
+              10,
+              12
+            ]
+          ]
+        },
+        "text-offset": [
+          0.3,
+          -0.3
+        ],
+        "text-optional": true,
+        "icon-allow-overlap": true
+      },
+      "paint": {
+        "text-color": "#0068B3",
+        "text-halo-blur": 1,
+        "text-halo-color": {
+          "stops": [
+            [
+              0,
+              "#ABC9E3"
+            ],
+            [
+              7,
+              "#CBDEEF"
+            ]
+          ]
+        },
+        "text-halo-width": 0.5
+      },
+      "source-layer": "Ocean point"
+    },
+    {
+      "id": "Marine area/label/Default",
+      "type": "symbol",
+      "source": "esri",
+      "minzoom": 11,
+      "layout": {
+        "symbol-avoid-edges": true,
+        "text-field": "{_name_global}",
+        "text-font": [
+          "Noto Serif Bold Italic"
+        ],
+        "text-letter-spacing": 0.13,
+        "text-max-width": 4,
+        "text-size": 11,
+        "text-allow-overlap": false,
+        "text-padding": 15,
+        "text-line-height": 1.5
+      },
+      "paint": {
+        "text-color": "#0068B3",
+        "text-halo-blur": 1,
+        "text-halo-color": "#f2fcff",
+        "text-halo-width": 1
+      },
+      "source-layer": "Marine area/label"
+    },
+    {
+      "id": "Marine waterbody/label/small",
+      "type": "symbol",
+      "source": "esri",
+      "filter": [
+        "==",
+        "_label_class",
+        4
+      ],
+      "maxzoom": 10,
+      "minzoom": 1,
+      "layout": {
+        "symbol-avoid-edges": true,
+        "text-field": "{_name}",
+        "text-font": [
+          "Noto Serif Bold Italic"
+        ],
+        "text-letter-spacing": {
+          "stops": [
+            [
+              4,
+              0.1
+            ],
+            [
+              8,
+              0.18
+            ]
+          ]
+        },
+        "text-max-width": 4,
+        "text-size": {
+          "stops": [
+            [
+              0,
+              8
+            ],
+            [
+              6,
+              9
+            ],
+            [
+              8,
+              11
+            ]
+          ]
+        },
+        "text-allow-overlap": false,
+        "text-padding": 15,
+        "text-line-height": 1.5
+      },
+      "paint": {
+        "text-color": "#0068B3",
+        "text-halo-blur": 1,
+        "text-halo-color": {
+          "stops": [
+            [
+              0,
+              "#ABC9E3"
+            ],
+            [
+              7,
+              "#CBDEEF"
+            ]
+          ]
+        },
+        "text-halo-width": 0.5
+      },
+      "source-layer": "Marine waterbody/label"
+    },
+    {
+      "id": "Marine waterbody/label/medium",
+      "type": "symbol",
+      "source": "esri",
+      "filter": [
+        "==",
+        "_label_class",
+        3
+      ],
+      "maxzoom": 10,
+      "minzoom": 1,
+      "layout": {
+        "symbol-avoid-edges": true,
+        "text-field": "{_name}",
+        "text-font": [
+          "Noto Serif Bold Italic"
+        ],
+        "text-letter-spacing": {
+          "stops": [
+            [
+              4,
+              0.1
+            ],
+            [
+              8,
+              0.18
+            ]
+          ]
+        },
+        "text-max-width": 4,
+        "text-size": {
+          "stops": [
+            [
+              0,
+              8
+            ],
+            [
+              6,
+              10
+            ],
+            [
+              8,
+              13
+            ]
+          ]
+        },
+        "text-allow-overlap": false,
+        "text-padding": 15,
+        "text-line-height": 1.5
+      },
+      "paint": {
+        "text-color": "#0068B3",
+        "text-halo-blur": 1,
+        "text-halo-color": {
+          "stops": [
+            [
+              0,
+              "#ABC9E3"
+            ],
+            [
+              7,
+              "#CBDEEF"
+            ]
+          ]
+        },
+        "text-halo-width": 0.5
+      },
+      "source-layer": "Marine waterbody/label"
+    },
+    {
+      "id": "Marine waterbody/label/large",
+      "type": "symbol",
+      "source": "esri",
+      "filter": [
+        "==",
+        "_label_class",
+        2
+      ],
+      "maxzoom": 10,
+      "minzoom": 1,
+      "layout": {
+        "symbol-avoid-edges": true,
+        "text-field": "{_name}",
+        "text-font": [
+          "Noto Serif Bold Italic"
+        ],
+        "text-letter-spacing": {
+          "stops": [
+            [
+              4,
+              0.1
+            ],
+            [
+              8,
+              0.18
+            ]
+          ]
+        },
+        "text-max-width": 4,
+        "text-size": {
+          "stops": [
+            [
+              0,
+              8
+            ],
+            [
+              6,
+              11
+            ],
+            [
+              8,
+              15
+            ]
+          ]
+        },
+        "text-allow-overlap": false,
+        "text-padding": 15,
+        "text-line-height": 1.5
+      },
+      "paint": {
+        "text-color": "#0068B3",
+        "text-halo-blur": 1,
+        "text-halo-color": {
+          "stops": [
+            [
+              0,
+              "#ABC9E3"
+            ],
+            [
+              7,
+              "#CBDEEF"
+            ]
+          ]
+        },
+        "text-halo-width": 0.5
+      },
+      "source-layer": "Marine waterbody/label"
+    },
+    {
+      "id": "Ocean area/label/Round small waterbody",
+      "type": "symbol",
+      "source": "esri",
+      "filter": [
+        "in",
+        "_label_class",
+        0,
+        1005
+      ],
+      "layout": {
+        "text-field": "{_name}",
+        "text-font": [
+          "Noto Serif Bold Italic"
+        ],
+        "text-letter-spacing": {
+          "stops": [
+            [
+              4,
+              0.1
+            ],
+            [
+              8,
+              0.18
+            ]
+          ]
+        },
+        "text-max-width": 4,
+        "text-size": {
+          "stops": [
+            [
+              0,
+              8
+            ],
+            [
+              6,
+              9
+            ],
+            [
+              8,
+              11
+            ]
+          ]
+        },
+        "text-line-height": 1.5,
+        "text-optional": true
+      },
+      "paint": {
+        "text-color": "#0068B3",
+        "text-halo-blur": 1,
+        "text-halo-color": {
+          "stops": [
+            [
+              0,
+              "#ABC9E3"
+            ],
+            [
+              7,
+              "#CBDEEF"
+            ]
+          ]
+        },
+        "text-halo-width": 0.5
+      },
+      "source-layer": "Ocean area/label"
+    },
+    {
+      "id": "Ocean area/label/Oblong small waterbody",
+      "type": "symbol",
+      "source": "esri",
+      "filter": [
+        "==",
+        "_label_class",
+        5
+      ],
+      "layout": {
+        "symbol-placement": "line",
+        "symbol-spacing": 500,
+        "text-field": "{_name}",
+        "text-font": [
+          "Noto Serif Bold Italic"
+        ],
+        "text-letter-spacing": {
+          "stops": [
+            [
+              4,
+              0.1
+            ],
+            [
+              8,
+              0.18
+            ]
+          ]
+        },
+        "text-size": {
+          "stops": [
+            [
+              0,
+              8
+            ],
+            [
+              6,
+              9
+            ],
+            [
+              8,
+              11
+            ]
+          ]
+        },
+        "text-max-angle": 180,
+        "text-optional": true
+      },
+      "paint": {
+        "text-color": "#0068B3",
+        "text-halo-blur": 1,
+        "text-halo-color": {
+          "stops": [
+            [
+              0,
+              "#ABC9E3"
+            ],
+            [
+              7,
+              "#CBDEEF"
+            ]
+          ]
+        },
+        "text-halo-width": 0.5
+      },
+      "source-layer": "Ocean area/label"
+    },
+    {
+      "id": "Ocean area/label/Round small landform",
+      "type": "symbol",
+      "source": "esri",
+      "filter": [
+        "in",
+        "_label_class",
+        10,
+        1015
+      ],
+      "layout": {
+        "text-field": "{_name}",
+        "text-font": [
+          "Arial Unicode MS Regular"
+        ],
+        "text-letter-spacing": {
+          "stops": [
+            [
+              4,
+              0.1
+            ],
+            [
+              8,
+              0.18
+            ]
+          ]
+        },
+        "text-max-width": 4,
+        "text-size": {
+          "stops": [
+            [
+              0,
+              8
+            ],
+            [
+              7,
+              12
+            ],
+            [
+              10,
+              13
+            ]
+          ]
+        },
+        "text-line-height": 1.5,
+        "text-optional": true
+      },
+      "paint": {
+        "text-color": "#000000",
+        "text-halo-blur": 1,
+        "text-halo-color": {
+          "stops": [
+            [
+              0,
+              "#ABC9E3"
+            ],
+            [
+              7,
+              "#CBDEEF"
+            ]
+          ]
+        },
+        "text-halo-width": 0.5
+      },
+      "source-layer": "Ocean area/label"
+    },
+    {
+      "id": "Ocean area/label/Oblong small landform",
+      "type": "symbol",
+      "source": "esri",
+      "filter": [
+        "==",
+        "_label_class",
+        15
+      ],
+      "layout": {
+        "symbol-placement": "line",
+        "symbol-spacing": 500,
+        "text-field": "{_name}",
+        "text-font": [
+          "Arial Unicode MS Regular"
+        ],
+        "text-letter-spacing": {
+          "stops": [
+            [
+              4,
+              0.1
+            ],
+            [
+              8,
+              0.18
+            ]
+          ]
+        },
+        "text-size": {
+          "stops": [
+            [
+              0,
+              8
+            ],
+            [
+              7,
+              12
+            ],
+            [
+              10,
+              13
+            ]
+          ]
+        },
+        "text-max-angle": 180,
+        "text-optional": true
+      },
+      "paint": {
+        "text-color": "#000000",
+        "text-halo-blur": 1,
+        "text-halo-color": {
+          "stops": [
+            [
+              0,
+              "#ABC9E3"
+            ],
+            [
+              7,
+              "#CBDEEF"
+            ]
+          ]
+        },
+        "text-halo-width": 0.5
+      },
+      "source-layer": "Ocean area/label"
+    },
+    {
+      "id": "Ocean area/label/Round medium waterbody",
+      "type": "symbol",
+      "source": "esri",
+      "filter": [
+        "in",
+        "_label_class",
+        1,
+        1006
+      ],
+      "layout": {
+        "text-field": "{_name}",
+        "text-font": [
+          "Noto Serif Bold Italic"
+        ],
+        "text-letter-spacing": {
+          "stops": [
+            [
+              4,
+              0.1
+            ],
+            [
+              8,
+              0.18
+            ]
+          ]
+        },
+        "text-max-width": 4,
+        "text-size": {
+          "stops": [
+            [
+              0,
+              8
+            ],
+            [
+              6,
+              10
+            ],
+            [
+              8,
+              13
+            ]
+          ]
+        },
+        "text-line-height": 1.5,
+        "text-optional": true
+      },
+      "paint": {
+        "text-color": "#0068B3",
+        "text-halo-blur": 1,
+        "text-halo-color": {
+          "stops": [
+            [
+              0,
+              "#ABC9E3"
+            ],
+            [
+              7,
+              "#CBDEEF"
+            ]
+          ]
+        },
+        "text-halo-width": 0.5
+      },
+      "source-layer": "Ocean area/label"
+    },
+    {
+      "id": "Ocean area/label/Oblong medium waterbody",
+      "type": "symbol",
+      "source": "esri",
+      "filter": [
+        "==",
+        "_label_class",
+        6
+      ],
+      "layout": {
+        "symbol-placement": "line",
+        "symbol-spacing": 500,
+        "text-field": "{_name}",
+        "text-font": [
+          "Noto Serif Bold Italic"
+        ],
+        "text-size": {
+          "stops": [
+            [
+              0,
+              8
+            ],
+            [
+              6,
+              10
+            ],
+            [
+              8,
+              13
+            ]
+          ]
+        },
+        "text-line-height": 1.5,
+        "text-max-angle": 180,
+        "text-optional": true
+      },
+      "paint": {
+        "text-color": "#0068B3",
+        "text-halo-blur": 1,
+        "text-halo-color": {
+          "stops": [
+            [
+              0,
+              "#ABC9E3"
+            ],
+            [
+              7,
+              "#CBDEEF"
+            ]
+          ]
+        },
+        "text-halo-width": 0.5
+      },
+      "source-layer": "Ocean area/label"
+    },
+    {
+      "id": "Ocean area/label/Round medium landform",
+      "type": "symbol",
+      "source": "esri",
+      "filter": [
+        "in",
+        "_label_class",
+        11,
+        1016
+      ],
+      "layout": {
+        "text-field": "{_name}",
+        "text-font": [
+          "Arial Unicode MS Regular"
+        ],
+        "text-letter-spacing": {
+          "stops": [
+            [
+              4,
+              0.1
+            ],
+            [
+              8,
+              0.18
+            ]
+          ]
+        },
+        "text-max-width": 4,
+        "text-size": {
+          "stops": [
+            [
+              0,
+              8
+            ],
+            [
+              6,
+              12
+            ],
+            [
+              9,
+              17
+            ]
+          ]
+        },
+        "text-line-height": 1.5,
+        "text-optional": true
+      },
+      "paint": {
+        "text-color": "#000000",
+        "text-halo-blur": 1,
+        "text-halo-color": {
+          "stops": [
+            [
+              0,
+              "#ABC9E3"
+            ],
+            [
+              7,
+              "#CBDEEF"
+            ]
+          ]
+        },
+        "text-halo-width": 0.5
+      },
+      "source-layer": "Ocean area/label"
+    },
+    {
+      "id": "Ocean area/label/Oblong medium landform",
+      "type": "symbol",
+      "source": "esri",
+      "filter": [
+        "==",
+        "_label_class",
+        16
+      ],
+      "layout": {
+        "symbol-placement": "line",
+        "symbol-spacing": 500,
+        "text-field": "{_name}",
+        "text-font": [
+          "Arial Unicode MS Regular"
+        ],
+        "text-letter-spacing": {
+          "stops": [
+            [
+              4,
+              0.1
+            ],
+            [
+              8,
+              0.18
+            ]
+          ]
+        },
+        "text-size": {
+          "stops": [
+            [
+              0,
+              8
+            ],
+            [
+              6,
+              12
+            ],
+            [
+              9,
+              17
+            ]
+          ]
+        },
+        "text-line-height": 1.5,
+        "text-max-angle": 180,
+        "text-optional": true
+      },
+      "paint": {
+        "text-color": "#000000",
+        "text-halo-blur": 1,
+        "text-halo-color": {
+          "stops": [
+            [
+              0,
+              "#ABC9E3"
+            ],
+            [
+              7,
+              "#CBDEEF"
+            ]
+          ]
+        },
+        "text-halo-width": 0.5
+      },
+      "source-layer": "Ocean area/label"
+    },
+    {
+      "id": "Ocean area/label/Round large waterbody",
+      "type": "symbol",
+      "source": "esri",
+      "filter": [
+        "in",
+        "_label_class",
+        2,
+        1007
+      ],
+      "layout": {
+        "text-field": "{_name}",
+        "text-font": [
+          "Noto Serif Bold Italic"
+        ],
+        "text-letter-spacing": {
+          "stops": [
+            [
+              4,
+              0.1
+            ],
+            [
+              8,
+              0.18
+            ]
+          ]
+        },
+        "text-max-width": 4,
+        "text-size": {
+          "stops": [
+            [
+              0,
+              8
+            ],
+            [
+              6,
+              11
+            ],
+            [
+              8,
+              15
+            ]
+          ]
+        },
+        "text-line-height": 1.5,
+        "text-optional": true
+      },
+      "paint": {
+        "text-color": "#0068B3",
+        "text-halo-blur": 1,
+        "text-halo-color": {
+          "stops": [
+            [
+              0,
+              "#ABC9E3"
+            ],
+            [
+              7,
+              "#CBDEEF"
+            ]
+          ]
+        },
+        "text-halo-width": 0.5
+      },
+      "source-layer": "Ocean area/label"
+    },
+    {
+      "id": "Ocean area/label/Oblong large waterbody",
+      "type": "symbol",
+      "source": "esri",
+      "filter": [
+        "==",
+        "_label_class",
+        7
+      ],
+      "layout": {
+        "symbol-placement": "line",
+        "symbol-spacing": 500,
+        "text-field": "{_name}",
+        "text-font": [
+          "Noto Serif Bold Italic"
+        ],
+        "text-letter-spacing": {
+          "stops": [
+            [
+              4,
+              0.1
+            ],
+            [
+              8,
+              0.18
+            ]
+          ]
+        },
+        "text-size": {
+          "stops": [
+            [
+              0,
+              8
+            ],
+            [
+              6,
+              11
+            ],
+            [
+              8,
+              15
+            ]
+          ]
+        },
+        "text-max-angle": 180,
+        "text-optional": true
+      },
+      "paint": {
+        "text-color": "#0068B3",
+        "text-halo-blur": 1,
+        "text-halo-color": {
+          "stops": [
+            [
+              0,
+              "#ABC9E3"
+            ],
+            [
+              7,
+              "#CBDEEF"
+            ]
+          ]
+        },
+        "text-halo-width": 0.5
+      },
+      "source-layer": "Ocean area/label"
+    },
+    {
+      "id": "Ocean area/label/Round large landform",
+      "type": "symbol",
+      "source": "esri",
+      "filter": [
+        "in",
+        "_label_class",
+        12,
+        1017
+      ],
+      "layout": {
+        "text-field": "{_name}",
+        "text-font": [
+          "Arial Unicode MS Regular"
+        ],
+        "text-letter-spacing": {
+          "stops": [
+            [
+              4,
+              0.1
+            ],
+            [
+              8,
+              0.18
+            ]
+          ]
+        },
+        "text-max-width": 4,
+        "text-size": {
+          "stops": [
+            [
+              0,
+              8
+            ],
+            [
+              4,
+              9
+            ],
+            [
+              6,
+              13
+            ],
+            [
+              9,
+              19
+            ]
+          ]
+        },
+        "text-line-height": 1.5,
+        "text-optional": true
+      },
+      "paint": {
+        "text-color": "#000000",
+        "text-halo-blur": 1,
+        "text-halo-color": {
+          "stops": [
+            [
+              0,
+              "#ABC9E3"
+            ],
+            [
+              7,
+              "#CBDEEF"
+            ]
+          ]
+        },
+        "text-halo-width": 0.5
+      },
+      "source-layer": "Ocean area/label"
+    },
+    {
+      "id": "Ocean area/label/Oblong large landform",
+      "type": "symbol",
+      "source": "esri",
+      "filter": [
+        "==",
+        "_label_class",
+        17
+      ],
+      "layout": {
+        "symbol-placement": "line",
+        "symbol-spacing": 500,
+        "text-field": "{_name}",
+        "text-font": [
+          "Arial Unicode MS Regular"
+        ],
+        "text-letter-spacing": {
+          "stops": [
+            [
+              4,
+              0.1
+            ],
+            [
+              8,
+              0.18
+            ]
+          ]
+        },
+        "text-size": {
+          "stops": [
+            [
+              0,
+              8
+            ],
+            [
+              4,
+              9
+            ],
+            [
+              6,
+              13
+            ],
+            [
+              9,
+              19
+            ]
+          ]
+        },
+        "text-max-angle": 180,
+        "text-optional": true
+      },
+      "paint": {
+        "text-color": "#000000",
+        "text-halo-blur": 1,
+        "text-halo-color": {
+          "stops": [
+            [
+              0,
+              "#ABC9E3"
+            ],
+            [
+              7,
+              "#CBDEEF"
+            ]
+          ]
+        },
+        "text-halo-width": 0.5
+      },
+      "source-layer": "Ocean area/label"
+    },
+    {
+      "id": "Ocean area/label/Round x large waterbody",
+      "type": "symbol",
+      "source": "esri",
+      "filter": [
+        "in",
+        "_label_class",
+        3,
+        1008
+      ],
+      "layout": {
+        "text-field": "{_name}",
+        "text-font": [
+          "Noto Serif Bold Italic"
+        ],
+        "text-letter-spacing": {
+          "stops": [
+            [
+              4,
+              0.13
+            ],
+            [
+              8,
+              0.25
+            ]
+          ]
+        },
+        "text-max-width": 4,
+        "text-size": {
+          "stops": [
+            [
+              0,
+              9.5
+            ],
+            [
+              6,
+              13
+            ],
+            [
+              8,
+              17
+            ]
+          ]
+        },
+        "text-line-height": 1.5,
+        "text-optional": true
+      },
+      "paint": {
+        "text-color": "#0068B3",
+        "text-halo-blur": 1,
+        "text-halo-color": {
+          "stops": [
+            [
+              0,
+              "#ABC9E3"
+            ],
+            [
+              7,
+              "#CBDEEF"
+            ]
+          ]
+        },
+        "text-halo-width": 0.5
+      },
+      "source-layer": "Ocean area/label"
+    },
+    {
+      "id": "Ocean area/label/Oblong x large waterbody",
+      "type": "symbol",
+      "source": "esri",
+      "filter": [
+        "==",
+        "_label_class",
+        8
+      ],
+      "layout": {
+        "symbol-placement": "line",
+        "symbol-spacing": 500,
+        "text-field": "{_name}",
+        "text-font": [
+          "Noto Serif Bold Italic"
+        ],
+        "text-letter-spacing": {
+          "stops": [
+            [
+              4,
+              0.13
+            ],
+            [
+              8,
+              0.25
+            ]
+          ]
+        },
+        "text-size": {
+          "stops": [
+            [
+              0,
+              8
+            ],
+            [
+              6,
+              12
+            ],
+            [
+              8,
+              17
+            ]
+          ]
+        },
+        "text-max-angle": 180,
+        "text-optional": true
+      },
+      "paint": {
+        "text-color": "#0068B3",
+        "text-halo-blur": 1,
+        "text-halo-color": {
+          "stops": [
+            [
+              0,
+              "#ABC9E3"
+            ],
+            [
+              7,
+              "#CBDEEF"
+            ]
+          ]
+        },
+        "text-halo-width": 0.5
+      },
+      "source-layer": "Ocean area/label"
+    },
+    {
+      "id": "Ocean area/label/Round x large landform",
+      "type": "symbol",
+      "source": "esri",
+      "filter": [
+        "in",
+        "_label_class",
+        13,
+        1018
+      ],
+      "layout": {
+        "text-field": "{_name}",
+        "text-font": [
+          "Arial Unicode MS Regular"
+        ],
+        "text-letter-spacing": {
+          "stops": [
+            [
+              4,
+              0.13
+            ],
+            [
+              8,
+              0.25
+            ]
+          ]
+        },
+        "text-max-width": 4,
+        "text-size": {
+          "stops": [
+            [
+              0,
+              9.5
+            ],
+            [
+              4,
+              13
+            ],
+            [
+              6,
+              17
+            ],
+            [
+              9,
+              21
+            ]
+          ]
+        },
+        "text-line-height": 1.5,
+        "text-optional": true
+      },
+      "paint": {
+        "text-color": "#000000",
+        "text-halo-blur": 1,
+        "text-halo-color": {
+          "stops": [
+            [
+              0,
+              "#ABC9E3"
+            ],
+            [
+              7,
+              "#CBDEEF"
+            ]
+          ]
+        },
+        "text-halo-width": 0.5
+      },
+      "source-layer": "Ocean area/label"
+    },
+    {
+      "id": "Ocean area/label/Oblong x large landform",
+      "type": "symbol",
+      "source": "esri",
+      "filter": [
+        "==",
+        "_label_class",
+        18
+      ],
+      "layout": {
+        "symbol-placement": "line",
+        "symbol-spacing": 500,
+        "text-field": "{_name}",
+        "text-font": [
+          "Arial Unicode MS Regular"
+        ],
+        "text-letter-spacing": {
+          "stops": [
+            [
+              4,
+              0.13
+            ],
+            [
+              8,
+              0.25
+            ]
+          ]
+        },
+        "text-size": {
+          "stops": [
+            [
+              0,
+              9.5
+            ],
+            [
+              4,
+              13
+            ],
+            [
+              6,
+              17
+            ],
+            [
+              9,
+              21
+            ]
+          ]
+        },
+        "text-max-angle": 180,
+        "text-optional": true
+      },
+      "paint": {
+        "text-color": "#000000",
+        "text-halo-blur": 1,
+        "text-halo-color": {
+          "stops": [
+            [
+              0,
+              "#ABC9E3"
+            ],
+            [
+              7,
+              "#CBDEEF"
+            ]
+          ]
+        },
+        "text-halo-width": 0.5
+      },
+      "source-layer": "Ocean area/label"
+    },
+    {
+      "id": "Ocean area/label/Round 2x large waterbody",
+      "type": "symbol",
+      "source": "esri",
+      "filter": [
+        "in",
+        "_label_class",
+        4,
+        1009
+      ],
+      "layout": {
+        "text-field": "{_name}",
+        "text-font": [
+          "Noto Serif Bold Italic"
+        ],
+        "text-letter-spacing": {
+          "stops": [
+            [
+              4,
+              0.13
+            ],
+            [
+              8,
+              0.25
+            ]
+          ]
+        },
+        "text-max-width": 4,
+        "text-size": {
+          "stops": [
+            [
+              0,
+              11
+            ],
+            [
+              4,
+              15
+            ],
+            [
+              6,
+              20
+            ]
+          ]
+        },
+        "text-line-height": 1.6,
+        "text-optional": true
+      },
+      "paint": {
+        "text-color": "#0068B3",
+        "text-halo-blur": 1,
+        "text-halo-color": {
+          "stops": [
+            [
+              0,
+              "#ABC9E3"
+            ],
+            [
+              7,
+              "#CBDEEF"
+            ]
+          ]
+        },
+        "text-halo-width": 0.5
+      },
+      "source-layer": "Ocean area/label"
+    },
+    {
+      "id": "Ocean area/label/Oblong 2x large waterbody",
+      "type": "symbol",
+      "source": "esri",
+      "filter": [
+        "==",
+        "_label_class",
+        9
+      ],
+      "layout": {
+        "symbol-placement": "line",
+        "symbol-spacing": 500,
+        "text-field": "{_name}",
+        "text-font": [
+          "Noto Serif Bold Italic"
+        ],
+        "text-letter-spacing": {
+          "stops": [
+            [
+              4,
+              0.3
+            ],
+            [
+              8,
+              0.4
+            ]
+          ]
+        },
+        "text-size": {
+          "stops": [
+            [
+              0,
+              11
+            ],
+            [
+              4,
+              15
+            ],
+            [
+              6,
+              20
+            ]
+          ]
+        },
+        "text-max-angle": 180,
+        "text-optional": true
+      },
+      "paint": {
+        "text-color": "#0068B3",
+        "text-halo-blur": 1,
+        "text-halo-color": {
+          "stops": [
+            [
+              0,
+              "#ABC9E3"
+            ],
+            [
+              7,
+              "#CBDEEF"
+            ]
+          ]
+        },
+        "text-halo-width": 0.5
+      },
+      "source-layer": "Ocean area/label"
+    },
+    {
+      "id": "Ocean area/label/Round 2x large landform",
+      "type": "symbol",
+      "source": "esri",
+      "filter": [
+        "in",
+        "_label_class",
+        14,
+        1019
+      ],
+      "layout": {
+        "text-field": "{_name}",
+        "text-font": [
+          "Arial Unicode MS Regular"
+        ],
+        "text-letter-spacing": {
+          "stops": [
+            [
+              4,
+              0.13
+            ],
+            [
+              8,
+              0.25
+            ]
+          ]
+        },
+        "text-max-width": 4,
+        "text-size": {
+          "stops": [
+            [
+              0,
+              11
+            ],
+            [
+              4,
+              15
+            ],
+            [
+              6,
+              20
+            ],
+            [
+              9,
+              23
+            ]
+          ]
+        },
+        "text-line-height": 1.6,
+        "text-optional": true
+      },
+      "paint": {
+        "text-color": "#000000",
+        "text-halo-blur": 1,
+        "text-halo-color": {
+          "stops": [
+            [
+              0,
+              "#ABC9E3"
+            ],
+            [
+              7,
+              "#CBDEEF"
+            ]
+          ]
+        },
+        "text-halo-width": 0.5
+      },
+      "source-layer": "Ocean area/label"
+    },
+    {
+      "id": "Marine waterbody/label/x large",
+      "type": "symbol",
+      "source": "esri",
+      "filter": [
+        "==",
+        "_label_class",
+        1
+      ],
+      "maxzoom": 10,
+      "minzoom": 1,
+      "layout": {
+        "symbol-avoid-edges": true,
+        "text-field": "{_name}",
+        "text-font": [
+          "Noto Serif Bold Italic"
+        ],
+        "text-letter-spacing": {
+          "stops": [
+            [
+              4,
+              0.13
+            ],
+            [
+              8,
+              0.25
+            ]
+          ]
+        },
+        "text-max-width": 4,
+        "text-size": {
+          "stops": [
+            [
+              0,
+              8
+            ],
+            [
+              6,
+              12
+            ],
+            [
+              8,
+              17
+            ]
+          ]
+        },
+        "text-allow-overlap": false,
+        "text-padding": 15,
+        "text-line-height": 1.5
+      },
+      "paint": {
+        "text-color": "#0068B3",
+        "text-halo-blur": 1,
+        "text-halo-color": {
+          "stops": [
+            [
+              0,
+              "#ABC9E3"
+            ],
+            [
+              7,
+              "#CBDEEF"
+            ]
+          ]
+        },
+        "text-halo-width": 0.5
+      },
+      "source-layer": "Marine waterbody/label"
+    },
+    {
+      "id": "Ocean area/label/Oblong 2x large landform",
+      "type": "symbol",
+      "source": "esri",
+      "filter": [
+        "==",
+        "_label_class",
+        19
+      ],
+      "layout": {
+        "symbol-placement": "line",
+        "symbol-spacing": 500,
+        "text-field": "{_name}",
+        "text-font": [
+          "Arial Unicode MS Regular"
+        ],
+        "text-letter-spacing": {
+          "stops": [
+            [
+              4,
+              0.3
+            ],
+            [
+              8,
+              0.4
+            ]
+          ]
+        },
+        "text-size": {
+          "stops": [
+            [
+              0,
+              11
+            ],
+            [
+              4,
+              15
+            ],
+            [
+              6,
+              20
+            ],
+            [
+              9,
+              23
+            ]
+          ]
+        },
+        "text-max-angle": 180,
+        "text-optional": true
+      },
+      "paint": {
+        "text-color": "#000000",
+        "text-halo-blur": 1,
+        "text-halo-color": {
+          "stops": [
+            [
+              0,
+              "#ABC9E3"
+            ],
+            [
+              7,
+              "#CBDEEF"
+            ]
+          ]
+        },
+        "text-halo-width": 0.5
+      },
+      "source-layer": "Ocean area/label"
+    },
+    {
+      "id": "Marine waterbody/label/2x large",
+      "type": "symbol",
+      "source": "esri",
+      "filter": [
+        "==",
+        "_label_class",
+        0
+      ],
+      "maxzoom": 5,
+      "layout": {
+        "symbol-avoid-edges": true,
+        "text-field": "{_name}",
+        "text-font": [
+          "Noto Serif Bold Italic"
+        ],
+        "text-letter-spacing": {
+          "stops": [
+            [
+              4,
+              0.13
+            ],
+            [
+              8,
+              0.25
+            ]
+          ]
+        },
+        "text-max-width": 4,
+        "text-size": {
+          "stops": [
+            [
+              0,
+              11
+            ],
+            [
+              4,
+              15
+            ],
+            [
+              6,
+              20
+            ]
+          ]
+        },
+        "text-allow-overlap": false,
+        "text-padding": 15,
+        "text-transform": "uppercase",
+        "text-line-height": 1.6
+      },
+      "paint": {
+        "text-color": "#0068B3",
+        "text-halo-blur": 1,
+        "text-halo-color": {
+          "stops": [
+            [
+              0,
+              "#ABC9E3"
+            ],
+            [
+              7,
+              "#CBDEEF"
+            ]
+          ]
+        },
+        "text-halo-width": 0.5
+      },
+      "source-layer": "Marine waterbody/label"
+    }
+  ],
+  "sources": {
+    "1e126e7520f9466c9ca28b8f28b5e500": {
+      "type": "raster",
+      "url": "https://ibasemaps-api.arcgis.com/arcgis/rest/services/Ocean/World_Ocean_Base/MapServer",
+      "attribution": "Esri, Garmin, GEBCO, NOAA NGDC, and other contributors",
+      "copyrightText": "Esri, Garmin, GEBCO, NOAA NGDC, and other contributors",
+      "maxzoom": 16,
+      "minzoom": 0,
+      "tiles": [
+        "https://ibasemaps-api.arcgis.com/arcgis/rest/services/Ocean/World_Ocean_Base/MapServer/tile/{z}/{y}/{x}?token=AAPTxy8BH1VEsoebNVZXo8HurM3_nZ73M27aFFX0iQeX7752-HERj42SFXmuuYoMr2AZ3BQCNW8ok1NwPvjy1aBZOXrhc-H4crP8-iDNuF4jFUlOiWyoOutLNSAnqbhROFeNNQybKpbXHd2DZngFMmok50vbvqpOgg_KHoPkYG_8tKrwodCKR3Ks3I-IvaUVBvk5Up_10Hr4Xt1iXwOVwyFQGBKiu7JBeGdGQJusJXAQgwc.AT1_XXc76sNo"
+      ],
+      "tileSize": 256
+    },
+    "esri": {
+      "type": "vector",
+      "url": "https://basemaps-api.arcgis.com/arcgis/rest/services/World_Basemap_v2/VectorTileServer",
+      "attribution": "Sources: Esri, TomTom, Garmin, FAO, NOAA, USGS, \u00a9 OpenStreetMap contributors, and the GIS User Community",
+      "copyrightText": "Sources: Esri, TomTom, Garmin, FAO, NOAA, USGS, \u00a9 OpenStreetMap contributors, and the GIS User Community",
+      "maxzoom": 16,
+      "minzoom": 0,
+      "tiles": [
+        "https://basemaps-api.arcgis.com/arcgis/rest/services/World_Basemap_v2/VectorTileServer/tile/{z}/{y}/{x}.pbf?token=AAPTxy8BH1VEsoebNVZXo8HurM3_nZ73M27aFFX0iQeX7752-HERj42SFXmuuYoMr2AZ3BQCNW8ok1NwPvjy1aBZOXrhc-H4crP8-iDNuF4jFUlOiWyoOutLNSAnqbhROFeNNQybKpbXHd2DZngFMmok50vbvqpOgg_KHoPkYG_8tKrwodCKR3Ks3I-IvaUVBvk5Up_10Hr4Xt1iXwOVwyFQGBKiu7JBeGdGQJusJXAQgwc.AT1_XXc76sNo"
+      ]
+    }
+  },
+  "sprite": "https://cdn.arcgis.com/sharing/rest/content/items/94329802cbfa44a18f423e6f1a0b875c/resources/styles/../sprites/sprite",
+  "version": 8
+}

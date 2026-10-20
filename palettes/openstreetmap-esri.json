@@ -1,0 +1,358 @@
+{
+  "id": "openstreetmap-esri",
+  "version": 8,
+  "background": "#F2EFE9",
+  "water": {
+    "fill": "#AAD3DF"
+  },
+  "waterway": {
+    "line": "#FFFFFF"
+  },
+  "land": {},
+  "greenery": {
+    "park": "#C8FACC",
+    "wood": "#cdebb0"
+  },
+  "urban": {
+    "residential": [
+      [
+        7,
+        "#d0d0d0"
+      ],
+      [
+        11,
+        "#dddddd"
+      ],
+      [
+        12,
+        "#e0dfdf"
+      ]
+    ],
+    "school": [
+      [
+        9,
+        "#d0d0d0"
+      ],
+      [
+        11,
+        "#dddddd"
+      ],
+      [
+        12,
+        "#ffffe5"
+      ]
+    ],
+    "commercial": [
+      [
+        7,
+        "#d0d0d0"
+      ],
+      [
+        11,
+        "#dddddd"
+      ],
+      [
+        12,
+        "#f2dad9"
+      ]
+    ],
+    "industrial": [
+      [
+        7,
+        "#d0d0d0"
+      ],
+      [
+        11,
+        "#dddddd"
+      ],
+      [
+        12,
+        "#ebdbe8"
+      ]
+    ],
+    "cemetery": [
+      [
+        9,
+        "#d3e3d5"
+      ],
+      [
+        10,
+        "#cbdece"
+      ],
+      [
+        11,
+        "#c5dcc8"
+      ],
+      [
+        12,
+        "#aacbaf"
+      ]
+    ]
+  },
+  "building": {
+    "fill": "#d9d0c9"
+  },
+  "roads": {
+    "path": {
+      "casing": "#aaaaaa",
+      "casing_width": {
+        "base": 1.2,
+        "stops": [
+          [
+            13,
+            3
+          ],
+          [
+            14,
+            5
+          ],
+          [
+            15,
+            6
+          ],
+          [
+            16,
+            8
+          ]
+        ]
+      },
+      "fill": "#dddde8",
+      "fill_width": {
+        "base": 1.2,
+        "stops": [
+          [
+            13,
+            2
+          ],
+          [
+            14,
+            3.8
+          ],
+          [
+            15,
+            4.8
+          ],
+          [
+            16,
+            7
+          ]
+        ]
+      }
+    },
+    "minor": {
+      "casing": "#aaaaaa",
+      "casing_width": {
+        "base": 1.2,
+        "stops": [
+          [
+            13,
+            3
+          ],
+          [
+            14,
+            5
+          ],
+          [
+            15,
+            6
+          ],
+          [
+            16,
+            8
+          ]
+        ]
+      },
+      "fill": "#ededed",
+      "fill_width": {
+        "base": 1.2,
+        "stops": [
+          [
+            13,
+            2
+          ],
+          [
+            14,
+            3.8
+          ],
+          [
+            15,
+            4.8
+          ],
+          [
+            16,
+            7
+          ]
+        ]
+      }
+    },
+    "service": {
+      "casing": "#AAAAAA",
+      "casing_width": {
+        "base": 1.2,
+        "stops": [
+          [
+            15,
+            3.5
+          ],
+          [
+            16,
+            5
+          ],
+          [
+            17,
+            7
+          ],
+          [
+            18,
+            9
+          ]
+        ]
+      },
+      "fill": "#FFFFFF",
+      "fill_width": {
+        "base": 1.2,
+        "stops": [
+          [
+            15,
+            2.3
+          ],
+          [
+            16,
+            3.4
+          ],
+          [
+            17,
+            5.4
+          ],
+          [
+            18,
+            7.4
+          ]
+        ]
+      }
+    },
+    "secondary": {
+      "casing": "#F7FABF",
+      "casing_width": {
+        "base": 1.2,
+        "stops": [
+          [
+            12,
+            4
+          ],
+          [
+            15,
+            7
+          ]
+        ]
+      },
+      "fill": "#FFFFFF",
+      "fill_width": {
+        "base": 1.2,
+        "stops": [
+          [
+            12,
+            3.5
+          ],
+          [
+            15,
+            5.8
+          ]
+        ]
+      }
+    },
+    "primary": {
+      "casing": "#FCD6A4",
+      "casing_width": {
+        "base": 1.2,
+        "stops": [
+          [
+            12,
+            4
+          ],
+          [
+            15,
+            8
+          ]
+        ]
+      },
+      "fill": "#FFFFFF",
+      "fill_width": {
+        "base": 1.2,
+        "stops": [
+          [
+            12,
+            3.5
+          ],
+          [
+            15,
+            7
+          ]
+        ]
+      }
+    },
+    "motorway": {
+      "casing": "#E892A2",
+      "casing_width": {
+        "base": 1.2,
+        "stops": [
+          [
+            12,
+            4
+          ],
+          [
+            15,
+            8
+          ]
+        ]
+      },
+      "fill": "#FFFFFF",
+      "fill_width": {
+        "base": 1.2,
+        "stops": [
+          [
+            12,
+            3.5
+          ],
+          [
+            15,
+            7
+          ]
+        ]
+      }
+    }
+  },
+  "boundaries": {},
+  "labels": {
+    "general": {
+      "text_color": "#666666",
+      "halo_color": "rgba(255,255,255,0.8)",
+      "halo_width": 1
+    },
+    "road": {
+      "text_color": "#000000",
+      "halo_color": null,
+      "halo_width": null
+    },
+    "water": {
+      "text_color": "#4D80B3",
+      "halo_color": "rgba(255,255,255,0.8)",
+      "halo_width": 1
+    },
+    "city": {
+      "text_color": "#ae6500",
+      "halo_color": "rgba(255,255,255,0.8)",
+      "halo_width": 1
+    },
+    "state": {
+      "text_color": "#734A08",
+      "halo_color": "rgba(255,255,255,0.8)",
+      "halo_width": 1
+    },
+    "country": {
+      "text_color": "#653f64",
+      "halo_color": "rgba(255,255,255,0.8)",
+      "halo_width": 1.5
+    }
+  }
+}

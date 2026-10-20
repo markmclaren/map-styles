@@ -1,0 +1,187 @@
+{
+  "generator": "compile_styles.py",
+  "source_tile_provider": "OpenFreeMap (https://openfreemap.org/)",
+  "tile_schema": "OpenMapTiles v3.x",
+  "styles": [
+    {
+      "id": "light-gray",
+      "file": "light-gray.json",
+      "path": "dist/light-gray.json",
+      "name": "Light Gray Canvas"
+    },
+    {
+      "id": "light-gray-base",
+      "file": "light-gray-base.json",
+      "path": "dist/light-gray-base.json",
+      "name": "Light Gray Canvas"
+    },
+    {
+      "id": "light-gray-ref",
+      "file": "light-gray-ref.json",
+      "path": "dist/light-gray-ref.json",
+      "name": "Light Gray Canvas"
+    },
+    {
+      "id": "dark-gray",
+      "file": "dark-gray.json",
+      "path": "dist/dark-gray.json",
+      "name": "Dark Gray Canvas"
+    },
+    {
+      "id": "dark-gray-base",
+      "file": "dark-gray-base.json",
+      "path": "dist/dark-gray-base.json",
+      "name": "Dark Gray Canvas"
+    },
+    {
+      "id": "dark-gray-ref",
+      "file": "dark-gray-ref.json",
+      "path": "dist/dark-gray-ref.json",
+      "name": "Dark Gray Canvas"
+    },
+    {
+      "id": "navigation",
+      "file": "navigation.json",
+      "path": "dist/navigation.json",
+      "name": "World Navigation Map"
+    },
+    {
+      "id": "navigation-dark",
+      "file": "navigation-dark.json",
+      "path": "dist/navigation-dark.json",
+      "name": "World Navigation Map (Dark)"
+    },
+    {
+      "id": "streets",
+      "file": "streets.json",
+      "path": "dist/streets.json",
+      "name": "World Street Map"
+    },
+    {
+      "id": "streets-night",
+      "file": "streets-night.json",
+      "path": "dist/streets-night.json",
+      "name": "World Street Map (Night)"
+    },
+    {
+      "id": "osm",
+      "file": "osm.json",
+      "path": "dist/osm.json",
+      "name": "OpenStreetMap (Classic)"
+    },
+    {
+      "id": "topographic",
+      "file": "topographic.json",
+      "path": "dist/topographic.json",
+      "name": "World Topographic Map"
+    },
+    {
+      "id": "os-roads",
+      "file": "os-roads.json",
+      "path": "dist/os-roads.json",
+      "name": "Ordnance Survey - Roads"
+    },
+    {
+      "id": "os-outdoor",
+      "file": "os-outdoor.json",
+      "path": "dist/os-outdoor.json",
+      "name": "Ordnance Survey - Outdoor"
+    },
+    {
+      "id": "os-light",
+      "file": "os-light.json",
+      "path": "dist/os-light.json",
+      "name": "Ordnance Survey - Light"
+    },
+    {
+      "id": "modern-antique",
+      "file": "modern-antique.json",
+      "path": "dist/modern-antique.json",
+      "name": "Modern Antique"
+    },
+    {
+      "id": "newspaper",
+      "file": "newspaper.json",
+      "path": "dist/newspaper.json",
+      "name": "Newspaper"
+    },
+    {
+      "id": "nova",
+      "file": "nova.json",
+      "path": "dist/nova.json",
+      "name": "Nova"
+    },
+    {
+      "id": "colored-pencil",
+      "file": "colored-pencil.json",
+      "path": "dist/colored-pencil.json",
+      "name": "Colored Pencil"
+    },
+    {
+      "id": "charted-territory",
+      "file": "charted-territory.json",
+      "path": "dist/charted-territory.json",
+      "name": "Charted Territory"
+    },
+    {
+      "id": "midcentury",
+      "file": "midcentury.json",
+      "path": "dist/midcentury.json",
+      "name": "Midcentury"
+    },
+    {
+      "id": "blueprint",
+      "file": "blueprint.json",
+      "path": "dist/blueprint.json",
+      "name": "Blueprint"
+    },
+    {
+      "id": "human-geography",
+      "file": "human-geography.json",
+      "path": "dist/human-geography.json",
+      "name": "Human Geography"
+    },
+    {
+      "id": "human-geography-base",
+      "file": "human-geography-base.json",
+      "path": "dist/human-geography-base.json",
+      "name": "Human Geography"
+    },
+    {
+      "id": "human-geography-dark",
+      "file": "human-geography-dark.json",
+      "path": "dist/human-geography-dark.json",
+      "name": "Human Geography Dark"
+    },
+    {
+      "id": "human-geography-dark-base",
+      "file": "human-geography-dark-base.json",
+      "path": "dist/human-geography-dark-base.json",
+      "name": "Human Geography Dark"
+    },
+    {
+      "id": "community",
+      "file": "community.json",
+      "path": "dist/community.json",
+      "name": "Community"
+    },
+    {
+      "id": "outdoor",
+      "file": "outdoor.json",
+      "path": "dist/outdoor.json",
+      "name": "Outdoor"
+    },
+    {
+      "id": "terrain",
+      "file": "terrain.json",
+      "path": "dist/terrain.json",
+      "name": "Terrain"
+    },
+    {
+      "id": "oceans",
+      "file": "oceans.json",
+      "path": "dist/oceans.json",
+      "name": "Oceans"
+    }
+  ]
+}

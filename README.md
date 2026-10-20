@@ -47,7 +47,7 @@ All compiled MapLibre style JSON files are located in [`dist/`](dist/) and are r
 
 ## 🗺️ Interactive Comparison Viewer
 
-An interactive web application is included in [`docs/`](docs/) for inspecting and comparing styles side-by-side (ready for GitHub Pages):
+An interactive web application is available live at **[https://markmclaren.github.io/map-styles/](https://markmclaren.github.io/map-styles/)** (hosted via [`docs/`](docs/)) for inspecting and comparing styles side-by-side:
 
 ### Features:
 - **Single Mode**: Full-screen exploration of any style.
@@ -56,7 +56,10 @@ An interactive web application is included in [`docs/`](docs/) for inspecting an
 - **Location Presets**: London, Edinburgh, Lake District (relief), Swiss Alps (relief), and New York City.
 - **JSON Inspector**: View and download active style JSONs with one click.
 
-### How to Run:
+### Live Demo:
+Explore the styles live: **[https://markmclaren.github.io/map-styles/](https://markmclaren.github.io/map-styles/)**
+
+### How to Run Locally:
 ```bash
 # Start a local static server
 python3 -m http.server 8080

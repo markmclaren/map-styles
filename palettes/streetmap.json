@@ -1,0 +1,95 @@
+{
+  "id": "streetmap",
+  "name": "Streetmap UK Classic",
+  "version": 8,
+  "description": "Traditional British cartography based on Streetmap.co.uk and Ordnance Survey Landranger/Street Atlas styling",
+  "background": "#fcfbf7",
+  "water": {
+    "fill": "#9ed5ea",
+    "outline": "#6eaec8"
+  },
+  "waterway": {
+    "line": "#6eaec8"
+  },
+  "land": {
+    "base": "#fcfbf7"
+  },
+  "greenery": {
+    "wood": "#d9eec7",
+    "park": "#d9eec7"
+  },
+  "urban": {
+    "residential": "#f7f4ec",
+    "commercial": "#f0ece1",
+    "industrial": "#e8e4db",
+    "special": "#fdfbe7",
+    "sand": "#f7f0d7"
+  },
+  "building": {
+    "fill": "#eae4db",
+    "outline": "#cdc5b9"
+  },
+  "roads": {
+    "motorway": {
+      "fill": "#0079c1",
+      "casing": "#003b6d"
+    },
+    "primary": {
+      "fill": "#009a44",
+      "casing": "#004d25"
+    },
+    "secondary": {
+      "fill": "#f59c1a",
+      "casing": "#8c4400"
+    },
+    "minor": {
+      "fill": "#ffffff",
+      "casing": "#9e9e9e"
+    },
+    "path": {
+      "line": "#e66900"
+    },
+    "rail": {
+      "base": "#444444",
+      "ticks": "#ffffff"
+    }
+  },
+  "boundaries": {
+    "country": "#702283",
+    "state": "#9453a3"
+  },
+  "labels": {
+    "city": "#222222",
+    "city_halo": "#ffffff",
+    "country": "#111111",
+    "country_halo": "#ffffff",
+    "water": "#176387",
+    "water_halo": "#ffffff",
+    "road": "#1b1b1b",
+    "road_halo": "#ffffff"
+  },
+  "shields": {
+    "motorway": {
+      "fill": "#0079c1",
+      "text": "#ffffff",
+      "description": "TSRGD Motorway (M) badge"
+    },
+    "primary": {
+      "fill": "#00703c",
+      "text": "#ffd200",
+      "description": "TSRGD Primary Route (A) badge"
+    },
+    "nonprimary": {
+      "fill": "#ffffff",
+      "stroke": "#111111",
+      "text": "#111111",
+      "description": "TSRGD Non-Primary Route (B / local A) badge"
+    },
+    "junction": {
+      "fill": "#111111",
+      "stroke": "#ffffff",
+      "text": "#ffffff",
+      "description": "TSRGD Motorway Junction badge patch"
+    }
+  }
+}

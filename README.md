@@ -12,6 +12,8 @@ All compiled MapLibre style JSON files are located in [`dist/`](dist/) and are r
 
 | Style File | Cartographic Theme | Description |
 |---|---|---|
+| [`dist/streetmap.json`](dist/streetmap.json) | **Streetmap UK Classic** | Traditional British street atlas cartography based on Streetmap.co.uk (motorway blue, emerald A-roads, amber B-roads, white streets with slate casing, peach buildings, and TSRGD sign badges) |
+| [`dist/streetmap-minimal.json`](dist/streetmap-minimal.json) | **Streetmap UK (Minimal)** | Lightweight standalone starter style containing the core essential layers for high-speed street mapping |
 | [`dist/os-roads.json`](dist/os-roads.json) | **Ordnance Survey - Roads** | Iconic OS UK road network cartography (peach buildings, cyan motorways, green A-roads) |
 | [`dist/os-outdoor.json`](dist/os-outdoor.json) | **Ordnance Survey - Outdoor** | Classic OS Landranger/Explorer outdoor styling with greenspaces & relief |
 | [`dist/os-light.json`](dist/os-light.json) | **Ordnance Survey - Light** | Minimalist low-contrast backdrop designed for GIS data overlay |

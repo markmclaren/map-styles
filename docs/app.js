@@ -48,6 +48,61 @@ function getStyleUrl(styleId) {
   return `dist/${styleId}.json`;
 }
 
+// Function to generate UK road sign badges dynamically (TSRGD conventions)
+function createUkShield(fillColor, strokeColor) {
+  const canvas = document.createElement('canvas');
+  canvas.width = 64;
+  canvas.height = 32;
+  const ctx = canvas.getContext('2d');
+  const r = 6;
+  const w = canvas.width - 4;
+  const h = canvas.height - 4;
+  const x = 2;
+  const y = 2;
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.arcTo(x + w, y, x + w, y + h, r);
+  ctx.arcTo(x + w, y + h, x, y + h, r);
+  ctx.arcTo(x, y + h, x, y, r);
+  ctx.arcTo(x, y, x + w, y, r);
+  ctx.closePath();
+  ctx.fillStyle = fillColor;
+  ctx.fill();
+  if (strokeColor) {
+    ctx.lineWidth = 2;
+    ctx.strokeStyle = strokeColor;
+    ctx.stroke();
+  }
+  return ctx.getImageData(0, 0, canvas.width, canvas.height);
+}
+
+const UK_SHIELDS_DEF = {
+  'shield_uk_motorway': { fill: '#0079C1', stroke: null },
+  'shield_uk_primary': { fill: '#00703C', stroke: null },
+  'shield_uk_nonprimary': { fill: '#FFFFFF', stroke: '#111111' },
+  'shield_uk_junction': { fill: '#111111', stroke: '#FFFFFF' }
+};
+
+function addUkShield(map, name) {
+  if (!map || map.hasImage(name)) return;
+  const s = UK_SHIELDS_DEF[name];
+  if (!s) return;
+  try {
+    map.addImage(name, createUkShield(s.fill, s.stroke), {
+      content: [8, 6, 56, 26],
+      stretchX: [[12, 52]],
+      stretchY: [[8, 24]]
+    });
+  } catch (err) {
+    console.warn(`Could not add image ${name}:`, err);
+  }
+}
+
+function registerUkShields(map) {
+  if (!map) return;
+  Object.keys(UK_SHIELDS_DEF).forEach(name => addUkShield(map, name));
+}
+
 // Initialize Application
 async function init() {
   const initial = PRESETS.london;
@@ -78,9 +133,37 @@ async function init() {
   // Synchronize maps
   setupMapSync(mapPrimary, mapSecondary);
 
+  // UK Shields on-demand and on load
+  mapPrimary.on('styleimagemissing', (e) => {
+    if (UK_SHIELDS_DEF[e.id]) addUkShield(mapPrimary, e.id);
+  });
+  mapSecondary.on('styleimagemissing', (e) => {
+    if (UK_SHIELDS_DEF[e.id]) addUkShield(mapSecondary, e.id);
+  });
+
   // Map event listeners
   mapPrimary.on('move', updateHud);
-  mapPrimary.on('load', onMapLoaded);
+  mapPrimary.on('load', () => {
+    registerUkShields(mapPrimary);
+    onMapLoaded();
+  });
+  mapPrimary.on('style.load', () => {
+    registerUkShields(mapPrimary);
+    updateHud();
+  });
+  mapPrimary.on('error', (e) => {
+    if (e && e.error) console.error('MapPrimary Error:', e.error);
+  });
+
+  mapSecondary.on('load', () => {
+    registerUkShields(mapSecondary);
+  });
+  mapSecondary.on('style.load', () => {
+    registerUkShields(mapSecondary);
+  });
+  mapSecondary.on('error', (e) => {
+    if (e && e.error) console.error('MapSecondary Error:', e.error);
+  });
 
   // Setup Event Listeners
   setupEventListeners();
@@ -179,7 +262,10 @@ async function switchStyle(styleId) {
 
 // Update secondary map to an appropriate comparison reference
 function updateSecondaryStyle(styleId) {
-  if (styleId.includes('osm')) {
+  if (styleId.includes('streetmap')) {
+    secondaryTag.textContent = 'Ordnance Survey - Roads';
+    mapSecondary.setStyle(getStyleUrl('os-roads'));
+  } else if (styleId.includes('osm')) {
     secondaryTag.textContent = 'OpenFreeMap Standard Liberty';
     mapSecondary.setStyle('https://tiles.openfreemap.org/styles/liberty');
   } else if (styleId.includes('dark')) {

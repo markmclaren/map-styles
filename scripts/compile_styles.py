@@ -188,6 +188,28 @@ def compile_style(base_template, theme_config, is_base_only=False, is_ref_only=F
                 if key in theme_config:
                     paint['line-color'] = theme_config[key]
 
+                new_layers.append(layer)
+
+                # Add dashed railway ties/ticks if requested
+                if l_id == 'railway' and theme_config.get('include_rail_ticks') and not is_ref_only:
+                    new_layers.append({
+                        "id": "railway_ticks",
+                        "type": "line",
+                        "source": "openmaptiles",
+                        "source-layer": "transportation",
+                        "filter": [
+                            "all",
+                            ["match", ["geometry-type"], ["LineString", "MultiLineString"], True, False],
+                            ["==", ["get", "class"], "rail"]
+                        ],
+                        "paint": {
+                            "line-color": "#ffffff",
+                            "line-width": 1.5,
+                            "line-dasharray": [1.5, 1.5]
+                        }
+                    })
+                continue
+
         # Apply Boundaries
         elif s_layer == 'boundary':
             if l_type == 'line':
@@ -198,6 +220,8 @@ def compile_style(base_template, theme_config, is_base_only=False, is_ref_only=F
 
         # Apply Labels (Symbols)
         elif l_type == 'symbol':
+            if theme_config.get('include_uk_shields') and 'shield' in l_id:
+                continue
             if s_layer == 'place':
                 if any(c in l_id for c in ['city', 'town', 'village']):
                     paint['text-color'] = theme_config.get('label_city', '#333333')
@@ -221,6 +245,128 @@ def compile_style(base_template, theme_config, is_base_only=False, is_ref_only=F
                     paint['text-halo-width'] = 1
 
         new_layers.append(layer)
+
+    if theme_config.get('include_uk_shields') and not is_base_only:
+        uk_shields = [
+            {
+                "id": "ref_motorway_badge",
+                "type": "symbol",
+                "source": "openmaptiles",
+                "source-layer": "transportation_name",
+                "minzoom": 6,
+                "filter": [
+                    "all",
+                    ["==", ["get", "class"], "motorway"],
+                    ["has", "ref"]
+                ],
+                "layout": {
+                    "icon-image": "shield_uk_motorway",
+                    "icon-text-fit": "both",
+                    "icon-text-fit-padding": [2, 5, 2, 5],
+                    "icon-optional": True,
+                    "text-field": ["to-string", ["get", "ref"]],
+                    "text-font": FONT_MAP['bold'],
+                    "text-size": 10,
+                    "symbol-placement": "line",
+                    "text-rotation-alignment": "viewport",
+                    "icon-rotation-alignment": "viewport"
+                },
+                "paint": {
+                    "text-color": "#ffffff"
+                }
+            },
+            {
+                "id": "ref_primary_a_road_badge",
+                "type": "symbol",
+                "source": "openmaptiles",
+                "source-layer": "transportation_name",
+                "minzoom": 7,
+                "filter": [
+                    "all",
+                    ["match", ["get", "class"], ["primary", "trunk"], True, False],
+                    ["has", "ref"]
+                ],
+                "layout": {
+                    "icon-image": "shield_uk_primary",
+                    "icon-text-fit": "both",
+                    "icon-text-fit-padding": [2, 4, 2, 4],
+                    "icon-optional": True,
+                    "text-field": ["to-string", ["get", "ref"]],
+                    "text-font": FONT_MAP['bold'],
+                    "text-size": 10,
+                    "symbol-placement": "line",
+                    "text-rotation-alignment": "viewport",
+                    "icon-rotation-alignment": "viewport"
+                },
+                "paint": {
+                    "text-color": "#ffd200"
+                }
+            },
+            {
+                "id": "ref_nonprimary_badge",
+                "type": "symbol",
+                "source": "openmaptiles",
+                "source-layer": "transportation_name",
+                "minzoom": 9,
+                "filter": [
+                    "all",
+                    ["match", ["get", "class"], ["secondary", "tertiary"], True, False],
+                    ["has", "ref"]
+                ],
+                "layout": {
+                    "icon-image": "shield_uk_nonprimary",
+                    "icon-text-fit": "both",
+                    "icon-text-fit-padding": [2, 4, 2, 4],
+                    "icon-optional": True,
+                    "text-field": ["to-string", ["get", "ref"]],
+                    "text-font": FONT_MAP['bold'],
+                    "text-size": 10,
+                    "symbol-placement": "line",
+                    "text-rotation-alignment": "viewport",
+                    "icon-rotation-alignment": "viewport"
+                },
+                "paint": {
+                    "text-color": "#111111"
+                }
+            },
+            {
+                "id": "motorway_junction_badge",
+                "type": "symbol",
+                "source": "openmaptiles",
+                "source-layer": "transportation_name",
+                "minzoom": 10,
+                "filter": [
+                    "all",
+                    [
+                        "any",
+                        ["==", ["get", "subclass"], "junction"],
+                        ["==", ["get", "class"], "motorway_junction"]
+                    ],
+                    ["has", "ref"]
+                ],
+                "layout": {
+                    "icon-image": "shield_uk_junction",
+                    "icon-text-fit": "both",
+                    "icon-text-fit-padding": [2, 4, 2, 4],
+                    "icon-optional": True,
+                    "text-field": ["to-string", ["get", "ref"]],
+                    "text-font": FONT_MAP['bold'],
+                    "text-size": 10,
+                    "symbol-placement": "point",
+                    "text-anchor": "center",
+                    "text-rotation-alignment": "viewport",
+                    "icon-rotation-alignment": "viewport",
+                    "icon-allow-overlap": False,
+                    "text-allow-overlap": False
+                },
+                "paint": {
+                    "text-color": "#ffffff",
+                    "text-halo-color": "#111111",
+                    "text-halo-width": 2
+                }
+            }
+        ]
+        new_layers.extend(uk_shields)
 
     style['layers'] = new_layers
     return style
@@ -577,6 +723,47 @@ THEMES = {
         'label_water_halo': '#ffffff',
         'label_road': '#222222',
         'label_road_halo': '#ffffff'
+    },
+
+    'streetmap': {
+        'name': 'Streetmap UK Classic',
+        'template': 'bright',
+        'background': '#fcfbf7',
+        'water_fill': '#9ed5ea',
+        'water_outline': '#6eaec8',
+        'waterway_line': '#6eaec8',
+        'land_fill': '#fcfbf7',
+        'wood_fill': '#d9eec7',
+        'park_fill': '#d9eec7',
+        'residential_fill': '#f7f4ec',
+        'commercial_fill': '#f0ece1',
+        'industrial_fill': '#e8e4db',
+        'special_fill': '#fdfbe7',
+        'sand_fill': '#f7f0d7',
+        'building_fill': '#eae4db',
+        'building_outline': '#cdc5b9',
+        'motorway_casing': '#003b6d',
+        'motorway_fill': '#0079c1',
+        'primary_casing': '#004d25',
+        'primary_fill': '#009a44',
+        'secondary_casing': '#8c4400',
+        'secondary_fill': '#f59c1a',
+        'minor_casing': '#9e9e9e',
+        'minor_fill': '#ffffff',
+        'path_line': '#e66900',
+        'rail_line': '#444444',
+        'boundary_country': '#702283',
+        'boundary_state': '#9453a3',
+        'label_city': '#222222',
+        'label_city_halo': '#ffffff',
+        'label_country': '#111111',
+        'label_country_halo': '#ffffff',
+        'label_water': '#176387',
+        'label_water_halo': '#ffffff',
+        'label_road': '#1b1b1b',
+        'label_road_halo': '#ffffff',
+        'include_rail_ticks': True,
+        'include_uk_shields': True
     },
 
     'os-outdoor': {
@@ -1169,6 +1356,316 @@ THEMES = {
     }
 }
 
+def generate_streetmap_minimal(dist_dir):
+    """
+    Generates the standalone lightweight Streetmap UK style
+    based on the direct specification from the Gemini chat PDF.
+    """
+    style = {
+        "version": 8,
+        "name": "Streetmap UK Minimal",
+        "glyphs": GLYPHS_URL,
+        "sprite": SPRITE_URL,
+        "sources": {
+            "openmaptiles": {
+                "type": "vector",
+                "url": TILE_SOURCE_URL
+            }
+        },
+        "layers": [
+            {
+                "id": "background",
+                "type": "background",
+                "paint": {
+                    "background-color": "#fcfbf7"
+                }
+            },
+            {
+                "id": "landuse_park",
+                "type": "fill",
+                "source": "openmaptiles",
+                "source-layer": "park",
+                "paint": {
+                    "fill-color": "#d9eec7",
+                    "fill-opacity": 0.8
+                }
+            },
+            {
+                "id": "water",
+                "type": "fill",
+                "source": "openmaptiles",
+                "source-layer": "water",
+                "paint": {
+                    "fill-color": "#9ed5ea",
+                    "fill-outline-color": "#6eaec8"
+                }
+            },
+            {
+                "id": "building",
+                "type": "fill",
+                "source": "openmaptiles",
+                "source-layer": "building",
+                "paint": {
+                    "fill-color": "#eae4db",
+                    "fill-outline-color": "#cdc5b9"
+                }
+            },
+            {
+                "id": "tunnel_casing",
+                "type": "line",
+                "source": "openmaptiles",
+                "source-layer": "transportation",
+                "filter": ["==", "brunnel", "tunnel"],
+                "paint": {
+                    "line-color": "#a0a0a0",
+                    "line-width": 4,
+                    "line-dasharray": [2, 2]
+                }
+            },
+            {
+                "id": "road_residential_casing",
+                "type": "line",
+                "source": "openmaptiles",
+                "source-layer": "transportation",
+                "filter": ["all", ["==", "$type", "LineString"], ["in", "class", "minor", "service", "residential"]],
+                "paint": {
+                    "line-color": "#9e9e9e",
+                    "line-width": ["interpolate", ["linear"], ["zoom"], 12, 1.5, 16, 7]
+                }
+            },
+            {
+                "id": "road_residential_fill",
+                "type": "line",
+                "source": "openmaptiles",
+                "source-layer": "transportation",
+                "filter": ["all", ["==", "$type", "LineString"], ["in", "class", "minor", "service", "residential"]],
+                "paint": {
+                    "line-color": "#ffffff",
+                    "line-width": ["interpolate", ["linear"], ["zoom"], 12, 0.8, 16, 5]
+                }
+            },
+            {
+                "id": "road_secondary_casing",
+                "type": "line",
+                "source": "openmaptiles",
+                "source-layer": "transportation",
+                "filter": ["all", ["==", "$type", "LineString"], ["in", "class", "secondary", "tertiary"]],
+                "paint": {
+                    "line-color": "#8c4400",
+                    "line-width": ["interpolate", ["linear"], ["zoom"], 10, 2, 16, 9]
+                }
+            },
+            {
+                "id": "road_secondary_fill",
+                "type": "line",
+                "source": "openmaptiles",
+                "source-layer": "transportation",
+                "filter": ["all", ["==", "$type", "LineString"], ["in", "class", "secondary", "tertiary"]],
+                "paint": {
+                    "line-color": "#f59c1a",
+                    "line-width": ["interpolate", ["linear"], ["zoom"], 10, 1.2, 16, 7]
+                }
+            },
+            {
+                "id": "road_primary_casing",
+                "type": "line",
+                "source": "openmaptiles",
+                "source-layer": "transportation",
+                "filter": ["all", ["==", "$type", "LineString"], ["in", "class", "primary", "trunk"]],
+                "paint": {
+                    "line-color": "#004d25",
+                    "line-width": ["interpolate", ["linear"], ["zoom"], 8, 2, 16, 10]
+                }
+            },
+            {
+                "id": "road_primary_fill",
+                "type": "line",
+                "source": "openmaptiles",
+                "source-layer": "transportation",
+                "filter": ["all", ["==", "$type", "LineString"], ["in", "class", "primary", "trunk"]],
+                "paint": {
+                    "line-color": "#009a44",
+                    "line-width": ["interpolate", ["linear"], ["zoom"], 8, 1.2, 16, 8]
+                }
+            },
+            {
+                "id": "road_motorway_casing",
+                "type": "line",
+                "source": "openmaptiles",
+                "source-layer": "transportation",
+                "filter": ["all", ["==", "$type", "LineString"], ["==", "class", "motorway"]],
+                "paint": {
+                    "line-color": "#003b6d",
+                    "line-width": ["interpolate", ["linear"], ["zoom"], 6, 2.5, 16, 12]
+                }
+            },
+            {
+                "id": "road_motorway_fill",
+                "type": "line",
+                "source": "openmaptiles",
+                "source-layer": "transportation",
+                "filter": ["all", ["==", "$type", "LineString"], ["==", "class", "motorway"]],
+                "paint": {
+                    "line-color": "#0079c1",
+                    "line-width": ["interpolate", ["linear"], ["zoom"], 6, 1.5, 16, 10]
+                }
+            },
+            {
+                "id": "railway_base",
+                "type": "line",
+                "source": "openmaptiles",
+                "source-layer": "transportation",
+                "filter": ["==", "class", "rail"],
+                "paint": {
+                    "line-color": "#444444",
+                    "line-width": 2
+                }
+            },
+            {
+                "id": "railway_ticks",
+                "type": "line",
+                "source": "openmaptiles",
+                "source-layer": "transportation",
+                "filter": ["==", "class", "rail"],
+                "paint": {
+                    "line-color": "#ffffff",
+                    "line-width": 1.5,
+                    "line-dasharray": [1.5, 1.5]
+                }
+            },
+            {
+                "id": "ref_motorway_badge",
+                "type": "symbol",
+                "source": "openmaptiles",
+                "source-layer": "transportation_name",
+                "minzoom": 6,
+                "filter": [
+                    "all",
+                    ["==", ["get", "class"], "motorway"],
+                    ["has", "ref"]
+                ],
+                "layout": {
+                    "icon-image": "shield_uk_motorway",
+                    "icon-text-fit": "both",
+                    "icon-text-fit-padding": [2, 5, 2, 5],
+                    "icon-optional": True,
+                    "text-field": ["to-string", ["get", "ref"]],
+                    "text-font": FONT_MAP['bold'],
+                    "text-size": 10,
+                    "symbol-placement": "line",
+                    "text-rotation-alignment": "viewport",
+                    "icon-rotation-alignment": "viewport"
+                },
+                "paint": {
+                    "text-color": "#ffffff"
+                }
+            },
+            {
+                "id": "ref_primary_a_road_badge",
+                "type": "symbol",
+                "source": "openmaptiles",
+                "source-layer": "transportation_name",
+                "minzoom": 7,
+                "filter": [
+                    "all",
+                    ["match", ["get", "class"], ["primary", "trunk"], True, False],
+                    ["has", "ref"]
+                ],
+                "layout": {
+                    "icon-image": "shield_uk_primary",
+                    "icon-text-fit": "both",
+                    "icon-text-fit-padding": [2, 4, 2, 4],
+                    "icon-optional": True,
+                    "text-field": ["to-string", ["get", "ref"]],
+                    "text-font": FONT_MAP['bold'],
+                    "text-size": 10,
+                    "symbol-placement": "line",
+                    "text-rotation-alignment": "viewport",
+                    "icon-rotation-alignment": "viewport"
+                },
+                "paint": {
+                    "text-color": "#ffd200"
+                }
+            },
+            {
+                "id": "motorway_junction_badge",
+                "type": "symbol",
+                "source": "openmaptiles",
+                "source-layer": "transportation_name",
+                "minzoom": 10,
+                "filter": [
+                    "all",
+                    [
+                        "any",
+                        ["==", ["get", "subclass"], "junction"],
+                        ["==", ["get", "class"], "motorway_junction"]
+                    ],
+                    ["has", "ref"]
+                ],
+                "layout": {
+                    "icon-image": "shield_uk_junction",
+                    "icon-text-fit": "both",
+                    "icon-text-fit-padding": [2, 4, 2, 4],
+                    "icon-optional": True,
+                    "text-field": ["to-string", ["get", "ref"]],
+                    "text-font": FONT_MAP['bold'],
+                    "text-size": 10,
+                    "symbol-placement": "point",
+                    "text-anchor": "center",
+                    "text-rotation-alignment": "viewport",
+                    "icon-rotation-alignment": "viewport",
+                    "icon-allow-overlap": False,
+                    "text-allow-overlap": False
+                },
+                "paint": {
+                    "text-color": "#ffffff",
+                    "text-halo-color": "#111111",
+                    "text-halo-width": 2
+                }
+            },
+            {
+                "id": "road_label",
+                "type": "symbol",
+                "source": "openmaptiles",
+                "source-layer": "transportation_name",
+                "layout": {
+                    "symbol-placement": "line",
+                    "text-field": "{name}",
+                    "text-font": FONT_MAP['regular'],
+                    "text-size": 11,
+                    "text-letter-spacing": 0.05
+                },
+                "paint": {
+                    "text-color": "#1b1b1b",
+                    "text-halo-color": "#ffffff",
+                    "text-halo-width": 1.5
+                }
+            },
+            {
+                "id": "place_label_town",
+                "type": "symbol",
+                "source": "openmaptiles",
+                "source-layer": "place",
+                "filter": ["match", ["get", "class"], ["town", "city"], True, False],
+                "layout": {
+                    "text-field": "{name}",
+                    "text-font": FONT_MAP['bold'],
+                    "text-size": ["interpolate", ["linear"], ["zoom"], 8, 12, 14, 18],
+                    "text-transform": "uppercase"
+                },
+                "paint": {
+                    "text-color": "#222222",
+                    "text-halo-color": "#ffffff",
+                    "text-halo-width": 2
+                }
+            }
+        ]
+    }
+    out_f = os.path.join(dist_dir, "streetmap-minimal.json")
+    with open(out_f, 'w') as f:
+        json.dump(style, f, indent=2)
+    return "streetmap-minimal.json"
+
 def main():
     root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     ref_dir = os.path.join(root, 'reference-styles')
@@ -1230,8 +1727,8 @@ def main():
         json.dump(topo_style, f, indent=2)
     generated.append('topographic.json')
 
-    # 4. Ordnance Survey Skins (Roads, Outdoor, Light)
-    for os_id in ['os-roads', 'os-outdoor', 'os-light']:
+    # 4. Ordnance Survey & British Cartography (Roads, Streetmap UK, Outdoor, Light)
+    for os_id in ['os-roads', 'streetmap', 'os-outdoor', 'os-light']:
         os_theme = THEMES[os_id]
         include_rel = os_theme.get('include_relief', False)
         os_style = compile_style(bright_template, os_theme, include_relief=include_rel)
@@ -1239,6 +1736,10 @@ def main():
         with open(out_f, 'w') as f:
             json.dump(os_style, f, indent=2)
         generated.append(f"{os_id}.json")
+
+    # Standalone minimal Streetmap UK style
+    min_f = generate_streetmap_minimal(dist_dir)
+    generated.append(min_f)
 
     # 5. Creative Basemaps (Modern Antique, Newspaper, Nova, Colored Pencil, Charted Territory, Midcentury, Blueprint)
     for cr_id in ['modern-antique', 'newspaper', 'nova', 'colored-pencil', 'charted-territory', 'midcentury', 'blueprint']:
@@ -1289,7 +1790,7 @@ def main():
                 'id': fname.replace('.json', ''),
                 'file': fname,
                 'path': f"dist/{fname}",
-                'name': THEMES.get(fname.replace('.json', '').replace('-base', '').replace('-ref', '').replace('-relief', ''), {}).get('name', fname)
+                'name': 'Streetmap UK (Minimal)' if fname == 'streetmap-minimal.json' else THEMES.get(fname.replace('.json', '').replace('-base', '').replace('-ref', '').replace('-relief', ''), {}).get('name', fname)
             }
             for fname in generated
         ]

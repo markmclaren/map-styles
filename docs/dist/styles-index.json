@@ -82,6 +82,12 @@
       "name": "Ordnance Survey - Roads"
     },
     {
+      "id": "streetmap",
+      "file": "streetmap.json",
+      "path": "dist/streetmap.json",
+      "name": "Streetmap UK Classic"
+    },
+    {
       "id": "os-outdoor",
       "file": "os-outdoor.json",
       "path": "dist/os-outdoor.json",
@@ -92,6 +98,12 @@
       "file": "os-light.json",
       "path": "dist/os-light.json",
       "name": "Ordnance Survey - Light"
+    },
+    {
+      "id": "streetmap-minimal",
+      "file": "streetmap-minimal.json",
+      "path": "dist/streetmap-minimal.json",
+      "name": "Streetmap UK (Minimal)"
     },
     {
       "id": "modern-antique",

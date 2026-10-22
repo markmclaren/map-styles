@@ -73,20 +73,23 @@ const hudZoom = document.getElementById('hudZoom');
 const hudLayers = document.getElementById('hudLayers');
 
 // Adobe Color Wheel & View Mode State
-let currentStudioView = 'wheel'; // 'wheel' | 'cards' | 'both'
+let currentStudioView = 'cards'; // 'wheel' | 'cards' | 'both'
+let advancedStudioView = 'both';
+let openEditorToken = null;
 let selectedWheelToken = 'roads';
 let anchorToken = 'roads';
 let draggingWheelPin = null;
 
 // Token Metadata
 const TOKEN_META = {
-  canvas: { name: 'Canvas', icon: '🏞️', desc: 'Base terrain' },
-  water: { name: 'Water', icon: '🌊', desc: 'Oceans & rivers' },
-  greenspace: { name: 'Greenspace', icon: '🌲', desc: 'Parks & nature' },
-  roads: { name: 'Roads', icon: '🚗', desc: 'Highway spine' },
-  buildings: { name: 'Buildings', icon: '🏢', desc: 'Urban blocks' },
-  text: { name: 'Labels', icon: '🔤', desc: 'City text' }
+  canvas: { name: 'Canvas', icon: 'C', desc: 'Land & background' },
+  water: { name: 'Water', icon: 'W', desc: 'Oceans, lakes & rivers' },
+  greenspace: { name: 'Greenspace', icon: 'G', desc: 'Parks & nature' },
+  roads: { name: 'Roads', icon: 'R', desc: 'Road network' },
+  buildings: { name: 'Buildings', icon: 'B', desc: 'Urban blocks' },
+  text: { name: 'Labels', icon: 'L', desc: 'Place & street names' }
 };
+const TOKEN_KEYS = Object.keys(TOKEN_META);
 
 // Color Wheel DOM References
 const colorWheelCanvas = document.getElementById('colorWheelCanvas');
@@ -116,10 +119,112 @@ const TOKEN_INPUTS = {
   text: { picker: document.getElementById('pickerText'), text: document.getElementById('textText') }
 };
 
+// A single state model serves the simple editor, exact inputs and advanced wheel.
+function normalizeHex(value) {
+  const candidate = String(value).trim().replace(/^#/, '');
+  return /^[0-9a-f]{6}$/i.test(candidate) ? `#${candidate.toLowerCase()}` : null;
+}
+
+function paletteTokens(palette) {
+  return Object.fromEntries(TOKEN_KEYS.map(key => [key, normalizeHex(palette[key]) || tokens[key]]));
+}
+
+function setHexFeedback(key, invalid) {
+  const input = TOKEN_INPUTS[key].text;
+  input.setAttribute('aria-invalid', String(invalid));
+  const error = document.getElementById(`error${key.charAt(0).toUpperCase() + key.slice(1)}`);
+  if (error) error.hidden = !invalid;
+}
+
+function setOpenEditor(key) {
+  openEditorToken = key;
+  document.querySelectorAll('.token-trigger').forEach(button => {
+    const expanded = button.dataset.token === key;
+    button.setAttribute('aria-expanded', String(expanded));
+    const editor = document.getElementById(button.getAttribute('aria-controls'));
+    if (editor) editor.hidden = !expanded;
+    button.closest('.token-card').classList.toggle('is-editing', expanded);
+  });
+  if (key) selectWheelToken(key);
+}
+
+function setupSimpleEditor() {
+  document.querySelectorAll('.token-trigger').forEach(button => {
+    button.addEventListener('click', () => {
+      setOpenEditor(openEditorToken === button.dataset.token ? null : button.dataset.token);
+    });
+  });
+
+  TOKEN_KEYS.forEach(key => {
+    const cap = key.charAt(0).toUpperCase() + key.slice(1);
+    const container = document.getElementById(`suggestions${cap}`);
+    if (!container) return;
+    const choices = new Map();
+    Object.values(StyleEngine.PRESET_PALETTES).forEach(palette => {
+      const hex = normalizeHex(palette[key]);
+      if (hex && !choices.has(hex)) choices.set(hex, palette.name);
+    });
+    choices.set('#ffffff', 'White');
+    choices.set('#000000', 'Black');
+    choices.forEach((name, hex) => {
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.className = 'suggested-swatch';
+      button.dataset.token = key;
+      button.dataset.colour = hex;
+      button.style.backgroundColor = hex;
+      button.style.color = StyleEngine.getRelativeLuminance(hex) > 0.4 ? '#0f172a' : '#ffffff';
+      button.title = `${name}: ${hex}`;
+      button.setAttribute('aria-label', `${TOKEN_META[key].name}: ${name}, ${hex}`);
+      button.innerHTML = '<span aria-hidden="true">✓</span>';
+      button.addEventListener('click', () => onTokenChanged(key, hex));
+      container.appendChild(button);
+    });
+  });
+
+  const advanced = document.getElementById('advancedTools');
+  if (advanced) advanced.addEventListener('toggle', () => {
+    if (!advanced.open) {
+      advancedStudioView = currentStudioView;
+      setStudioView('cards');
+    } else {
+      setStudioView(advancedStudioView);
+    }
+  });
+
+  document.addEventListener('keydown', event => {
+    if (event.key !== 'Escape') return;
+    if (inspectorDrawer.classList.contains('open')) {
+      inspectorDrawer.classList.remove('open');
+      btnInspect.setAttribute('aria-expanded', 'false');
+      btnInspect.focus();
+    } else if (openEditorToken) {
+      const button = document.querySelector(`.token-trigger[data-token="${openEditorToken}"]`);
+      setOpenEditor(null);
+      if (button) button.focus();
+    }
+  });
+}
+
+function updateSimpleEditor() {
+  TOKEN_KEYS.forEach(key => {
+    const swatch = document.querySelector(`[data-swatch="${key}"]`);
+    const value = document.querySelector(`[data-value="${key}"]`);
+    if (swatch) swatch.style.backgroundColor = tokens[key];
+    if (value) value.textContent = tokens[key];
+  });
+  document.querySelectorAll('.suggested-swatch').forEach(button => {
+    const selected = button.dataset.colour === tokens[button.dataset.token];
+    button.classList.toggle('active', selected);
+    button.setAttribute('aria-pressed', String(selected));
+  });
+}
+
 // Initialize Application
 async function init() {
   // 1. Read URL params / hash if available
   loadTokensFromUrl();
+  syncTokenInputs();
 
   // 2. Fetch base template (checks window.BASE_TEMPLATE first for instant & offline/file:// support)
   if (window.BASE_TEMPLATE) {
@@ -184,9 +289,11 @@ async function init() {
   renderColorWheelCanvas();
   setupColorWheelInteractions();
   setupEventListeners();
-  setStudioView('wheel');
+  setupSimpleEditor();
+  setStudioView('cards');
   selectWheelToken('roads');
   updateUiState();
+  updateInspectorJson();
 }
 
 // Setup input listeners for the 6 color pickers
@@ -200,11 +307,19 @@ function setupTokenBindings() {
     });
 
     text.addEventListener('input', (e) => {
-      let val = e.target.value.trim();
-      if (!val.startsWith('#')) val = '#' + val;
-      if (/^#[0-9A-Fa-f]{6}$/.test(val)) {
-        picker.value = val;
-        onTokenChanged(key, val);
+      const val = normalizeHex(e.target.value);
+      if (val) onTokenChanged(key, val);
+      else setHexFeedback(key, false);
+    });
+    text.addEventListener('blur', () => {
+      setHexFeedback(key, !normalizeHex(text.value));
+    });
+    text.addEventListener('keydown', event => {
+      if (event.key === 'Enter') setHexFeedback(key, !normalizeHex(text.value));
+      if (event.key === 'Escape') {
+        event.stopPropagation();
+        text.value = tokens[key];
+        setHexFeedback(key, false);
       }
     });
   });
@@ -212,7 +327,9 @@ function setupTokenBindings() {
 
 // Debounced style compilation when a token changes
 function onTokenChanged(changedKey, value) {
-  tokens[changedKey] = value;
+  const hex = normalizeHex(value);
+  if (!TOKEN_KEYS.includes(changedKey) || !hex) return;
+  tokens[changedKey] = hex;
 
   // Handle single-hue monochrome lock
   if (isMonochromeLocked && (changedKey === 'roads' || changedKey === 'canvas')) {
@@ -221,6 +338,7 @@ function onTokenChanged(changedKey, value) {
     syncTokenInputs();
   }
 
+  syncTokenInputs();
   updateUiState();
 
   clearTimeout(compileTimeout);
@@ -231,6 +349,8 @@ function onTokenChanged(changedKey, value) {
 
 // Compile and update MapLibre in memory
 function applyCompiledStyle() {
+  clearTimeout(compileTimeout);
+  compileTimeout = null;
   if (!baseTemplate) return;
 
   const theme = StyleEngine.generateThemeConfig(tokens);
@@ -258,6 +378,7 @@ function syncTokenInputs() {
     const { picker, text } = TOKEN_INPUTS[key];
     picker.value = tokens[key];
     text.value = tokens[key];
+    setHexFeedback(key, false);
   });
 }
 
@@ -270,6 +391,8 @@ function updateUiState() {
   // Synchronize explicit Light / Dark mode toggle buttons
   if (btnModeLight) btnModeLight.classList.toggle('active', !isDark);
   if (btnModeDark) btnModeDark.classList.toggle('active', isDark);
+  if (btnModeLight) btnModeLight.setAttribute('aria-pressed', String(!isDark));
+  if (btnModeDark) btnModeDark.setAttribute('aria-pressed', String(isDark));
 
   // Backward compatibility with legacy badge if present
   const badgeMode = document.getElementById('badgeMode');
@@ -300,8 +423,9 @@ function updateUiState() {
     const pId = pill.dataset.preset;
     const p = StyleEngine.PRESET_PALETTES[pId];
     if (p) {
-      const match = Object.keys(tokens).every(k => tokens[k] && p[k] && tokens[k].toLowerCase() === p[k].toLowerCase());
+      const match = TOKEN_KEYS.every(k => tokens[k] && p[k] && tokens[k].toLowerCase() === p[k].toLowerCase());
       pill.classList.toggle('active', match);
+      pill.setAttribute('aria-pressed', String(match));
     }
   });
 
@@ -311,6 +435,8 @@ function updateUiState() {
   // Synchronize slot machine HOLD states and active harmony badge
   updateHoldUi();
   updateHarmonyBadge();
+
+  updateSimpleEditor();
 
   // Synchronize Adobe Color Wheel & mini swatches
   if (currentStudioView !== 'cards') {
@@ -329,7 +455,7 @@ function toggleHold(tokenKey) {
   updateActiveTokenBar();
   renderWheelSwatchesStrip();
   const isHeld = heldTokens[tokenKey];
-  showToast(isHeld ? `🔒 Held ${tokenKey} (locked from shuffle)` : `Released hold on ${tokenKey}`);
+  showToast(isHeld ? `${TOKEN_META[tokenKey].name} locked for shuffle` : `${TOKEN_META[tokenKey].name} unlocked`);
 }
 
 // Synchronize HOLD button visuals and card indicators
@@ -338,12 +464,14 @@ function updateHoldUi() {
 
   // Update hold buttons on all cards
   document.querySelectorAll('.btn-hold').forEach(btn => {
-    const key = btn.dataset.token;
+    const key = btn === wheelHoldBtn ? selectedWheelToken : btn.dataset.token;
     const isHeld = !!heldTokens[key];
     btn.classList.toggle('is-held', isHeld);
+    btn.setAttribute('aria-pressed', String(isHeld));
+    btn.setAttribute('aria-label', `${isHeld ? 'Unlock' : 'Lock'} ${TOKEN_META[key].name.toLowerCase()} for shuffle`);
     const textSpan = btn.querySelector('.hold-text');
-    if (textSpan) textSpan.textContent = isHeld ? 'HELD' : 'HOLD';
-    btn.title = isHeld ? 'Locked: Color is preserved during shuffle (Click to release)' : 'Hold: Lock color during shuffle';
+    if (textSpan) textSpan.textContent = isHeld ? 'Locked' : 'Lock';
+    btn.title = 'Keep this colour when shuffling; manual edits and presets still work';
 
     // Highlight parent card
     const card = document.getElementById(`card${key ? key.charAt(0).toUpperCase() + key.slice(1) : ''}`);
@@ -353,19 +481,20 @@ function updateHoldUi() {
   // Update Shuffle button label
   if (shuffleLabel) {
     if (count === 6) {
-      shuffleLabel.textContent = 'All Held 🔒';
+      shuffleLabel.textContent = 'All colours locked';
     } else if (count > 0) {
-      shuffleLabel.textContent = `Shuffle 🎰 (${count} Held)`;
+      shuffleLabel.textContent = `Shuffle (${count} locked)`;
     } else {
-      shuffleLabel.textContent = 'Shuffle 🎰';
+      shuffleLabel.textContent = 'Shuffle palette';
     }
   }
+  if (btnShuffle) btnShuffle.disabled = count === 6;
 
   // Update Release Holds button
   if (btnClearHolds) {
     btnClearHolds.style.display = count > 0 ? 'flex' : 'none';
     const span = btnClearHolds.querySelector('span');
-    if (span) span.textContent = `Release Holds (${count})`;
+    if (span) span.textContent = `Unlock all (${count})`;
   }
 }
 
@@ -425,7 +554,8 @@ function executeHarmoniousShuffle(harmonyChoice) {
   triggerSlotSpinAnimation();
 
   if (isMonochromeLocked || chosenHarmony === 'monochrome') {
-    tokens = StyleEngine.generateMonochromeTokens(tokens.roads || tokens.canvas, isDark);
+    const generated = StyleEngine.generateMonochromeTokens(tokens.roads || tokens.canvas, isDark);
+    tokens = Object.fromEntries(TOKEN_KEYS.map(key => [key, heldTokens[key] ? tokens[key] : generated[key]]));
   } else {
     tokens = StyleEngine.generateHarmoniousPalette({
       isDark,
@@ -619,7 +749,7 @@ function updateColorWheelSvg() {
     group.addEventListener('pointerdown', (e) => {
       e.stopPropagation();
       e.preventDefault();
-      group.setPointerCapture(e.pointerId);
+      colorWheelSvg.setPointerCapture(e.pointerId);
       draggingWheelPin = k;
       selectWheelToken(k);
     });
@@ -662,7 +792,7 @@ function setupColorWheelInteractions() {
       const deltaHue = (newHue - currentHsl.h + 360) % 360;
 
       // Rotate all UNHELD tokens by deltaHue
-      Object.keys(tokens).forEach(k => {
+      TOKEN_KEYS.forEach(k => {
         if (!heldTokens[k]) {
           const kHsl = StyleEngine.rgbToHsl(StyleEngine.hexToRgb(tokens[k]).r, StyleEngine.hexToRgb(tokens[k]).g, StyleEngine.hexToRgb(tokens[k]).b);
           const rotatedHue = (kHsl.h + deltaHue + 360) % 360;
@@ -692,6 +822,7 @@ function setupColorWheelInteractions() {
       }
     }
 
+    syncTokenInputs();
     updateUiState();
 
     clearTimeout(compileTimeout);
@@ -716,7 +847,7 @@ function setupColorWheelInteractions() {
       anchorToken = selectedWheelToken;
       updateActiveTokenBar();
       updateColorWheelSvg();
-      showToast(`Set ${TOKEN_META[anchorToken].name} as Harmony Anchor 🎯`);
+      showToast(`${TOKEN_META[anchorToken].name} is the base colour for harmony rotation`);
     });
   }
 
@@ -782,15 +913,18 @@ function updateActiveTokenBar() {
   const isAnchor = (selectedWheelToken === anchorToken);
   if (btnSetAnchor) {
     btnSetAnchor.classList.toggle('is-anchor', isAnchor);
-    if (anchorBtnText) anchorBtnText.textContent = isAnchor ? '🎯 Base Active' : 'Set as Base';
+    btnSetAnchor.setAttribute('aria-pressed', String(isAnchor));
+    if (anchorBtnText) anchorBtnText.textContent = isAnchor ? 'Base colour' : 'Use as base';
   }
 
   // Hold button state
   const isHeld = !!heldTokens[selectedWheelToken];
   if (wheelHoldBtn) {
     wheelHoldBtn.classList.toggle('is-held', isHeld);
+    wheelHoldBtn.setAttribute('aria-pressed', String(isHeld));
+    wheelHoldBtn.setAttribute('aria-label', `${isHeld ? 'Unlock' : 'Lock'} ${meta.name.toLowerCase()} for shuffle`);
     const holdText = wheelHoldBtn.querySelector('.hold-text');
-    if (holdText) holdText.textContent = isHeld ? 'HELD' : 'HOLD';
+    if (holdText) holdText.textContent = isHeld ? 'Locked' : 'Lock';
   }
 
   // Lightness Slider state & gradient
@@ -821,9 +955,12 @@ function renderWheelSwatchesStrip() {
     const isAnchor = (k === anchorToken);
     const isHeld = !!heldTokens[k];
 
-    const swatch = document.createElement('div');
+    const swatch = document.createElement('button');
+    swatch.type = 'button';
     swatch.className = `mini-swatch ${isSelected ? 'active' : ''} ${isHeld ? 'is-held' : ''}`;
-    swatch.title = `${meta.name}: ${hex}${isAnchor ? ' (🎯 Base)' : ''}${isHeld ? ' (🔒 Held)' : ''}`;
+    swatch.title = `${meta.name}: ${hex}${isAnchor ? ' (Base colour)' : ''}${isHeld ? ' (Locked for shuffle)' : ''}`;
+    swatch.setAttribute('aria-label', `Select ${meta.name.toLowerCase()}, ${hex}`);
+    swatch.setAttribute('aria-pressed', String(isSelected));
 
     swatch.innerHTML = `
       <div class="mini-swatch-chip" style="background: ${hex};"></div>
@@ -845,6 +982,9 @@ function setStudioView(viewMode) {
   if (tabBtnWheel) tabBtnWheel.classList.toggle('active', viewMode === 'wheel');
   if (tabBtnCards) tabBtnCards.classList.toggle('active', viewMode === 'cards');
   if (tabBtnBoth) tabBtnBoth.classList.toggle('active', viewMode === 'both');
+  if (tabBtnWheel) tabBtnWheel.setAttribute('aria-pressed', String(viewMode === 'wheel'));
+  if (tabBtnCards) tabBtnCards.setAttribute('aria-pressed', String(viewMode === 'cards'));
+  if (tabBtnBoth) tabBtnBoth.setAttribute('aria-pressed', String(viewMode === 'both'));
 
   if (colorWheelSection) {
     colorWheelSection.classList.toggle('is-hidden', viewMode === 'cards');
@@ -872,12 +1012,14 @@ function renderTonalLadders() {
     const baseColor = tokens[key];
 
     deltas.forEach(delta => {
-      const chipColor = StyleEngine.adjustHsl(baseColor, { l: delta });
+      const chipColor = delta === 0 ? baseColor : StyleEngine.adjustHsl(baseColor, { l: delta });
       const chip = document.createElement('button');
       chip.type = 'button';
       chip.className = `tonal-chip ${delta === 0 ? 'active' : ''}`;
       chip.style.backgroundColor = chipColor;
       chip.title = `${delta === 0 ? 'Current' : (delta > 0 ? `+${delta}% Lighter` : `${delta}% Darker`)} (${chipColor})`;
+      chip.setAttribute('aria-label', `${TOKEN_META[key].name}: ${chip.title}`);
+      chip.setAttribute('aria-pressed', String(delta === 0));
 
       chip.addEventListener('click', () => {
         onTokenChanged(key, chipColor);
@@ -898,6 +1040,7 @@ function renderPresetPills() {
   Object.keys(StyleEngine.PRESET_PALETTES).forEach(pId => {
     const p = StyleEngine.PRESET_PALETTES[pId];
     const pill = document.createElement('button');
+    pill.type = 'button';
     pill.className = 'preset-pill';
     pill.dataset.preset = pId;
     pill.innerHTML = `
@@ -910,7 +1053,7 @@ function renderPresetPills() {
     `;
 
     pill.addEventListener('click', () => {
-      tokens = { ...p };
+      tokens = paletteTokens(p);
       syncTokenInputs();
       updateUiState();
       applyCompiledStyle();
@@ -986,7 +1129,7 @@ function setupEventListeners() {
   // Location select
   locationSelect.addEventListener('change', (e) => {
     const p = PRESETS[e.target.value];
-    if (p) {
+    if (p && map) {
       map.flyTo({
         center: p.center,
         zoom: p.zoom,
@@ -1003,22 +1146,22 @@ function setupEventListeners() {
     currentProjection = 'mercator';
     btnProjMercator.classList.add('active');
     btnProjGlobe.classList.remove('active');
-    map.setProjection({ type: 'mercator' });
+    if (map) map.setProjection({ type: 'mercator' });
   });
 
   btnProjGlobe.addEventListener('click', () => {
     currentProjection = 'globe';
     btnProjGlobe.classList.add('active');
     btnProjMercator.classList.remove('active');
-    map.setProjection({ type: 'globe' });
+    if (map) map.setProjection({ type: 'globe' });
   });
 
-  // Slot-Machine HOLD Buttons (Clicking toggles hold on that color reel)
+// Slot-Machine HOLD Buttons (Clicking toggles hold on that color reel)
   document.querySelectorAll('.btn-hold').forEach(btn => {
     btn.addEventListener('click', (e) => {
       e.stopPropagation();
       const tokenKey = btn.dataset.token;
-      toggleHold(tokenKey);
+      if (tokenKey) toggleHold(tokenKey);
     });
   });
 
@@ -1056,13 +1199,14 @@ function setupEventListeners() {
     syncTokenInputs();
     updateUiState();
     applyCompiledStyle();
-    showToast('Auto-tuned for WCAG AA compliance');
+    showToast('Label and feature contrast adjusted');
   });
 
-  // Monochrome Lock
+// Monochrome Lock
   btnMonoLock.addEventListener('click', () => {
     isMonochromeLocked = !isMonochromeLocked;
     btnMonoLock.classList.toggle('active', isMonochromeLocked);
+    btnMonoLock.setAttribute('aria-pressed', String(isMonochromeLocked));
     if (isMonochromeLocked) {
       const isDark = (currentMode === 'dark');
       tokens = StyleEngine.generateMonochromeTokens(tokens.roads || tokens.canvas, isDark);
@@ -1087,16 +1231,22 @@ function setupEventListeners() {
 
   // Inspector Drawer
   btnInspect.addEventListener('click', () => {
+    applyCompiledStyle();
     inspectorDrawer.classList.toggle('open');
+    btnInspect.setAttribute('aria-expanded', String(inspectorDrawer.classList.contains('open')));
     updateInspectorJson();
+    if (inspectorDrawer.classList.contains('open')) btnCloseInspector.focus();
   });
 
   btnCloseInspector.addEventListener('click', () => {
     inspectorDrawer.classList.remove('open');
+    btnInspect.setAttribute('aria-expanded', 'false');
+    btnInspect.focus();
   });
 
   // Copy JSON
   btnCopyJson.addEventListener('click', () => {
+    applyCompiledStyle();
     if (!currentStyle) return;
     navigator.clipboard.writeText(JSON.stringify(currentStyle, null, 2)).then(() => {
       showToast('Style JSON copied to clipboard!');
@@ -1105,6 +1255,7 @@ function setupEventListeners() {
 
   // Download Style JSON
   btnDownload.addEventListener('click', () => {
+    applyCompiledStyle();
     if (!currentStyle) return;
     const blob = new Blob([JSON.stringify(currentStyle, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
@@ -1135,12 +1286,11 @@ function loadTokensFromUrl() {
   if (!window.location.hash || window.location.hash.length < 5) return;
   try {
     const params = new URLSearchParams(window.location.hash.substring(1));
-    if (params.has('c')) tokens.canvas = '#' + params.get('c');
-    if (params.has('w')) tokens.water = '#' + params.get('w');
-    if (params.has('g')) tokens.greenspace = '#' + params.get('g');
-    if (params.has('r')) tokens.roads = '#' + params.get('r');
-    if (params.has('b')) tokens.buildings = '#' + params.get('b');
-    if (params.has('t')) tokens.text = '#' + params.get('t');
+    const aliases = { canvas: 'c', water: 'w', greenspace: 'g', roads: 'r', buildings: 'b', text: 't' };
+    TOKEN_KEYS.forEach(key => {
+      const hex = normalizeHex(params.get(aliases[key]) || '');
+      if (hex) tokens[key] = hex;
+    });
   } catch (err) {
     console.warn('Could not parse tokens from URL:', err);
   }

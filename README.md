@@ -131,11 +131,12 @@ Technical Architecture & Accessibility Science: **[`Creator.md`](Creator.md)**
 
 ### Features:
 - **6-Token Simplicity**: Pick 6 intent colors; the engine derives and contrast-checks all 70+ MapLibre layers automatically.
-- **Adobe-Style Interactive Color Wheel**: Visual chromatic disc with draggable pins, harmony spokes, and geometric polygons. Dragging the **Base Color Anchor** (🎯) synchronously rotates the harmony across the wheel!
-- **Slot-Machine "HOLD"**: Freeze any combination of colors (like an arcade fruit machine / one-armed bandit) so they remain locked while shuffling the unheld features or rotating the wheel.
+- **Simple Colour Editing**: Start with a curated palette, then open one of six compact colour rows. Choose a suggested swatch or make it lighter/darker; exact hex entry and the unrestricted picker are optional.
+- **Advanced Palette Tools**: A collapsed section keeps the interactive colour wheel, draggable pins, harmony spokes, base-colour rotation, harmonies and monochrome lock available without crowding everyday editing.
+- **Shuffle Locks**: Keep any combination of colours while shuffling the others or rotating the wheel. Locks do not prevent direct editing, presets or other palette-wide tools.
 - **Color Theory Harmonies**: Generate palettes using classical geometric color wheel harmonies (*Triadic 120°*, *Complementary 180°*, *Split-Complementary 150°/210°*, *Analogous 30°*, *Tetradic Dual-Complement*, *Square 90°*, *Monochromatic*, or *Custom Free Dragging*), anchoring around any held colors.
 - **Tonal Control Bar**: Micro-steppers (`Darker` / `Lighter`) and a 5-step interactive tonal ladder (`-16%` to `+16%`) that adjust lightness while keeping hue and saturation strictly locked.
-- **Auto-Contrast Engine**: One-click ✨ auto-tuning to guarantee WCAG AA / AAA contrast compliance.
+- **Contrast Tools**: Measure label-to-canvas contrast and adjust label and feature contrast in one click. The displayed ratio is not a whole-map accessibility assessment.
 - **Monochrome Lock**: Lock to a single hue to auto-generate a complete, harmonious single-color map.
 - **Curated Harmonies**: Instant presets including *Nordic Slate*, *Warm Parchment*, *Powder Blue*, *Cherry Blossom*, *1980s Neon*, and *Metropolis Night*.
 - **Live 2D & 3D Globe**: Real-time rendering on flat Web Mercator or rotating 3D globe.

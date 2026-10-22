@@ -9,3 +9,6 @@ scratch_style_explorer.html
 .DS_Store
 __pycache__/
 *.pyc
+
+# Node test harness dependencies
+node_modules/

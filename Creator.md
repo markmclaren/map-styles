@@ -334,8 +334,18 @@ The Style Studio includes curated presets demonstrating the compiler's range:
 
 ## 7. Studio User Interface & Features
 
+### 7.0 Simple Editing First
+
+The creator opens with curated presets followed by six compact colour rows. Click a row to open its inline editor; opening a different row closes the previous editor. Suggested swatches, the five-step tonal ladder and the existing Darker/Lighter controls all update the same six-token state. **Use an exact colour** reveals hex entry and the unrestricted browser picker. Invalid hex drafts do not change the map, and shared URL palettes populate every input on startup.
+
+**Advanced palette tools** is collapsed by default. Open it for the colour wheel, base-colour anchor, selected-colour lightness slider, harmony selector, Harmonize and monochrome lock. Wheel-only, colours-only and combined views remain available. Closing the section restores the simple rows without discarding the palette, holds or advanced view selection.
+
+The row buttons now say **Lock** or **Locked** rather than HOLD. These locks preserve colours during shuffle, including monochrome shuffle, and harmony rotation; they are not universal edit locks. Manual edits, presets, mode changes, contrast adjustments and enabling monochrome can still change a locked colour. Shuffle is disabled when all six colours are locked, and **Unlock all** releases them.
+
+The contrast pill measures labels against the canvas, not accessibility across the entire map. Sharing preserves the existing six-token URL format. JSON inspection, copy and download compile any pending edit immediately, so an export cannot lag behind a rapid colour change. The website still runs directly from the static `docs/` directory; the optional Node test harness does not add a build step.
+
 ### 7.1 Single-Hue Monochrome Lock
-Clicking **Mono Lock** locks the **Hue** ($H$) and **Saturation** ($S$) across all 6 tokens. Any adjustment made to the road or canvas color automatically recalculates the other 5 tokens along a strict perceptual lightness curve:
+Click **Mono Lock** locks the **Hue** ($H$) and **Saturation** ($S$) across all 6 tokens. Any adjustment made to the road or canvas color automatically recalculates the other 5 tokens along a strict perceptual lightness curve:
 - **Light Monochrome**: Canvas ($97\%$), Water ($80\%$), Greenspace ($90\%$), Roads ($30\%$), Buildings ($86\%$), Text ($10\%$).
 - **Dark Monochrome**: Canvas ($6\%$), Water ($14\%$), Greenspace ($10\%$), Roads ($75\%$), Buildings ($18\%$), Text ($100\%$).
 

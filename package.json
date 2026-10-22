@@ -1,0 +1,11 @@
+{
+  "name": "map-styles",
+  "private": true,
+  "packageManager": "pnpm@11.25.0",
+  "scripts": {
+    "test": "node --test tests/creator.test.cjs"
+  },
+  "devDependencies": {
+    "jsdom": "26.1.0"
+  }
+}

@@ -60,9 +60,10 @@ All compiled MapLibre style JSON files are located in [`dist/`](dist/) and are r
 | [`dist/monochrome-sepia.json`](dist/monochrome-sepia.json) | **Monochrome Sepia** | 18th-century archival copperplate engraving tone (Hue 35°) with warm burnt umber line hierarchy and parchment canvas |
 | [`dist/monochrome-emerald.json`](dist/monochrome-emerald.json) | **Monochrome Emerald** | Botanical forest green wash (Hue 155°) providing crisp natural separation across urban blocks, roads, and hydrography |
 | [`dist/monochrome-amber.json`](dist/monochrome-amber.json) | **Monochrome Amber** | High-contrast vintage darkroom warm ochre/amber palette (Hue 42°) engineered for maximum legibility |
-| [`dist/monochrome-purple.json`](dist/monochrome-purple.json) | **Monochrome Purple** | Deep dark amethyst / aubergine night theme (Hue 280°) with glowing lilac highway spines and crisp lavender labels |
-| [`dist/monochrome-crimson.json`](dist/monochrome-crimson.json) | **Monochrome Crimson** | Deep dark oxblood / burgundy wine theme (Hue 350°) with illuminated rose-coral arterial ribbons and pale pink typography |
+| [`dist/monochrome-purple.json`](dist/monochrome-purple.json) | **Monochrome Purple (Amethyst Night)** | Calibrated high-contrast dark amethyst night theme (Hue 275°) with luminous amethyst coastlines, vivid violet arterials, and glowing lilac highways |
+| [`dist/monochrome-crimson.json`](dist/monochrome-crimson.json) | **Monochrome Crimson (Oxblood Night)** | Calibrated high-contrast dark oxblood night theme (Hue 350°) with glowing crimson coastlines, illuminated ruby arterials, and pale blush labels |
 | [`dist/monochrome-pink.json`](dist/monochrome-pink.json) | **Monochrome Soft Pink** | Soft blush & dusty rose wash (Hue 348°) pairing delicate pastel canvas tones with rich rosewood highway spines and crisp plum typography |
+| [`dist/monochrome-blue.json`](dist/monochrome-blue.json) | **Monochrome Soft Blue** | Soft powder & cerulean blue wash (Hue 205°) pairing airy mist canvas tones with deep navy road spines and crisp midnight blue typography |
 | **British & Ordnance Survey (UK)** | | |
 | [`dist/os-landranger.json`](dist/os-landranger.json) | **OS Landranger (1:50k Classic)** | Classic Landranger Explorer style with magenta A-roads, orange B-roads, and blue motorways |
 | [`dist/os-outdoor.json`](dist/os-outdoor.json) | **Ordnance Survey - Outdoor** | In the style of classic OS Landranger/Explorer outdoor styling with greenspaces & relief |

@@ -370,6 +370,12 @@
       "name": "Monochrome Soft Pink (Blush)"
     },
     {
+      "id": "monochrome-blue",
+      "file": "monochrome-blue.json",
+      "path": "dist/monochrome-blue.json",
+      "name": "Monochrome Soft Blue (Powder)"
+    },
+    {
       "id": "eighties-pastel",
       "file": "eighties-pastel.json",
       "path": "dist/eighties-pastel.json",

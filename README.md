@@ -62,6 +62,7 @@ All compiled MapLibre style JSON files are located in [`dist/`](dist/) and are r
 | [`dist/monochrome-amber.json`](dist/monochrome-amber.json) | **Monochrome Amber** | High-contrast vintage darkroom warm ochre/amber palette (Hue 42°) engineered for maximum legibility |
 | [`dist/monochrome-purple.json`](dist/monochrome-purple.json) | **Monochrome Purple** | Deep dark amethyst / aubergine night theme (Hue 280°) with glowing lilac highway spines and crisp lavender labels |
 | [`dist/monochrome-crimson.json`](dist/monochrome-crimson.json) | **Monochrome Crimson** | Deep dark oxblood / burgundy wine theme (Hue 350°) with illuminated rose-coral arterial ribbons and pale pink typography |
+| [`dist/monochrome-pink.json`](dist/monochrome-pink.json) | **Monochrome Soft Pink** | Soft blush & dusty rose wash (Hue 348°) pairing delicate pastel canvas tones with rich rosewood highway spines and crisp plum typography |
 | **British & Ordnance Survey (UK)** | | |
 | [`dist/os-landranger.json`](dist/os-landranger.json) | **OS Landranger (1:50k Classic)** | Classic Landranger Explorer style with magenta A-roads, orange B-roads, and blue motorways |
 | [`dist/os-outdoor.json`](dist/os-outdoor.json) | **Ordnance Survey - Outdoor** | In the style of classic OS Landranger/Explorer outdoor styling with greenspaces & relief |

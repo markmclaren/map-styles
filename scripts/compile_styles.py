@@ -2551,6 +2551,48 @@ THEMES = {
         'label_road_halo': '#1a080c'
     },
 
+    'monochrome-pink': {
+        'name': 'Monochrome Soft Pink (Blush)',
+        'template': 'bright',
+        'background': '#fbf4f5',
+        'water_fill': '#dbb3bb',
+        'water_outline': '#b96475',
+        'waterway_line': '#b96475',
+        'land_fill': '#fbf4f5',
+        'wood_fill': '#eddee1',
+        'park_fill': '#eddee1',
+        'residential_fill': '#f6eaec',
+        'commercial_fill': '#f1e4e7',
+        'industrial_fill': '#e8d9dc',
+        'special_fill': '#f1e4e7',
+        'sand_fill': '#f8edef',
+        'glacier_fill': '#f9f0f2',
+        'building_fill': '#e2cbcf',
+        'building_outline': '#c99ca5',
+        'motorway_casing': '#361119',
+        'motorway_fill': '#662431',
+        'primary_casing': '#4e1d27',
+        'primary_fill': '#823545',
+        'secondary_casing': '#71333f',
+        'secondary_fill': '#ad5264',
+        'minor_casing': '#c8939e',
+        'minor_fill': '#ffffff',
+        'path_line': '#9b4657',
+        'rail_line': '#42151e',
+        'include_rail_ticks': True,
+        'rail_ticks_color': '#fbf4f5',
+        'boundary_country': '#491822',
+        'boundary_state': '#7b3241',
+        'label_city': '#280b11',
+        'label_city_halo': '#fbf4f5',
+        'label_country': '#40171f',
+        'label_country_halo': '#fbf4f5',
+        'label_water': '#72313e',
+        'label_water_halo': '#dbb3bb',
+        'label_road': '#481922',
+        'label_road_halo': '#ffffff'
+    },
+
     'eighties-pastel': {
         'name': '1980s Pastel (Miami & Memphis)',
         'template': 'bright',
@@ -3107,8 +3149,8 @@ def main():
             json.dump(osm_style, f, indent=2)
         generated.append(f"{osm_id}.json")
 
-    # 13. Monochrome Single-Hue Series (Indigo, Sepia, Emerald, Amber, Purple, Crimson)
-    for mono_id in ['monochrome-indigo', 'monochrome-sepia', 'monochrome-emerald', 'monochrome-amber', 'monochrome-purple', 'monochrome-crimson']:
+    # 13. Monochrome Single-Hue Series (Indigo, Sepia, Emerald, Amber, Purple, Crimson, Pink)
+    for mono_id in ['monochrome-indigo', 'monochrome-sepia', 'monochrome-emerald', 'monochrome-amber', 'monochrome-purple', 'monochrome-crimson', 'monochrome-pink']:
         mono_theme = THEMES[mono_id]
         mono_style = compile_style(bright_template, mono_theme)
         out_f = os.path.join(dist_dir, f"{mono_id}.json")

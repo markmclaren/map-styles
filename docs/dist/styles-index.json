@@ -364,6 +364,12 @@
       "name": "Monochrome Crimson (Oxblood Night)"
     },
     {
+      "id": "monochrome-pink",
+      "file": "monochrome-pink.json",
+      "path": "dist/monochrome-pink.json",
+      "name": "Monochrome Soft Pink (Blush)"
+    },
+    {
       "id": "eighties-pastel",
       "file": "eighties-pastel.json",
       "path": "dist/eighties-pastel.json",

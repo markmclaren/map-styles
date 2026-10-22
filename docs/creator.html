@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MapLibre Style Studio | Minimalist Cartographic Creator</title>
+  <meta name="description" content="Minimalist 6-color MapLibre vector style creator with pre-calculated contrast, luminance stepping, and live 2D/3D globe preview.">
+
+  <!-- Typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <!-- MapLibre GL JS v5.24.0 -->
+  <link href="https://unpkg.com/maplibre-gl@5.24.0/dist/maplibre-gl.css" rel="stylesheet" />
+  <script src="https://unpkg.com/maplibre-gl@5.24.0/dist/maplibre-gl.js"></script>
+
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="creator.css">
+</head>
+<body>
+
+  <!-- Floating Header Bar -->
+  <header class="app-header" id="creatorHeader">
+    <div class="brand">
+      <div class="brand-badge studio-badge">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="globe-icon">
+          <circle cx="13.5" cy="6.5" r=".5" fill="currentColor"></circle>
+          <circle cx="17.5" cy="10.5" r=".5" fill="currentColor"></circle>
+          <circle cx="8.5" cy="7.5" r=".5" fill="currentColor"></circle>
+          <circle cx="6.5" cy="12.5" r=".5" fill="currentColor"></circle>
+          <path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.563-2.512 5.563-5.563C21.437 6.465 17.199 2 12 2z"></path>
+        </svg>
+      </div>
+      <div>
+        <h1 class="brand-title">Style Studio</h1>
+        <p class="brand-subtitle">Minimalist 6-Color Cartography Engine</p>
+      </div>
+    </div>
+
+    <!-- Navigation & Global Controls -->
+    <div class="toolbar">
+      <!-- Back to Explorer Link -->
+      <a href="index.html" class="btn btn-secondary nav-link" title="Return to Basemap Explorer">
+        <svg viewBox="0 0 24 24" width="15" height="15" stroke="currentColor" stroke-width="2" fill="none"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+        <span>Explorer</span>
+      </a>
+
+      <!-- Projection (2D / 3D Globe) -->
+      <div class="control-group">
+        <span class="control-label">Projection</span>
+        <div class="btn-group" role="group">
+          <button id="btnProjMercator" class="btn btn-segmented active" title="Flat 2D Web Mercator map">2D</button>
+          <button id="btnProjGlobe" class="btn btn-segmented" title="Interactive 3D Globe view">3D Globe</button>
+        </div>
+      </div>
+
+      <!-- Presets Selector -->
+      <div class="control-group">
+        <label for="locationSelect" class="control-label">Location</label>
+        <div class="select-wrapper">
+          <select id="locationSelect" class="select-input">
+            <option value="london" selected>London (UK)</option>
+            <option value="tokyo">Tokyo (Japan)</option>
+            <option value="nyc">New York City</option>
+            <option value="paris">Paris (France)</option>
+            <option value="alps">Swiss Alps (Relief)</option>
+            <option value="global">Global (Orbital 3D)</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Actions -->
+      <div class="control-group">
+        <span class="control-label">Actions</span>
+        <div class="btn-group">
+          <button id="btnShare" class="btn btn-icon" title="Copy shareable link with palette">
+            <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
+            <span>Share</span>
+          </button>
+          <button id="btnInspect" class="btn btn-icon" title="Inspect compiled MapLibre JSON">
+            <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>
+            <span>JSON</span>
+          </button>
+          <button id="btnDownload" class="btn btn-primary" title="Download MapLibre Style JSON">
+            <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+            <span>Export</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Viewport -->
+  <main class="map-viewport">
+    <div id="map" class="map-container"></div>
+  </main>
+
+  <!-- Floating Style Studio Control Dock -->
+  <aside class="studio-panel" id="studioPanel">
+    <div class="studio-header">
+      <div class="studio-title-group">
+        <h2 class="studio-heading">Design Tokens</h2>
+        <span id="badgeMode" class="badge-mode badge-light">Light Mode</span>
+      </div>
+      <div class="contrast-pill" id="contrastPill" title="WCAG contrast between typography and canvas">
+        <span class="pill-dot"></span>
+        <span id="contrastValue">14.2:1 (AAA)</span>
+      </div>
+    </div>
+
+    <!-- The 6 Semantic Color Inputs -->
+    <div class="token-grid">
+      <!-- 1. Canvas -->
+      <div class="token-card" data-token="canvas">
+        <div class="token-info">
+          <span class="token-icon">🏞️</span>
+          <div>
+            <label for="colorCanvas" class="token-name">Canvas</label>
+            <span class="token-desc">Base terrain</span>
+          </div>
+        </div>
+        <div class="token-inputs">
+          <input type="color" id="pickerCanvas" class="color-picker" value="#f8fafc">
+          <input type="text" id="textCanvas" class="hex-input" value="#f8fafc" maxlength="7">
+        </div>
+      </div>
+
+      <!-- 2. Water -->
+      <div class="token-card" data-token="water">
+        <div class="token-info">
+          <span class="token-icon">🌊</span>
+          <div>
+            <label for="colorWater" class="token-name">Water</label>
+            <span class="token-desc">Oceans & rivers</span>
+          </div>
+        </div>
+        <div class="token-inputs">
+          <input type="color" id="pickerWater" class="color-picker" value="#cbd5e1">
+          <input type="text" id="textWater" class="hex-input" value="#cbd5e1" maxlength="7">
+        </div>
+      </div>
+
+      <!-- 3. Greenspace -->
+      <div class="token-card" data-token="greenspace">
+        <div class="token-info">
+          <span class="token-icon">🌲</span>
+          <div>
+            <label for="colorGreenspace" class="token-name">Greenspace</label>
+            <span class="token-desc">Parks & nature</span>
+          </div>
+        </div>
+        <div class="token-inputs">
+          <input type="color" id="pickerGreenspace" class="color-picker" value="#e2e8f0">
+          <input type="text" id="textGreenspace" class="hex-input" value="#e2e8f0" maxlength="7">
+        </div>
+      </div>
+
+      <!-- 4. Roads -->
+      <div class="token-card" data-token="roads">
+        <div class="token-info">
+          <span class="token-icon">🚗</span>
+          <div>
+            <label for="colorRoads" class="token-name">Roads</label>
+            <span class="token-desc">Highway spine</span>
+          </div>
+        </div>
+        <div class="token-inputs">
+          <input type="color" id="pickerRoads" class="color-picker" value="#475569">
+          <input type="text" id="textRoads" class="hex-input" value="#475569" maxlength="7">
+        </div>
+      </div>
+
+      <!-- 5. Buildings -->
+      <div class="token-card" data-token="buildings">
+        <div class="token-info">
+          <span class="token-icon">🏢</span>
+          <div>
+            <label for="colorBuildings" class="token-name">Buildings</label>
+            <span class="token-desc">Urban blocks</span>
+          </div>
+        </div>
+        <div class="token-inputs">
+          <input type="color" id="pickerBuildings" class="color-picker" value="#e2e8f0">
+          <input type="text" id="textBuildings" class="hex-input" value="#e2e8f0" maxlength="7">
+        </div>
+      </div>
+
+      <!-- 6. Typography -->
+      <div class="token-card" data-token="text">
+        <div class="token-info">
+          <span class="token-icon">🔤</span>
+          <div>
+            <label for="colorText" class="token-name">Labels</label>
+            <span class="token-desc">City text</span>
+          </div>
+        </div>
+        <div class="token-inputs">
+          <input type="color" id="pickerText" class="color-picker" value="#0f172a">
+          <input type="text" id="textText" class="hex-input" value="#0f172a" maxlength="7">
+        </div>
+      </div>
+    </div>
+
+    <!-- Smart Automation Levers -->
+    <div class="smart-toolbar">
+      <button id="btnShuffle" class="btn btn-studio" title="Generate a balanced random palette">
+        <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"><polyline points="16 3 21 3 21 8"></polyline><line x1="4" y1="20" x2="21" y2="3"></line><polyline points="21 16 21 21 16 21"></polyline><line x1="15" y1="15" x2="21" y2="21"></line><line x1="4" y1="4" x2="9" y2="9"></line></svg>
+        <span>Shuffle</span>
+      </button>
+
+      <button id="btnAutoContrast" class="btn btn-studio" title="Auto-tune lightness for WCAG AA compliance">
+        <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"></path></svg>
+        <span>Auto-Contrast</span>
+      </button>
+
+      <button id="btnMonoLock" class="btn btn-studio" title="Lock palette to single-hue monochrome">
+        <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"><circle cx="12" cy="12" r="10"></circle><path d="M12 2a10 10 0 0 1 0 20z" fill="currentColor"></path></svg>
+        <span>Monochrome</span>
+      </button>
+    </div>
+
+    <!-- Curated Palettes Quick-Bar -->
+    <div class="presets-section">
+      <span class="control-label">Curated Harmonies</span>
+      <div class="preset-scroll" id="presetPillsContainer">
+        <!-- Rendered dynamically -->
+      </div>
+    </div>
+  </aside>
+
+  <!-- HUD Coordinates Overlay -->
+  <div class="map-hud" id="mapHud">
+    <span class="hud-item"><span class="hud-label">COORDS:</span> <strong id="hudCoords">--</strong></span>
+    <span class="hud-divider"></span>
+    <span class="hud-item"><span class="hud-label">ZOOM:</span> <strong id="hudZoom">--</strong></span>
+    <span class="hud-divider"></span>
+    <span class="hud-item"><span class="hud-label">LAYERS:</span> <strong id="hudLayers">--</strong></span>
+  </div>
+
+  <!-- Inspector Slide-Over Drawer -->
+  <div class="inspector-drawer" id="inspectorDrawer">
+    <div class="inspector-header">
+      <div class="inspector-title-group">
+        <h3 class="inspector-title">MapLibre Style JSON</h3>
+        <span class="inspector-badge">Ready to Export</span>
+      </div>
+      <div class="btn-group">
+        <button id="btnCopyJson" class="btn btn-secondary btn-sm" title="Copy JSON to clipboard">Copy</button>
+        <button id="btnCloseInspector" class="btn btn-icon btn-sm" title="Close Drawer">✕</button>
+      </div>
+    </div>
+    <div class="inspector-body">
+      <pre class="json-code"><code id="rawJsonCode">Generating style...</code></pre>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div class="studio-toast" id="studioToast"></div>
+
+  <!-- Scripts -->
+  <script src="style-engine.js"></script>
+  <script src="creator.js"></script>
+</body>
+</html>

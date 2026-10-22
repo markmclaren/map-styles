@@ -328,6 +328,30 @@
       "name": "Thunderforest Transport (Transit)"
     },
     {
+      "id": "monochrome-indigo",
+      "file": "monochrome-indigo.json",
+      "path": "dist/monochrome-indigo.json",
+      "name": "Monochrome Indigo (Architectural)"
+    },
+    {
+      "id": "monochrome-sepia",
+      "file": "monochrome-sepia.json",
+      "path": "dist/monochrome-sepia.json",
+      "name": "Monochrome Sepia (Copperplate)"
+    },
+    {
+      "id": "monochrome-emerald",
+      "file": "monochrome-emerald.json",
+      "path": "dist/monochrome-emerald.json",
+      "name": "Monochrome Emerald (Botanical)"
+    },
+    {
+      "id": "monochrome-amber",
+      "file": "monochrome-amber.json",
+      "path": "dist/monochrome-amber.json",
+      "name": "Monochrome Amber (Warm Ochre)"
+    },
+    {
       "id": "liberty",
       "file": "liberty.json",
       "path": "dist/liberty.json",

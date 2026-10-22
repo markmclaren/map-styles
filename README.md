@@ -52,6 +52,11 @@ All compiled MapLibre style JSON files are located in [`dist/`](dist/) and are r
 | [`dist/charted-territory.json`](dist/charted-territory.json) | **Charted Territory** | Vintage exploration atlas map with warm olive greens, tan earth & relief |
 | [`dist/midcentury.json`](dist/midcentury.json) | **Midcentury** | 1950s/1960s retro art style featuring turquoise waters, coral highways & mustard accents |
 | [`dist/blueprint.json`](dist/blueprint.json) | **Blueprint** | Architectural drafting blueprint styling with deep blueprint blue & white lines |
+| **Monochrome (Single-Hue) Series** | | |
+| [`dist/monochrome-indigo.json`](dist/monochrome-indigo.json) | **Monochrome Indigo** | Architectural Prussian navy wash locking Hue to 215° with strict luminance stepping across water, roads, and typography |
+| [`dist/monochrome-sepia.json`](dist/monochrome-sepia.json) | **Monochrome Sepia** | 18th-century archival copperplate engraving tone (Hue 35°) with warm burnt umber line hierarchy and parchment canvas |
+| [`dist/monochrome-emerald.json`](dist/monochrome-emerald.json) | **Monochrome Emerald** | Botanical forest green wash (Hue 155°) providing crisp natural separation across urban blocks, roads, and hydrography |
+| [`dist/monochrome-amber.json`](dist/monochrome-amber.json) | **Monochrome Amber** | High-contrast vintage darkroom warm ochre/amber palette (Hue 42°) engineered for maximum legibility |
 | **British & Ordnance Survey (UK)** | | |
 | [`dist/os-landranger.json`](dist/os-landranger.json) | **OS Landranger (1:50k Classic)** | Classic Landranger Explorer style with magenta A-roads, orange B-roads, and blue motorways |
 | [`dist/os-outdoor.json`](dist/os-outdoor.json) | **Ordnance Survey - Outdoor** | In the style of classic OS Landranger/Explorer outdoor styling with greenspaces & relief |

@@ -109,6 +109,12 @@ Open **[http://localhost:8080/docs/index.html](http://localhost:8080/docs/index.
 
 ---
 
+## 📖 Cartographic Style Guide
+
+For an in-depth reference on visual hierarchy, layer separation, luminance budgets, and single-hue monochrome design rules, see the **[`STYLE_GUIDE.md`](STYLE_GUIDE.md)**.
+
+---
+
 ## 🛠️ Toolchain & Scripts
 
 - **[`scripts/compile_styles.py`](scripts/compile_styles.py)**: Compiles the cartographic themes onto the OpenFreeMap vector tile schema and outputs to `dist/`.

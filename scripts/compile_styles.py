@@ -34,6 +34,39 @@ def clean_fonts(layer):
             else:
                 layout['text-font'] = FONT_MAP['regular']
 
+def get_glacier_color(theme_config):
+    """
+    Returns an appropriate glacier/ice color for the theme.
+    Respects theme_config['glacier_fill'] if set.
+    For dark themes without an explicit glacier_fill, derives a harmonious dark ice shade
+    rather than pure white.
+    """
+    if 'glacier_fill' in theme_config:
+        return theme_config['glacier_fill']
+
+    base = theme_config.get('land_fill', theme_config.get('background', '#ffffff'))
+    if isinstance(base, dict) and 'stops' in base:
+        base = base['stops'][0][1]
+
+    if isinstance(base, str) and base.startswith('#'):
+        try:
+            h = base.lstrip('#')
+            if len(h) == 3:
+                h = ''.join(c * 2 for c in h)
+            r, g, b = int(h[0:2], 16), int(h[2:4], 16), int(h[4:6], 16)
+            lum = (0.2126 * r + 0.7152 * g + 0.0722 * b) / 255.0
+
+            # If dark theme (luminance < 0.4), lighten slightly for subtle cool ice distinction
+            if lum < 0.4:
+                nr = min(255, int(r * 1.35 + 14))
+                ng = min(255, int(g * 1.35 + 18))
+                nb = min(255, int(b * 1.4 + 28))
+                return f"#{nr:02x}{ng:02x}{nb:02x}"
+        except Exception:
+            pass
+
+    return '#ffffff'
+
 def compile_style(base_template, theme_config, is_base_only=False, is_ref_only=False, include_relief=False):
     """
     Transforms an OpenMapTiles template JSON using theme_config rules.
@@ -153,8 +186,10 @@ def compile_style(base_template, theme_config, is_base_only=False, is_ref_only=F
                     paint['fill-color'] = theme_config.get('special_fill', theme_config.get('park_fill', '#ccebb5'))
                 elif 'sand' in l_id or 'beach' in l_id:
                     paint['fill-color'] = theme_config.get('sand_fill', '#f5edd6')
-                elif 'glacier' in l_id or 'ice' in l_id:
-                    paint['fill-color'] = '#ffffff'
+                elif any(w in l_id for w in ['glacier', 'ice']) and 'service' not in l_id:
+                    paint['fill-color'] = get_glacier_color(theme_config)
+                    if 'glacier_opacity' in theme_config:
+                        paint['fill-opacity'] = theme_config['glacier_opacity']
                 else:
                     if 'land_fill' in theme_config:
                         paint['fill-color'] = theme_config['land_fill']
@@ -438,6 +473,7 @@ THEMES = {
         'industrial_fill': '#262829',
         'special_fill': '#2e2f2f',
         'sand_fill': '#383632',
+        'glacier_fill': '#404242',
         'building_fill': '#2e2f2f',
         'building_outline': '#232525',
         'motorway_casing': '#434749',
@@ -516,6 +552,7 @@ THEMES = {
         'industrial_fill': '#262523',
         'special_fill': '#282725',
         'sand_fill': '#3d3830',
+        'glacier_fill': '#3b3a37',
         'building_fill': '#646464',
         'building_outline': '#444444',
         'motorway_casing': '#4a3319',
@@ -594,6 +631,7 @@ THEMES = {
         'industrial_fill': '#242528',
         'special_fill': '#25262a',
         'sand_fill': '#302d28',
+        'glacier_fill': '#2b2e34',
         'building_fill': '#36383e',
         'building_outline': '#2a2b30',
         'motorway_casing': '#4a2c10',
@@ -871,6 +909,7 @@ THEMES = {
         'industrial_fill': '#ded2a4',
         'special_fill': '#ded5b8',
         'sand_fill': '#ddd5be',
+        'glacier_fill': '#e7decd',
         'building_fill': '#c4beae',
         'building_outline': '#a8a292',
         'motorway_casing': '#5c4c3e',
@@ -949,6 +988,7 @@ THEMES = {
         'industrial_fill': '#011526',
         'special_fill': '#011f38',
         'sand_fill': '#0a2233',
+        'glacier_fill': '#082038',
         'building_fill': '#022b40',
         'building_outline': '#007799',
         'motorway_casing': '#004860',
@@ -1028,6 +1068,7 @@ THEMES = {
         'industrial_fill': '#d4d0bb',
         'special_fill': '#ebe8db',
         'sand_fill': '#e8dfc5',
+        'glacier_fill': '#e5dfcb',
         'building_fill': '#8b8b85',
         'building_outline': '#6d6d67',
         'motorway_casing': '#5a171c',
@@ -1067,6 +1108,7 @@ THEMES = {
         'industrial_fill': '#ccc0a3',
         'special_fill': '#ede7d5',
         'sand_fill': '#eadebe',
+        'glacier_fill': '#ece5d3',
         'building_fill': '#77746c',
         'building_outline': '#58554e',
         'motorway_casing': '#9c7223',
@@ -1106,6 +1148,7 @@ THEMES = {
         'industrial_fill': '#10446b',
         'special_fill': '#165787',
         'sand_fill': '#1c5f8f',
+        'glacier_fill': '#1b5d8f',
         'building_fill': '#185b8c',
         'building_outline': '#CDD5C6',
         'motorway_casing': '#4e7e94',
@@ -1184,6 +1227,7 @@ THEMES = {
         'industrial_fill': '#232528',
         'special_fill': '#282b2f',
         'sand_fill': '#2b2d30',
+        'glacier_fill': '#2e3136',
         'building_fill': '#3a3e45',
         'building_outline': '#4e535c',
         'motorway_casing': '#656a73',
@@ -1900,6 +1944,7 @@ THEMES = {
         'industrial_fill': '#e2dede',
         'special_fill': '#ebdcdc',
         'sand_fill': '#fff5cc',
+        'glacier_fill': '#eef2f5',
         'building_fill': '#d4c2b8',
         'building_outline': '#b8a599',
         'motorway_casing': '#004e8c',
@@ -1942,6 +1987,7 @@ THEMES = {
         'industrial_fill': '#e4ded4',
         'special_fill': '#eae5dc',
         'sand_fill': '#f7f0df',
+        'glacier_fill': '#edf4fa',
         'building_fill': '#ded5c4',
         'building_outline': '#a69f92',
         'motorway_casing': '#9e1c1c',
@@ -1984,6 +2030,7 @@ THEMES = {
         'industrial_fill': '#d6cca7',
         'special_fill': '#ded4b4',
         'sand_fill': '#e8deb8',
+        'glacier_fill': '#e6dcbf',
         'building_fill': '#d9ceb0',
         'building_outline': '#beb395',
         'motorway_casing': '#b56038',
@@ -2024,6 +2071,7 @@ THEMES = {
         'industrial_fill': '#18222b',
         'special_fill': '#1c2632',
         'sand_fill': '#252928',
+        'glacier_fill': '#232f3d',
         'building_fill': '#222f3d',
         'building_outline': '#141c24',
         'motorway_casing': '#00808f',
@@ -2266,6 +2314,7 @@ THEMES = {
         'industrial_fill': '#dde3ed',
         'special_fill': '#e6ebf2',
         'sand_fill': '#f0f3f8',
+        'glacier_fill': '#edf1f7',
         'building_fill': '#dcdee5',
         'building_outline': '#b8becd',
         'motorway_casing': '#0a1726',
@@ -2307,6 +2356,7 @@ THEMES = {
         'industrial_fill': '#e4d9c6',
         'special_fill': '#ece4d4',
         'sand_fill': '#f5ede0',
+        'glacier_fill': '#f0ebd9',
         'building_fill': '#e8ddc8',
         'building_outline': '#c9bba3',
         'motorway_casing': '#211708',
@@ -2348,6 +2398,7 @@ THEMES = {
         'industrial_fill': '#d6e4d8',
         'special_fill': '#e1ece3',
         'sand_fill': '#eff5f0',
+        'glacier_fill': '#e6f0e9',
         'building_fill': '#d5e4d8',
         'building_outline': '#b2cbb6',
         'motorway_casing': '#071a0c',
@@ -2389,6 +2440,7 @@ THEMES = {
         'industrial_fill': '#e8dfc7',
         'special_fill': '#f0e9d6',
         'sand_fill': '#fbf6ea',
+        'glacier_fill': '#f5eee0',
         'building_fill': '#ece0c1',
         'building_outline': '#cfbf95',
         'motorway_casing': '#241802',
@@ -2430,6 +2482,7 @@ THEMES = {
         'industrial_fill': '#1e112b',
         'special_fill': '#1e112b',
         'sand_fill': '#221430',
+        'glacier_fill': '#241438',
         'building_fill': '#231336',
         'building_outline': '#361d52',
         'motorway_casing': '#5e298f',
@@ -2471,6 +2524,7 @@ THEMES = {
         'industrial_fill': '#270e13',
         'special_fill': '#270e13',
         'sand_fill': '#2b1016',
+        'glacier_fill': '#2e1017',
         'building_fill': '#2e1117',
         'building_outline': '#4a1b25',
         'motorway_casing': '#8a2238',
@@ -2512,6 +2566,7 @@ THEMES = {
         'industrial_fill': '#f3d9ce',
         'special_fill': '#fae3d9',
         'sand_fill': '#fff3c4',
+        'glacier_fill': '#f7effb',
         'building_fill': '#fce4ec',
         'building_outline': '#f48fb1',
         'motorway_casing': '#d81b60',
@@ -2553,6 +2608,7 @@ THEMES = {
         'industrial_fill': '#140226',
         'special_fill': '#1a0533',
         'sand_fill': '#2b1442',
+        'glacier_fill': '#1a0730',
         'building_fill': '#240a3d',
         'building_outline': '#ff007f',
         'motorway_casing': '#7a003f',

@@ -61,7 +61,7 @@
         "glacier"
       ],
       "paint": {
-        "fill-color": "#ffffff",
+        "fill-color": "#edf4fa",
         "fill-opacity": [
           "interpolate",
           [
@@ -848,7 +848,7 @@
         "ice_shelf"
       ],
       "paint": {
-        "fill-color": "#ffffff",
+        "fill-color": "#edf4fa",
         "fill-opacity": [
           "interpolate",
           [

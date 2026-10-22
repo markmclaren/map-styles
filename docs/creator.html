@@ -125,91 +125,169 @@
     <div class="token-grid">
       <!-- 1. Canvas -->
       <div class="token-card" data-token="canvas">
-        <div class="token-info">
-          <span class="token-icon">🏞️</span>
-          <div>
-            <label for="colorCanvas" class="token-name">Canvas</label>
-            <span class="token-desc">Base terrain</span>
+        <div class="token-card-top">
+          <div class="token-info">
+            <span class="token-icon">🏞️</span>
+            <div>
+              <label for="pickerCanvas" class="token-name">Canvas</label>
+              <span class="token-desc">Base terrain</span>
+            </div>
+          </div>
+          <div class="token-inputs">
+            <input type="color" id="pickerCanvas" class="color-picker" value="#f8fafc">
+            <input type="text" id="textCanvas" class="hex-input" value="#f8fafc" maxlength="7">
           </div>
         </div>
-        <div class="token-inputs">
-          <input type="color" id="pickerCanvas" class="color-picker" value="#f8fafc">
-          <input type="text" id="textCanvas" class="hex-input" value="#f8fafc" maxlength="7">
+        <div class="tonal-control-bar">
+          <button type="button" class="btn-tone-step" data-token="canvas" data-delta="-8" title="Step darker (-8% lightness)">
+            <svg viewBox="0 0 24 24" width="11" height="11" stroke="currentColor" stroke-width="2.2" fill="none"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+            <span>Darker</span>
+          </button>
+          <div class="tonal-ladder" id="ladderCanvas"></div>
+          <button type="button" class="btn-tone-step" data-token="canvas" data-delta="8" title="Step lighter (+8% lightness)">
+            <span>Lighter</span>
+            <svg viewBox="0 0 24 24" width="11" height="11" stroke="currentColor" stroke-width="2.2" fill="none"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+          </button>
         </div>
       </div>
 
       <!-- 2. Water -->
       <div class="token-card" data-token="water">
-        <div class="token-info">
-          <span class="token-icon">🌊</span>
-          <div>
-            <label for="colorWater" class="token-name">Water</label>
-            <span class="token-desc">Oceans & rivers</span>
+        <div class="token-card-top">
+          <div class="token-info">
+            <span class="token-icon">🌊</span>
+            <div>
+              <label for="pickerWater" class="token-name">Water</label>
+              <span class="token-desc">Oceans & rivers</span>
+            </div>
+          </div>
+          <div class="token-inputs">
+            <input type="color" id="pickerWater" class="color-picker" value="#cbd5e1">
+            <input type="text" id="textWater" class="hex-input" value="#cbd5e1" maxlength="7">
           </div>
         </div>
-        <div class="token-inputs">
-          <input type="color" id="pickerWater" class="color-picker" value="#cbd5e1">
-          <input type="text" id="textWater" class="hex-input" value="#cbd5e1" maxlength="7">
+        <div class="tonal-control-bar">
+          <button type="button" class="btn-tone-step" data-token="water" data-delta="-8" title="Step darker (-8% lightness)">
+            <svg viewBox="0 0 24 24" width="11" height="11" stroke="currentColor" stroke-width="2.2" fill="none"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+            <span>Darker</span>
+          </button>
+          <div class="tonal-ladder" id="ladderWater"></div>
+          <button type="button" class="btn-tone-step" data-token="water" data-delta="8" title="Step lighter (+8% lightness)">
+            <span>Lighter</span>
+            <svg viewBox="0 0 24 24" width="11" height="11" stroke="currentColor" stroke-width="2.2" fill="none"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+          </button>
         </div>
       </div>
 
       <!-- 3. Greenspace -->
       <div class="token-card" data-token="greenspace">
-        <div class="token-info">
-          <span class="token-icon">🌲</span>
-          <div>
-            <label for="colorGreenspace" class="token-name">Greenspace</label>
-            <span class="token-desc">Parks & nature</span>
+        <div class="token-card-top">
+          <div class="token-info">
+            <span class="token-icon">🌲</span>
+            <div>
+              <label for="pickerGreenspace" class="token-name">Greenspace</label>
+              <span class="token-desc">Parks & nature</span>
+            </div>
+          </div>
+          <div class="token-inputs">
+            <input type="color" id="pickerGreenspace" class="color-picker" value="#e2e8f0">
+            <input type="text" id="textGreenspace" class="hex-input" value="#e2e8f0" maxlength="7">
           </div>
         </div>
-        <div class="token-inputs">
-          <input type="color" id="pickerGreenspace" class="color-picker" value="#e2e8f0">
-          <input type="text" id="textGreenspace" class="hex-input" value="#e2e8f0" maxlength="7">
+        <div class="tonal-control-bar">
+          <button type="button" class="btn-tone-step" data-token="greenspace" data-delta="-8" title="Step darker (-8% lightness)">
+            <svg viewBox="0 0 24 24" width="11" height="11" stroke="currentColor" stroke-width="2.2" fill="none"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+            <span>Darker</span>
+          </button>
+          <div class="tonal-ladder" id="ladderGreenspace"></div>
+          <button type="button" class="btn-tone-step" data-token="greenspace" data-delta="8" title="Step lighter (+8% lightness)">
+            <span>Lighter</span>
+            <svg viewBox="0 0 24 24" width="11" height="11" stroke="currentColor" stroke-width="2.2" fill="none"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+          </button>
         </div>
       </div>
 
       <!-- 4. Roads -->
       <div class="token-card" data-token="roads">
-        <div class="token-info">
-          <span class="token-icon">🚗</span>
-          <div>
-            <label for="colorRoads" class="token-name">Roads</label>
-            <span class="token-desc">Highway spine</span>
+        <div class="token-card-top">
+          <div class="token-info">
+            <span class="token-icon">🚗</span>
+            <div>
+              <label for="pickerRoads" class="token-name">Roads</label>
+              <span class="token-desc">Highway spine</span>
+            </div>
+          </div>
+          <div class="token-inputs">
+            <input type="color" id="pickerRoads" class="color-picker" value="#475569">
+            <input type="text" id="textRoads" class="hex-input" value="#475569" maxlength="7">
           </div>
         </div>
-        <div class="token-inputs">
-          <input type="color" id="pickerRoads" class="color-picker" value="#475569">
-          <input type="text" id="textRoads" class="hex-input" value="#475569" maxlength="7">
+        <div class="tonal-control-bar">
+          <button type="button" class="btn-tone-step" data-token="roads" data-delta="-8" title="Step darker (-8% lightness)">
+            <svg viewBox="0 0 24 24" width="11" height="11" stroke="currentColor" stroke-width="2.2" fill="none"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+            <span>Darker</span>
+          </button>
+          <div class="tonal-ladder" id="ladderRoads"></div>
+          <button type="button" class="btn-tone-step" data-token="roads" data-delta="8" title="Step lighter (+8% lightness)">
+            <span>Lighter</span>
+            <svg viewBox="0 0 24 24" width="11" height="11" stroke="currentColor" stroke-width="2.2" fill="none"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+          </button>
         </div>
       </div>
 
       <!-- 5. Buildings -->
       <div class="token-card" data-token="buildings">
-        <div class="token-info">
-          <span class="token-icon">🏢</span>
-          <div>
-            <label for="colorBuildings" class="token-name">Buildings</label>
-            <span class="token-desc">Urban blocks</span>
+        <div class="token-card-top">
+          <div class="token-info">
+            <span class="token-icon">🏢</span>
+            <div>
+              <label for="pickerBuildings" class="token-name">Buildings</label>
+              <span class="token-desc">Urban blocks</span>
+            </div>
+          </div>
+          <div class="token-inputs">
+            <input type="color" id="pickerBuildings" class="color-picker" value="#e2e8f0">
+            <input type="text" id="textBuildings" class="hex-input" value="#e2e8f0" maxlength="7">
           </div>
         </div>
-        <div class="token-inputs">
-          <input type="color" id="pickerBuildings" class="color-picker" value="#e2e8f0">
-          <input type="text" id="textBuildings" class="hex-input" value="#e2e8f0" maxlength="7">
+        <div class="tonal-control-bar">
+          <button type="button" class="btn-tone-step" data-token="buildings" data-delta="-8" title="Step darker (-8% lightness)">
+            <svg viewBox="0 0 24 24" width="11" height="11" stroke="currentColor" stroke-width="2.2" fill="none"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+            <span>Darker</span>
+          </button>
+          <div class="tonal-ladder" id="ladderBuildings"></div>
+          <button type="button" class="btn-tone-step" data-token="buildings" data-delta="8" title="Step lighter (+8% lightness)">
+            <span>Lighter</span>
+            <svg viewBox="0 0 24 24" width="11" height="11" stroke="currentColor" stroke-width="2.2" fill="none"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+          </button>
         </div>
       </div>
 
       <!-- 6. Typography -->
       <div class="token-card" data-token="text">
-        <div class="token-info">
-          <span class="token-icon">🔤</span>
-          <div>
-            <label for="colorText" class="token-name">Labels</label>
-            <span class="token-desc">City text</span>
+        <div class="token-card-top">
+          <div class="token-info">
+            <span class="token-icon">🔤</span>
+            <div>
+              <label for="pickerText" class="token-name">Labels</label>
+              <span class="token-desc">City text</span>
+            </div>
+          </div>
+          <div class="token-inputs">
+            <input type="color" id="pickerText" class="color-picker" value="#0f172a">
+            <input type="text" id="textText" class="hex-input" value="#0f172a" maxlength="7">
           </div>
         </div>
-        <div class="token-inputs">
-          <input type="color" id="pickerText" class="color-picker" value="#0f172a">
-          <input type="text" id="textText" class="hex-input" value="#0f172a" maxlength="7">
+        <div class="tonal-control-bar">
+          <button type="button" class="btn-tone-step" data-token="text" data-delta="-8" title="Step darker (-8% lightness)">
+            <svg viewBox="0 0 24 24" width="11" height="11" stroke="currentColor" stroke-width="2.2" fill="none"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+            <span>Darker</span>
+          </button>
+          <div class="tonal-ladder" id="ladderText"></div>
+          <button type="button" class="btn-tone-step" data-token="text" data-delta="8" title="Step lighter (+8% lightness)">
+            <span>Lighter</span>
+            <svg viewBox="0 0 24 24" width="11" height="11" stroke="currentColor" stroke-width="2.2" fill="none"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+          </button>
         </div>
       </div>
     </div>

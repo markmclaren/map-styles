@@ -250,6 +250,41 @@ function updateUiState() {
       pill.classList.toggle('active', match);
     }
   });
+
+  // Re-render tonal ladders for all 6 tokens
+  renderTonalLadders();
+}
+
+// Render interactive 5-chip tonal ladder for each token
+function renderTonalLadders() {
+  const deltas = [-16, -8, 0, 8, 16];
+  Object.keys(TOKEN_INPUTS).forEach(key => {
+    const id = `ladder${key.charAt(0).toUpperCase() + key.slice(1)}`;
+    const ladder = document.getElementById(id);
+    if (!ladder) return;
+
+    ladder.innerHTML = '';
+    const baseColor = tokens[key];
+
+    deltas.forEach(delta => {
+      const chipColor = StyleEngine.adjustHsl(baseColor, { l: delta });
+      const chip = document.createElement('button');
+      chip.type = 'button';
+      chip.className = `tonal-chip ${delta === 0 ? 'active' : ''}`;
+      chip.style.backgroundColor = chipColor;
+      chip.title = `${delta === 0 ? 'Current' : (delta > 0 ? `+${delta}% Lighter` : `${delta}% Darker`)} (${chipColor})`;
+
+      chip.addEventListener('click', () => {
+        onTokenChanged(key, chipColor);
+        if (TOKEN_INPUTS[key]) {
+          TOKEN_INPUTS[key].picker.value = chipColor;
+          TOKEN_INPUTS[key].text.value = chipColor;
+        }
+      });
+
+      ladder.appendChild(chip);
+    });
+  });
 }
 
 // Render the curated preset pills
@@ -325,6 +360,22 @@ function setupEventListeners() {
   btnModeDark.addEventListener('click', () => {
     if (currentMode === 'dark') return;
     setThemeMode('dark');
+  });
+
+  // Lightness nudge steppers (Darker / Lighter buttons)
+  document.querySelectorAll('.btn-tone-step').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const tokenKey = btn.dataset.token;
+      const delta = parseInt(btn.dataset.delta, 10) || 0;
+      if (!tokens[tokenKey]) return;
+
+      const newColor = StyleEngine.adjustHsl(tokens[tokenKey], { l: delta });
+      onTokenChanged(tokenKey, newColor);
+      if (TOKEN_INPUTS[tokenKey]) {
+        TOKEN_INPUTS[tokenKey].picker.value = newColor;
+        TOKEN_INPUTS[tokenKey].text.value = newColor;
+      }
+    });
   });
 
   // Location select

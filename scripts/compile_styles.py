@@ -1486,6 +1486,47 @@ THEMES = {
         'label_road_halo': '#ffffff'
     },
 
+    'google-maps-retro': {
+        'name': 'Google Maps (Classic 2005–2009)',
+        'template': 'bright',
+        'background': '#ebe6dc',
+        'water_fill': '#99b3cc',
+        'water_outline': '#7a9bb8',
+        'waterway_line': '#7a9bb8',
+        'land_fill': '#ebe6dc',
+        'wood_fill': '#a7cc95',
+        'park_fill': '#a7cc95',
+        'residential_fill': '#e6e1d7',
+        'commercial_fill': '#ded9ce',
+        'industrial_fill': '#d6d1c6',
+        'special_fill': '#ded9ce',
+        'sand_fill': '#faecc9',
+        'building_fill': '#ded6c5',
+        'building_outline': '#bfbbb3',
+        'motorway_casing': '#c48a00',
+        'motorway_fill': '#f2bf24',
+        'primary_casing': '#d49b00',
+        'primary_fill': '#fffa73',
+        'secondary_casing': '#afaba7',
+        'secondary_fill': '#ffffff',
+        'minor_casing': '#afaba7',
+        'minor_fill': '#ffffff',
+        'path_line': '#8a9e80',
+        'rail_line': '#444444',
+        'include_rail_ticks': True,
+        'rail_ticks_color': '#ffffff',
+        'boundary_country': '#666666',
+        'boundary_state': '#888888',
+        'label_city': '#000000',
+        'label_city_halo': '#ffffff',
+        'label_country': '#333333',
+        'label_country_halo': '#ffffff',
+        'label_water': '#2b5278',
+        'label_water_halo': '#ffffff',
+        'label_road': '#111111',
+        'label_road_halo': '#ffffff'
+    },
+
     'apple-maps': {
         'name': 'Apple Maps',
         'template': 'bright',
@@ -2352,8 +2393,8 @@ def main():
             json.dump(ad_style, f, indent=2)
         generated.append(f"{ad_id}.json")
 
-    # 8. Consumer Maps Pack (Google Maps, Apple Maps, Bing Maps)
-    for cs_id in ['google-maps', 'apple-maps', 'bing-maps']:
+    # 8. Consumer Maps Pack (Google Maps, Google Maps Retro, Apple Maps, Bing Maps)
+    for cs_id in ['google-maps', 'google-maps-retro', 'apple-maps', 'bing-maps']:
         cs_theme = THEMES[cs_id]
         cs_style = compile_style(bright_template, cs_theme)
         out_f = os.path.join(dist_dir, f"{cs_id}.json")

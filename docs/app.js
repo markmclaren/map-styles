@@ -267,7 +267,7 @@ function updateSecondaryStyle(styleId) {
   if (styleId.includes('streetmap') || styleId === 'aa-atlas' || styleId === 'os-roads') {
     secondaryTag.textContent = 'Ordnance Survey - Roads';
     mapSecondary.setStyle(getStyleUrl('os-roads'));
-  } else if (styleId === 'google-maps' || styleId === 'apple-maps' || styleId === 'bing-maps') {
+  } else if (styleId === 'google-maps' || styleId === 'google-maps-retro' || styleId === 'apple-maps' || styleId === 'bing-maps') {
     secondaryTag.textContent = 'OpenFreeMap Liberty';
     mapSecondary.setStyle(getStyleUrl('liberty'));
   } else if (styleId === 'michelin' || styleId === 'rand-mcnally') {

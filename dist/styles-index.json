@@ -202,6 +202,12 @@
       "name": "Google Maps"
     },
     {
+      "id": "google-maps-retro",
+      "file": "google-maps-retro.json",
+      "path": "dist/google-maps-retro.json",
+      "name": "Google Maps (Classic 2005\u20132009)"
+    },
+    {
       "id": "apple-maps",
       "file": "apple-maps.json",
       "path": "dist/apple-maps.json",

@@ -16,7 +16,8 @@ All compiled MapLibre style JSON files are located in [`dist/`](dist/) and are r
 | Style File | Cartographic Theme | Description |
 |---|---|---|
 | **Consumer Maps** | | |
-| [`dist/google-maps.json`](dist/google-maps.json) | **Google Maps** | Inspired by and in the style of Google Maps (warm ivory landcover, soft cyan water, mint parks, and yellow/orange highways) |
+| [`dist/google-maps.json`](dist/google-maps.json) | **Google Maps (Modern)** | Inspired by and in the style of Google Maps (warm ivory landcover, soft cyan water, mint parks, and yellow/orange highways) |
+| [`dist/google-maps-retro.json`](dist/google-maps-retro.json) | **Google Maps (Classic 2005–2009)** | Inspired by the original pre-2009 Google Maps design (rich periwinkle water `#99b3cc`, sunny yellow arterials `#fffa73`, golden highways `#f2bf24`, olive parks `#a7cc95`, and bold white streets with dark slate casings) |
 | [`dist/apple-maps.json`](dist/apple-maps.json) | **Apple Maps** | Inspired by and in the style of Apple Maps (clean pastel cartography with crisp white roads, soft borders, sky-blue water, and emerald greenspaces) |
 | [`dist/bing-maps.json`](dist/bing-maps.json) | **Bing Maps** | Inspired by and in the style of Microsoft Bing Maps (muted gray urban fabric, soft yellow highways, and crisp water) |
 | **Motoring & Road Atlases** | | |

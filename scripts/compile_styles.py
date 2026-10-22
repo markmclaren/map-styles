@@ -2495,6 +2495,88 @@ THEMES = {
         'label_water_halo': '#290d14',
         'label_road': '#ffd1db',
         'label_road_halo': '#1a080c'
+    },
+
+    'eighties-pastel': {
+        'name': '1980s Pastel (Miami & Memphis)',
+        'template': 'bright',
+        'background': '#fef9f5',
+        'water_fill': '#8fe1eb',
+        'water_outline': '#40c0cb',
+        'waterway_line': '#40c0cb',
+        'land_fill': '#fef9f5',
+        'wood_fill': '#b5efd3',
+        'park_fill': '#b5efd3',
+        'residential_fill': '#fcf0e8',
+        'commercial_fill': '#fae3d9',
+        'industrial_fill': '#f3d9ce',
+        'special_fill': '#fae3d9',
+        'sand_fill': '#fff3c4',
+        'building_fill': '#fce4ec',
+        'building_outline': '#f48fb1',
+        'motorway_casing': '#d81b60',
+        'motorway_fill': '#ff4081',
+        'primary_casing': '#0097a7',
+        'primary_fill': '#00e5ff',
+        'secondary_casing': '#fbc02d',
+        'secondary_fill': '#ffee58',
+        'minor_casing': '#dfd0cb',
+        'minor_fill': '#ffffff',
+        'path_line': '#26a69a',
+        'rail_line': '#ab47bc',
+        'include_rail_ticks': True,
+        'rail_ticks_color': '#ffffff',
+        'boundary_country': '#8e24aa',
+        'boundary_state': '#ba68c8',
+        'label_city': '#4a154b',
+        'label_city_halo': '#ffffff',
+        'label_country': '#6a1b9a',
+        'label_country_halo': '#ffffff',
+        'label_water': '#006064',
+        'label_water_halo': '#e0f7fa',
+        'label_road': '#37474f',
+        'label_road_halo': '#ffffff'
+    },
+
+    'eighties-neon': {
+        'name': '1980s Neon (Synthwave & Cyber)',
+        'template': 'bright',
+        'background': '#0d021a',
+        'water_fill': '#16042b',
+        'water_outline': '#00f0ff',
+        'waterway_line': '#00f0ff',
+        'land_fill': '#0d021a',
+        'wood_fill': '#1a0533',
+        'park_fill': '#1a0533',
+        'residential_fill': '#120324',
+        'commercial_fill': '#1a0533',
+        'industrial_fill': '#140226',
+        'special_fill': '#1a0533',
+        'sand_fill': '#2b1442',
+        'building_fill': '#240a3d',
+        'building_outline': '#ff007f',
+        'motorway_casing': '#7a003f',
+        'motorway_fill': '#ff007f',
+        'primary_casing': '#005966',
+        'primary_fill': '#00f0ff',
+        'secondary_casing': '#596600',
+        'secondary_fill': '#ffe600',
+        'minor_casing': '#20083b',
+        'minor_fill': '#551a8b',
+        'path_line': '#ff00aa',
+        'rail_line': '#39ff14',
+        'include_rail_ticks': True,
+        'rail_ticks_color': '#0d021a',
+        'boundary_country': '#ff00ea',
+        'boundary_state': '#bd00ff',
+        'label_city': '#ffffff',
+        'label_city_halo': '#0d021a',
+        'label_country': '#ff99e6',
+        'label_country_halo': '#0d021a',
+        'label_water': '#00f0ff',
+        'label_water_halo': '#16042b',
+        'label_road': '#ffffff',
+        'label_road_halo': '#0d021a'
     }
 }
 
@@ -2978,7 +3060,16 @@ def main():
             json.dump(mono_style, f, indent=2)
         generated.append(f"{mono_id}.json")
 
-    # 14. OpenFreeMap Core Reference Styles (Part 2)
+    # 14. 1980s Retro Aesthetics (Pastel & Neon)
+    for eighties_id in ['eighties-pastel', 'eighties-neon']:
+        eighties_theme = THEMES[eighties_id]
+        eighties_style = compile_style(bright_template, eighties_theme)
+        out_f = os.path.join(dist_dir, f"{eighties_id}.json")
+        with open(out_f, 'w') as f:
+            json.dump(eighties_style, f, indent=2)
+        generated.append(f"{eighties_id}.json")
+
+    # 15. OpenFreeMap Core Reference Styles (Part 2)
     ref_map = {
         'liberty': 'OpenFreeMap Liberty',
         'bright': 'OpenFreeMap Bright',

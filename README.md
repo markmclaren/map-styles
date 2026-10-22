@@ -52,6 +52,9 @@ All compiled MapLibre style JSON files are located in [`dist/`](dist/) and are r
 | [`dist/charted-territory.json`](dist/charted-territory.json) | **Charted Territory** | Vintage exploration atlas map with warm olive greens, tan earth & relief |
 | [`dist/midcentury.json`](dist/midcentury.json) | **Midcentury** | 1950s/1960s retro art style featuring turquoise waters, coral highways & mustard accents |
 | [`dist/blueprint.json`](dist/blueprint.json) | **Blueprint** | Architectural drafting blueprint styling with deep blueprint blue & white lines |
+| **1980s Retro Aesthetics** | | |
+| [`dist/eighties-pastel.json`](dist/eighties-pastel.json) | **1980s Pastel (Miami & Memphis)** | Authentic 1980s Memphis/Miami pastel palette with Caribbean turquoise water `#8fe1eb`, mint parks `#b5efd3`, blush buildings, and hot flamingo pink motorways `#ff4081` |
+| [`dist/eighties-neon.json`](dist/eighties-neon.json) | **1980s Neon (Synthwave & Cyber)** | 1980s Synthwave/Retrowave arcade aesthetic with blacklight midnight canvas `#0d021a`, glowing electric cyan coastlines `#00f0ff`, laser hot pink freeways `#ff007f`, and neon green rail `#39ff14` |
 | **Monochrome (Single-Hue) Series** | | |
 | [`dist/monochrome-indigo.json`](dist/monochrome-indigo.json) | **Monochrome Indigo** | Architectural Prussian navy wash locking Hue to 215° with strict luminance stepping across water, roads, and typography |
 | [`dist/monochrome-sepia.json`](dist/monochrome-sepia.json) | **Monochrome Sepia** | 18th-century archival copperplate engraving tone (Hue 35°) with warm burnt umber line hierarchy and parchment canvas |

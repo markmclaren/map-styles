@@ -282,9 +282,12 @@ function updateSecondaryStyle(styleId) {
   } else if (styleId.includes('topographic') || styleId.includes('relief') || styleId.includes('outdoor') || styleId === 'natgeo') {
     secondaryTag.textContent = 'OpenFreeMap Shaded Liberty';
     mapSecondary.setStyle(getStyleUrl('liberty'));
-  } else if (styleId === 'monochrome-purple' || styleId === 'monochrome-crimson') {
+  } else if (styleId === 'eighties-neon' || styleId === 'monochrome-purple' || styleId === 'monochrome-crimson') {
     secondaryTag.textContent = 'OpenFreeMap Dark';
     mapSecondary.setStyle(getStyleUrl('dark'));
+  } else if (styleId === 'eighties-pastel') {
+    secondaryTag.textContent = 'OpenFreeMap Bright';
+    mapSecondary.setStyle(getStyleUrl('bright'));
   } else if (styleId.startsWith('monochrome')) {
     secondaryTag.textContent = 'OpenFreeMap Positron';
     mapSecondary.setStyle(getStyleUrl('positron'));

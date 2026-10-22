@@ -364,6 +364,18 @@
       "name": "Monochrome Crimson (Oxblood Night)"
     },
     {
+      "id": "eighties-pastel",
+      "file": "eighties-pastel.json",
+      "path": "dist/eighties-pastel.json",
+      "name": "1980s Pastel (Miami & Memphis)"
+    },
+    {
+      "id": "eighties-neon",
+      "file": "eighties-neon.json",
+      "path": "dist/eighties-neon.json",
+      "name": "1980s Neon (Synthwave & Cyber)"
+    },
+    {
       "id": "liberty",
       "file": "liberty.json",
       "path": "dist/liberty.json",

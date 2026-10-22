@@ -102,10 +102,11 @@ All compiled MapLibre style JSON files are located in [`dist/`](dist/) and are r
 An interactive web application is available live at **[https://markmclaren.github.io/map-styles/](https://markmclaren.github.io/map-styles/)** (hosted via [`docs/`](docs/)) for inspecting and comparing styles side-by-side:
 
 ### Features:
+- **3D Globe & 2D Projection**: Seamless toggle between flat Web Mercator and interactive 3D Globe projection with full synchronization in Single, Split, and Swipe modes.
 - **Single Mode**: Full-screen exploration of any style.
 - **Split Mode**: Synchronized side-by-side comparison between styles and baseline references.
 - **Swipe Mode**: Interactive draggable divider comparing layers in real time.
-- **Location Presets**: London, Edinburgh, Lake District (relief), Swiss Alps (relief), and New York City.
+- **Location Presets**: Global (Orbital 3D), BGS Keyworth, London, Edinburgh, Lake District (relief), Swiss Alps (relief), and New York City.
 - **JSON Inspector**: View and download active style JSONs with one click.
 
 ### Live Demo:

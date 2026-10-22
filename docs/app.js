@@ -6,6 +6,7 @@
 
 // Preset locations [lng, lat, zoom, pitch, bearing]
 const PRESETS = {
+  global: { center: [0, 20], zoom: 1.5, pitch: 0, bearing: 0, label: 'Global (Orbital 3D)' },
   bgs: { center: [-1.0772, 52.8797], zoom: 14.5, pitch: 0, bearing: 0, label: 'BGS Keyworth (GeoIndex)' },
   london: { center: [-0.1276, 51.5074], zoom: 12.2, pitch: 0, bearing: 0, label: 'London (UK)' },
   edinburgh: { center: [-3.1883, 55.9533], zoom: 13.5, pitch: 15, bearing: -10, label: 'Edinburgh Castle' },
@@ -19,6 +20,7 @@ let mapPrimary = null;
 let mapSecondary = null;
 let currentStyleId = 'light-gray';
 let currentMode = 'single'; // 'single', 'split', 'swipe'
+let currentProjection = 'mercator'; // 'mercator' or 'globe'
 let currentStyleJson = null;
 let isSyncing = false;
 let isDraggingSwipe = false;
@@ -29,6 +31,8 @@ const presetSelect = document.getElementById('presetSelect');
 const btnModeSingle = document.getElementById('btnModeSingle');
 const btnModeSplit = document.getElementById('btnModeSplit');
 const btnModeSwipe = document.getElementById('btnModeSwipe');
+const btnProjMercator = document.getElementById('btnProjMercator');
+const btnProjGlobe = document.getElementById('btnProjGlobe');
 const btnInspect = document.getElementById('btnInspect');
 const btnDownload = document.getElementById('btnDownload');
 const inspectorDrawer = document.getElementById('inspectorDrawer');
@@ -118,8 +122,11 @@ async function init() {
     renderWorldCopies: false
   });
 
-  // Navigation Controls
+  // Navigation & Globe Controls
   mapPrimary.addControl(new maplibregl.NavigationControl({ visualizePitch: true }), 'top-right');
+  if (maplibregl.GlobeControl) {
+    mapPrimary.addControl(new maplibregl.GlobeControl(), 'top-right');
+  }
 
   // Initialize Secondary Map (for comparison)
   mapSecondary = new maplibregl.Map({
@@ -143,6 +150,23 @@ async function init() {
     if (UK_SHIELDS_DEF[e.id]) addUkShield(mapSecondary, e.id);
   });
 
+  // Projection change sync
+  mapPrimary.on('projectionchange', (e) => {
+    const p = (e.newProjection && typeof e.newProjection === 'object' ? e.newProjection.type : e.newProjection) || 'mercator';
+    applyProjectionState(p, false);
+    if (mapSecondary) {
+      try {
+        const secProj = mapSecondary.getProjection();
+        const secType = (secProj && secProj.type) || 'mercator';
+        if (secType !== p) {
+          mapSecondary.setProjection({ type: p });
+        }
+      } catch (err) {
+        console.warn('Could not sync projection to secondary map:', err);
+      }
+    }
+  });
+
   // Map event listeners
   mapPrimary.on('move', updateHud);
   mapPrimary.on('load', () => {
@@ -151,6 +175,9 @@ async function init() {
   });
   mapPrimary.on('style.load', () => {
     registerUkShields(mapPrimary);
+    if (currentProjection === 'globe') {
+      mapPrimary.setProjection({ type: 'globe' });
+    }
     updateHud();
   });
   mapPrimary.on('error', (e) => {
@@ -162,6 +189,9 @@ async function init() {
   });
   mapSecondary.on('style.load', () => {
     registerUkShields(mapSecondary);
+    if (currentProjection === 'globe') {
+      mapSecondary.setProjection({ type: 'globe' });
+    }
   });
   mapSecondary.on('error', (e) => {
     if (e && e.error) console.error('MapSecondary Error:', e.error);
@@ -234,6 +264,10 @@ function setupEventListeners() {
   btnModeSplit.addEventListener('click', () => setViewMode('split'));
   btnModeSwipe.addEventListener('click', () => setViewMode('swipe'));
 
+  // Projection toggles
+  if (btnProjMercator) btnProjMercator.addEventListener('click', () => setProjection('mercator'));
+  if (btnProjGlobe) btnProjGlobe.addEventListener('click', () => setProjection('globe'));
+
   // Swipe interaction
   setupSwipeInteraction();
 
@@ -294,6 +328,45 @@ function updateSecondaryStyle(styleId) {
   } else {
     secondaryTag.textContent = 'OpenFreeMap Positron';
     mapSecondary.setStyle(getStyleUrl('positron'));
+  }
+}
+
+// Projection Handling (2D Mercator vs 3D Globe)
+function setProjection(type) {
+  if (currentProjection === type) return;
+  applyProjectionState(type, true);
+
+  // If user switches to 3D Globe from a close zoom or when preset is 'global', smooth flyto
+  if (type === 'globe' && mapPrimary) {
+    if (presetSelect && presetSelect.value === 'global' && mapPrimary.getZoom() > 4) {
+      mapPrimary.flyTo({ zoom: 1.5, pitch: 0, bearing: 0, duration: 1500 });
+    }
+  }
+}
+
+function applyProjectionState(type, updateMaps = true) {
+  currentProjection = type;
+
+  if (btnProjMercator && btnProjGlobe) {
+    btnProjMercator.classList.toggle('active', type === 'mercator');
+    btnProjGlobe.classList.toggle('active', type === 'globe');
+  }
+
+  if (updateMaps) {
+    if (mapPrimary) {
+      try {
+        mapPrimary.setProjection({ type });
+      } catch (err) {
+        console.warn('Could not set projection on mapPrimary:', err);
+      }
+    }
+    if (mapSecondary) {
+      try {
+        mapSecondary.setProjection({ type });
+      } catch (err) {
+        console.warn('Could not set projection on mapSecondary:', err);
+      }
+    }
   }
 }
 

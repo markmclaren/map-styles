@@ -11,9 +11,9 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 
-  <!-- MapLibre GL JS -->
-  <link href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css" rel="stylesheet" />
-  <script src="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
+  <!-- MapLibre GL JS v5.24.0 (Native 3D Globe Projection Support) -->
+  <link href="https://unpkg.com/maplibre-gl@5.24.0/dist/maplibre-gl.css" rel="stylesheet" />
+  <script src="https://unpkg.com/maplibre-gl@5.24.0/dist/maplibre-gl.js"></script>
 
   <link rel="stylesheet" href="style.css">
 </head>
@@ -143,11 +143,21 @@
         </div>
       </div>
 
+      <!-- Projection (2D Mercator / 3D Globe) -->
+      <div class="control-group">
+        <span class="control-label">Projection</span>
+        <div class="btn-group" role="group" aria-label="Projection Mode">
+          <button id="btnProjMercator" class="btn btn-segmented active" title="Flat 2D Web Mercator map">2D</button>
+          <button id="btnProjGlobe" class="btn btn-segmented" title="Interactive 3D Globe projection">3D Globe</button>
+        </div>
+      </div>
+
       <!-- Presets Selector -->
       <div class="control-group">
         <label for="presetSelect" class="control-label">Location</label>
         <div class="select-wrapper">
           <select id="presetSelect" class="select-input">
+            <option value="global">Global (Orbital 3D)</option>
             <option value="bgs">BGS Keyworth (GeoIndex)</option>
             <option value="london" selected>London (UK)</option>
             <option value="edinburgh">Edinburgh Castle</option>

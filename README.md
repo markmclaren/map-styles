@@ -126,10 +126,12 @@ Open **[http://localhost:8080/docs/index.html](http://localhost:8080/docs/index.
 
 Create custom, production-ready MapLibre styles in seconds using only **6 semantic color tokens** (Canvas, Water, Greenspace, Roads, Buildings, Labels). The built-in algorithmic engine automatically calculates contrast curves, luminance stepping, road casing hierarchies, and text halos in real time.
 
-Live Studio: **[https://markmclaren.github.io/map-styles/creator.html](https://markmclaren.github.io/map-styles/creator.html)**
+Live Studio: **[https://markmclaren.github.io/map-styles/creator.html](https://markmclaren.github.io/map-styles/creator.html)**  
+Technical Architecture & Accessibility Science: **[`Creator.md`](Creator.md)**
 
 ### Features:
 - **6-Token Simplicity**: Pick 6 intent colors; the engine derives and contrast-checks all 70+ MapLibre layers automatically.
+- **Tonal Control Bar**: Micro-steppers (`Darker` / `Lighter`) and a 5-step interactive tonal ladder (`-16%` to `+16%`) that adjust lightness while keeping hue and saturation strictly locked.
 - **Auto-Contrast Engine**: One-click ✨ auto-tuning to guarantee WCAG AA / AAA contrast compliance.
 - **Monochrome Lock**: Lock to a single hue to auto-generate a complete, harmonious single-color map.
 - **Curated Harmonies**: Instant presets including *Nordic Slate*, *Warm Parchment*, *Powder Blue*, *Cherry Blossom*, *1980s Neon*, and *Metropolis Night*.

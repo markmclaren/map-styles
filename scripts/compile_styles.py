@@ -268,6 +268,10 @@ def compile_style(base_template, theme_config, is_base_only=False, is_ref_only=F
         elif l_type == 'symbol':
             if theme_config.get('include_uk_shields') and 'shield' in l_id:
                 continue
+
+            default_halo = theme_config.get('label_city_halo', theme_config.get('background', '#ffffff'))
+            default_subtle_text = theme_config.get('label_road', theme_config.get('label_country', theme_config.get('label_city', '#666666')))
+
             if s_layer == 'place':
                 if any(c in l_id for c in ['city', 'town', 'village']):
                     paint['text-color'] = theme_config.get('label_city', '#333333')
@@ -279,16 +283,41 @@ def compile_style(base_template, theme_config, is_base_only=False, is_ref_only=F
                     if 'label_country_halo' in theme_config:
                         paint['text-halo-color'] = theme_config['label_country_halo']
                         paint['text-halo-width'] = 1.5
+                else:
+                    # Suburbs, neighborhoods, hamlets, quarters (e.g. label_other)
+                    paint['text-color'] = theme_config.get('label_other', default_subtle_text)
+                    paint['text-halo-color'] = default_halo
+                    paint['text-halo-width'] = 1.2
+
             elif s_layer in ['water_name', 'waterway'] or 'water' in l_id:
                 paint['text-color'] = theme_config.get('label_water', '#436fb3')
                 if 'label_water_halo' in theme_config:
                     paint['text-halo-color'] = theme_config['label_water_halo']
-                    paint['text-halo-width'] = 1
+                    paint['text-halo-width'] = 1.2
+
             elif s_layer == 'transportation_name':
-                paint['text-color'] = theme_config.get('label_road', '#666666')
-                if 'label_road_halo' in theme_config:
-                    paint['text-halo-color'] = theme_config['label_road_halo']
-                    paint['text-halo-width'] = 1
+                if 'shield' not in l_id:
+                    paint['text-color'] = theme_config.get('label_road', '#666666')
+                    if 'label_road_halo' in theme_config:
+                        paint['text-halo-color'] = theme_config['label_road_halo']
+                        paint['text-halo-width'] = 1.0
+
+            elif s_layer in ['poi', 'poi_transit'] or 'poi' in l_id:
+                paint['text-color'] = theme_config.get('label_poi', default_subtle_text)
+                paint['text-halo-color'] = theme_config.get('label_poi_halo', default_halo)
+                paint['text-halo-width'] = 1.0
+
+            elif s_layer == 'aerodrome_label' or 'airport' in l_id:
+                paint['text-color'] = theme_config.get('label_airport', default_subtle_text)
+                paint['text-halo-color'] = default_halo
+                paint['text-halo-width'] = 1.0
+
+            else:
+                # Catch-all for any other symbol layers (housenumber, etc.)
+                if 'text-halo-color' in paint:
+                    paint['text-halo-color'] = default_halo
+                if 'text-color' in paint:
+                    paint['text-color'] = default_subtle_text
 
         new_layers.append(layer)
 

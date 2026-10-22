@@ -5182,7 +5182,7 @@
       "paint": {
         "text-color": "#f26383",
         "text-halo-color": "#2b060d",
-        "text-halo-width": 1
+        "text-halo-width": 1.2
       }
     },
     {
@@ -5255,7 +5255,7 @@
       "paint": {
         "text-color": "#f26383",
         "text-halo-color": "#2b060d",
-        "text-halo-width": 1
+        "text-halo-width": 1.2
       }
     },
     {
@@ -5318,7 +5318,7 @@
       "paint": {
         "text-color": "#f26383",
         "text-halo-color": "#2b060d",
-        "text-halo-width": 1
+        "text-halo-width": 1.2
       }
     },
     {
@@ -5412,10 +5412,10 @@
         "text-size": 12
       },
       "paint": {
-        "text-color": "#666",
+        "text-color": "#ffe0e7",
         "text-halo-blur": 0.5,
-        "text-halo-color": "#ffffff",
-        "text-halo-width": 1
+        "text-halo-color": "#100305",
+        "text-halo-width": 1.0
       }
     },
     {
@@ -5517,10 +5517,10 @@
         "text-size": 12
       },
       "paint": {
-        "text-color": "#666",
+        "text-color": "#ffe0e7",
         "text-halo-blur": 0.5,
-        "text-halo-color": "#ffffff",
-        "text-halo-width": 1
+        "text-halo-color": "#100305",
+        "text-halo-width": 1.0
       }
     },
     {
@@ -5622,10 +5622,10 @@
         "text-size": 12
       },
       "paint": {
-        "text-color": "#666",
+        "text-color": "#ffe0e7",
         "text-halo-blur": 0.5,
-        "text-halo-color": "#ffffff",
-        "text-halo-width": 1
+        "text-halo-color": "#100305",
+        "text-halo-width": 1.0
       }
     },
     {
@@ -5698,10 +5698,10 @@
         "text-size": 12
       },
       "paint": {
-        "text-color": "#2e5a80",
+        "text-color": "#ffe0e7",
         "text-halo-blur": 0.5,
-        "text-halo-color": "#ffffff",
-        "text-halo-width": 1
+        "text-halo-color": "#100305",
+        "text-halo-width": 1.0
       }
     },
     {
@@ -5771,7 +5771,7 @@
       "paint": {
         "text-color": "#ffe0e7",
         "text-halo-color": "#100305",
-        "text-halo-width": 1
+        "text-halo-width": 1.0
       }
     },
     {
@@ -5862,7 +5862,7 @@
       "paint": {
         "text-color": "#ffe0e7",
         "text-halo-blur": 0.5,
-        "text-halo-width": 1,
+        "text-halo-width": 1.0,
         "text-halo-color": "#100305"
       }
     },
@@ -5940,7 +5940,7 @@
       "paint": {
         "text-color": "#ffe0e7",
         "text-halo-blur": 0.5,
-        "text-halo-width": 1,
+        "text-halo-width": 1.0,
         "text-halo-color": "#100305"
       }
     },
@@ -6021,11 +6021,7 @@
         "text-rotation-alignment": "viewport",
         "text-size": 10
       },
-      "paint": {
-        "text-color": "#ffe0e7",
-        "text-halo-color": "#100305",
-        "text-halo-width": 1
-      }
+      "paint": {}
     },
     {
       "id": "highway-shield-us-interstate",
@@ -6108,11 +6104,7 @@
         "text-rotation-alignment": "viewport",
         "text-size": 10
       },
-      "paint": {
-        "text-color": "#ffe0e7",
-        "text-halo-color": "#100305",
-        "text-halo-width": 1
-      }
+      "paint": {}
     },
     {
       "id": "road_shield_us",
@@ -6194,11 +6186,7 @@
         "text-rotation-alignment": "viewport",
         "text-size": 10
       },
-      "paint": {
-        "text-color": "#ffe0e7",
-        "text-halo-color": "#100305",
-        "text-halo-width": 1
-      }
+      "paint": {}
     },
     {
       "id": "airport",
@@ -6260,10 +6248,10 @@
         "text-size": 12
       },
       "paint": {
-        "text-color": "#666",
+        "text-color": "#ffe0e7",
         "text-halo-blur": 0.5,
-        "text-halo-color": "#ffffff",
-        "text-halo-width": 1
+        "text-halo-color": "#100305",
+        "text-halo-width": 1.0
       }
     },
     {
@@ -6341,10 +6329,10 @@
         "text-transform": "uppercase"
       },
       "paint": {
-        "text-color": "#333",
+        "text-color": "#ffe0e7",
         "text-halo-blur": 1,
-        "text-halo-color": "#fff",
-        "text-halo-width": 1
+        "text-halo-color": "#100305",
+        "text-halo-width": 1.2
       }
     },
     {

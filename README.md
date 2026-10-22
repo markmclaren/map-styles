@@ -2,7 +2,10 @@
 
 A collection of open-source vector map styles for **MapLibre GL** powered by free, open vector map tiles from **[OpenFreeMap](https://openfreemap.org/)** (based on the OpenMapTiles schema).
 
-These styles provide a rich range of cartographic themes—including Ordnance Survey skins, neutral light/dark data canvas backdrops, high-contrast navigation maps, creative aesthetics (parchment, newspaper, cyberpunk nova, colored pencil, blueprint), and relief/topographic views.
+These styles provide a rich range of cartographic themes—**inspired by and designed in the style of existing iconic maps** (including Google Maps, Apple Maps, Ordnance Survey, Michelin, AA, Rand McNally, National Geographic, Stamen, and CARTO), as well as neutral light/dark data canvas backdrops, high-contrast navigation maps, creative aesthetics (parchment, newspaper, cyberpunk nova, colored pencil, blueprint), and relief/topographic views.
+
+> [!NOTE]
+> **Cartographic Heritage & Inspiration**: Styles in this collection referencing external mapping services or organizations (such as Google Maps, Apple Maps, Ordnance Survey, Michelin, AA, Rand McNally, National Geographic, Stamen, or CARTO) are independent open-source designs **inspired by and created in the visual style of existing maps**. They recreate their distinctive palettes, visual contrast, and cartographic hierarchies on top of the open [OpenMapTiles](https://openmaptiles.org/) vector tile schema. All trademarks and brand names are property of their respective owners and are mentioned strictly for stylistic identification.
 
 ---
 
@@ -12,11 +15,29 @@ All compiled MapLibre style JSON files are located in [`dist/`](dist/) and are r
 
 | Style File | Cartographic Theme | Description |
 |---|---|---|
-| [`dist/streetmap.json`](dist/streetmap.json) | **Streetmap UK Classic** | Traditional British street atlas cartography based on Streetmap.co.uk (motorway blue, emerald A-roads, amber B-roads, white streets with slate casing, peach buildings, and TSRGD sign badges) |
-| [`dist/streetmap-minimal.json`](dist/streetmap-minimal.json) | **Streetmap UK (Minimal)** | Lightweight standalone starter style containing the core essential layers for high-speed street mapping |
-| [`dist/os-roads.json`](dist/os-roads.json) | **Ordnance Survey - Roads** | Iconic OS UK road network cartography (peach buildings, cyan motorways, green A-roads) |
-| [`dist/os-outdoor.json`](dist/os-outdoor.json) | **Ordnance Survey - Outdoor** | Classic OS Landranger/Explorer outdoor styling with greenspaces & relief |
-| [`dist/os-light.json`](dist/os-light.json) | **Ordnance Survey - Light** | Minimalist low-contrast backdrop designed for GIS data overlay |
+| **Consumer Maps** | | |
+| [`dist/google-maps.json`](dist/google-maps.json) | **Google Maps** | Inspired by and in the style of Google Maps (warm ivory landcover, soft cyan water, mint parks, and yellow/orange highways) |
+| [`dist/apple-maps.json`](dist/apple-maps.json) | **Apple Maps** | Inspired by and in the style of Apple Maps (clean pastel cartography with crisp white roads, soft borders, sky-blue water, and emerald greenspaces) |
+| [`dist/bing-maps.json`](dist/bing-maps.json) | **Bing Maps** | Inspired by and in the style of Microsoft Bing Maps (muted gray urban fabric, soft yellow highways, and crisp water) |
+| **Motoring & Road Atlases** | | |
+| [`dist/michelin.json`](dist/michelin.json) | **Michelin Road Atlas** | Inspired by and in the style of the French Michelin road atlas (canary yellow secondary roads, vivid red motorways, high-contrast white ground) |
+| [`dist/aa-atlas.json`](dist/aa-atlas.json) | **AA Road Atlas (UK)** | Inspired by and in the style of the British AA Road Atlas (AA yellow accents, motorway blue, emerald A-roads, and TSRGD shields) |
+| [`dist/rand-mcnally.json`](dist/rand-mcnally.json) | **Rand McNally Road Atlas** | Inspired by and in the style of the Rand McNally American Road Atlas (Interstate blue ribbons, US highway red routes, and warm cream land) |
+| [`dist/streetmap.json`](dist/streetmap.json) | **Streetmap UK Classic** | Inspired by and in the style of traditional British street atlases (motorway blue, emerald A-roads, amber B-roads, peach buildings, and TSRGD sign badges) |
+| [`dist/streetmap-minimal.json`](dist/streetmap-minimal.json) | **Streetmap UK (Minimal)** | Lightweight standalone starter style containing core essential layers for high-speed street mapping |
+| [`dist/os-roads.json`](dist/os-roads.json) | **Ordnance Survey - Roads** | In the style of OS UK road network cartography (peach buildings, cyan motorways, green A-roads) |
+| [`dist/navigation.json`](dist/navigation.json) | **Navigation** | High-contrast daytime navigation cartography |
+| [`dist/navigation-dark.json`](dist/navigation-dark.json) | **Navigation (Dark)** | Low-glare night navigation cartography |
+| **OpenFreeMap Core References** | | |
+| [`dist/liberty.json`](dist/liberty.json) | **OpenFreeMap Liberty** | The flagship OpenFreeMap / OSM Liberty basemap with rich POIs, icons, and natural colors |
+| [`dist/bright.json`](dist/bright.json) | **OpenFreeMap Bright** | High-clarity light general-purpose basemap with crisp typography and subtle relief |
+| [`dist/positron.json`](dist/positron.json) | **OpenFreeMap Positron** | In the style of CARTO Positron light monochrome backdrop designed for data visualization |
+| [`dist/fiord.json`](dist/fiord.json) | **OpenFreeMap Fiord** | Elegant Nordic-inspired slate blue & cool gray theme |
+| [`dist/dark.json`](dist/dark.json) | **OpenFreeMap Dark** | In the style of CARTO Dark Matter minimalist charcoal night theme |
+| **Web-Map Classics & Wildcards** | | |
+| [`dist/stamen-toner.json`](dist/stamen-toner.json) | **Stamen Toner** | Inspired by and in the style of Stamen Toner (stark, high-contrast 1-bit black & white cartography with pure black water/buildings and white roads) |
+| [`dist/carto-voyager.json`](dist/carto-voyager.json) | **CARTO Voyager** | In the style of CARTO Voyager colorful editorial basemap with soft pastel buildings and warm highway fills |
+| [`dist/natgeo.json`](dist/natgeo.json) | **National Geographic Atlas** | Inspired by and in the style of the National Geographic Atlas (warm parchment tones, shaded relief, olive forests, and colored boundary ribbons) |
 | [`dist/modern-antique.json`](dist/modern-antique.json) | **Modern Antique** | Vintage antique parchment map with sepia tones & antique calligraphy feel |
 | [`dist/newspaper.json`](dist/newspaper.json) | **Newspaper** | High-contrast editorial black & white / grayscale newspaper print aesthetic |
 | [`dist/nova.json`](dist/nova.json) | **Nova** | Cyberpunk dark theme with deep obsidian blue & electric glowing cyan roads |
@@ -24,26 +45,35 @@ All compiled MapLibre style JSON files are located in [`dist/`](dist/) and are r
 | [`dist/charted-territory.json`](dist/charted-territory.json) | **Charted Territory** | Vintage exploration atlas map with warm olive greens, tan earth & relief |
 | [`dist/midcentury.json`](dist/midcentury.json) | **Midcentury** | 1950s/1960s retro art style featuring turquoise waters, coral highways & mustard accents |
 | [`dist/blueprint.json`](dist/blueprint.json) | **Blueprint** | Architectural drafting blueprint styling with deep blueprint blue & white lines |
-| [`dist/human-geography.json`](dist/human-geography.json) | **Human Geography** | Ultra-clean neutral light monochrome backdrop designed for thematic overlays |
-| [`dist/human-geography-base.json`](dist/human-geography-base.json) | **Human Geography (Base)** | Base layer without labels for sandwiching thematic data layers |
-| [`dist/human-geography-dark.json`](dist/human-geography-dark.json) | **Human Geography Dark** | Dark slate/charcoal companion engineered for high-contrast thematic data |
-| [`dist/human-geography-dark-base.json`](dist/human-geography-dark-base.json) | **Human Geography Dark (Base)**| Dark base layer without labels for thematic sandwiching |
+| **British & Ordnance Survey (UK)** | | |
+| [`dist/os-outdoor.json`](dist/os-outdoor.json) | **Ordnance Survey - Outdoor** | In the style of classic OS Landranger/Explorer outdoor styling with greenspaces & relief |
+| [`dist/os-light.json`](dist/os-light.json) | **Ordnance Survey - Light** | In the style of OS Open Zoomstack Light minimalist backdrop designed for GIS data overlay |
+| [`dist/os-zoomstack-night.json`](dist/os-zoomstack-night.json) | **Ordnance Survey - Night** | In the style of OS Open Zoomstack Night theme with deep obsidian backdrop and glowing cyan/orange roads |
+| [`dist/os-deuteranopia.json`](dist/os-deuteranopia.json) | **OS Deuteranopia (Accessible)** | In the style of OS Zoomstack Deuteranopia for red-green color vision deficiency (purples/blues/ambers) |
+| [`dist/os-tritanopia.json`](dist/os-tritanopia.json) | **OS Tritanopia (Accessible)** | In the style of OS Zoomstack Tritanopia for blue-yellow color vision deficiency (rose/teal/charcoal) |
+| **OSM & Transit Ecosystem** | | |
+| [`dist/humanitarian.json`](dist/humanitarian.json) | **Humanitarian (HOT)** | In the style of Humanitarian OpenStreetMap Team (HOT) with coral-pink highways, soft blue water, and highlighted facilities |
+| [`dist/transport-transit.json`](dist/transport-transit.json) | **Thunderforest Transport** | Inspired by and in the style of Thunderforest Transport and classic transit maps with prominent rail/subway lines |
+| [`dist/osm.json`](dist/osm.json) | **OpenStreetMap** | Classic OpenStreetMap Daylight cartography |
+| [`dist/streets.json`](dist/streets.json) | **Streets** | Classic street map styling |
+| [`dist/streets-night.json`](dist/streets-night.json) | **Streets (Night)** | Low-light night street cartography |
 | [`dist/community.json`](dist/community.json) | **Community** | Vibrant municipal cartography highlighting civic parks, paths & campuses |
-| [`dist/outdoor.json`](dist/outdoor.json) | **Outdoor** | Recreation map with hiking trails, bike paths, parks & shaded relief |
-| [`dist/terrain.json`](dist/terrain.json) | **Terrain** | Physical geography focused on elevation tinting, mountains & relief |
-| [`dist/oceans.json`](dist/oceans.json) | **Oceans** | Marine cartography highlighting coastal contours & oceanic features |
+| **Thematic Data & Canvas** | | |
 | [`dist/light-gray.json`](dist/light-gray.json) | **Light Gray Canvas (Unified)** | Muted minimalist background with integrated labels |
 | [`dist/light-gray-base.json`](dist/light-gray-base.json) | **Light Gray Canvas (Base)** | Base polygons & lines only (ideal for sandwiching thematic data) |
 | [`dist/light-gray-ref.json`](dist/light-gray-ref.json) | **Light Gray Canvas (Reference)** | Overlay labels & boundaries with transparent background |
 | [`dist/dark-gray.json`](dist/dark-gray.json) | **Dark Gray Canvas (Unified)** | Dark charcoal neutral theme with integrated labels |
 | [`dist/dark-gray-base.json`](dist/dark-gray-base.json) | **Dark Gray Canvas (Base)** | Dark base polygons & lines only |
 | [`dist/dark-gray-ref.json`](dist/dark-gray-ref.json) | **Dark Gray Canvas (Reference)** | Dark overlay labels & boundaries |
-| [`dist/navigation.json`](dist/navigation.json) | **Navigation** | High-contrast daytime navigation cartography |
-| [`dist/navigation-dark.json`](dist/navigation-dark.json) | **Navigation (Dark)** | Low-glare night navigation cartography |
-| [`dist/streets.json`](dist/streets.json) | **Streets** | Classic street map styling |
-| [`dist/streets-night.json`](dist/streets-night.json) | **Streets (Night)** | Low-light night street cartography |
+| [`dist/human-geography.json`](dist/human-geography.json) | **Human Geography** | Ultra-clean neutral light monochrome backdrop designed for thematic overlays |
+| [`dist/human-geography-base.json`](dist/human-geography-base.json) | **Human Geography (Base)** | Base layer without labels for sandwiching thematic data layers |
+| [`dist/human-geography-dark.json`](dist/human-geography-dark.json) | **Human Geography Dark** | Dark slate/charcoal companion engineered for high-contrast thematic data |
+| [`dist/human-geography-dark-base.json`](dist/human-geography-dark-base.json) | **Human Geography Dark (Base)**| Dark base layer without labels for thematic sandwiching |
+| **Topography, Relief & Marine** | | |
 | [`dist/topographic.json`](dist/topographic.json) | **Topographic** | Traditional contour/relief topographic look |
-| [`dist/osm.json`](dist/osm.json) | **OpenStreetMap** | Classic OSM Daylight cartography |
+| [`dist/outdoor.json`](dist/outdoor.json) | **Outdoor** | Recreation map with hiking trails, bike paths, parks & shaded relief |
+| [`dist/terrain.json`](dist/terrain.json) | **Terrain** | Physical geography focused on elevation tinting, mountains & relief |
+| [`dist/oceans.json`](dist/oceans.json) | **Oceans** | Marine cartography highlighting coastal contours & oceanic features |
 
 ---
 
@@ -92,7 +122,8 @@ const map = new maplibregl.Map({
   container: 'map',
   style: 'dist/light-gray.json', // or dark-gray, navigation, modern-antique, etc.
   center: [-0.1276, 51.5074], // London
-  zoom: 12
+  zoom: 12,
+  renderWorldCopies: false // Only show a single copy of the earth
 });
 
 // For sandwiching thematic data between Base & Reference:

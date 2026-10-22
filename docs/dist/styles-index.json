@@ -13,13 +13,13 @@
       "id": "light-gray-base",
       "file": "light-gray-base.json",
       "path": "dist/light-gray-base.json",
-      "name": "Light Gray Canvas"
+      "name": "Light Gray Canvas (Base)"
     },
     {
       "id": "light-gray-ref",
       "file": "light-gray-ref.json",
       "path": "dist/light-gray-ref.json",
-      "name": "Light Gray Canvas"
+      "name": "Light Gray Canvas (Reference)"
     },
     {
       "id": "dark-gray",
@@ -31,13 +31,13 @@
       "id": "dark-gray-base",
       "file": "dark-gray-base.json",
       "path": "dist/dark-gray-base.json",
-      "name": "Dark Gray Canvas"
+      "name": "Dark Gray Canvas (Base)"
     },
     {
       "id": "dark-gray-ref",
       "file": "dark-gray-ref.json",
       "path": "dist/dark-gray-ref.json",
-      "name": "Dark Gray Canvas"
+      "name": "Dark Gray Canvas (Reference)"
     },
     {
       "id": "navigation",
@@ -157,7 +157,7 @@
       "id": "human-geography-base",
       "file": "human-geography-base.json",
       "path": "dist/human-geography-base.json",
-      "name": "Human Geography"
+      "name": "Human Geography (Base)"
     },
     {
       "id": "human-geography-dark",
@@ -169,7 +169,7 @@
       "id": "human-geography-dark-base",
       "file": "human-geography-dark-base.json",
       "path": "dist/human-geography-dark-base.json",
-      "name": "Human Geography Dark"
+      "name": "Human Geography Dark (Base)"
     },
     {
       "id": "community",
@@ -194,6 +194,120 @@
       "file": "oceans.json",
       "path": "dist/oceans.json",
       "name": "Oceans"
+    },
+    {
+      "id": "google-maps",
+      "file": "google-maps.json",
+      "path": "dist/google-maps.json",
+      "name": "Google Maps"
+    },
+    {
+      "id": "apple-maps",
+      "file": "apple-maps.json",
+      "path": "dist/apple-maps.json",
+      "name": "Apple Maps"
+    },
+    {
+      "id": "bing-maps",
+      "file": "bing-maps.json",
+      "path": "dist/bing-maps.json",
+      "name": "Bing Maps"
+    },
+    {
+      "id": "michelin",
+      "file": "michelin.json",
+      "path": "dist/michelin.json",
+      "name": "Michelin Road Atlas"
+    },
+    {
+      "id": "aa-atlas",
+      "file": "aa-atlas.json",
+      "path": "dist/aa-atlas.json",
+      "name": "AA Road Atlas (UK)"
+    },
+    {
+      "id": "rand-mcnally",
+      "file": "rand-mcnally.json",
+      "path": "dist/rand-mcnally.json",
+      "name": "Rand McNally Road Atlas"
+    },
+    {
+      "id": "stamen-toner",
+      "file": "stamen-toner.json",
+      "path": "dist/stamen-toner.json",
+      "name": "Stamen Toner"
+    },
+    {
+      "id": "carto-voyager",
+      "file": "carto-voyager.json",
+      "path": "dist/carto-voyager.json",
+      "name": "CARTO Voyager"
+    },
+    {
+      "id": "natgeo",
+      "file": "natgeo.json",
+      "path": "dist/natgeo.json",
+      "name": "National Geographic Atlas"
+    },
+    {
+      "id": "os-zoomstack-night",
+      "file": "os-zoomstack-night.json",
+      "path": "dist/os-zoomstack-night.json",
+      "name": "Ordnance Survey - Night"
+    },
+    {
+      "id": "os-deuteranopia",
+      "file": "os-deuteranopia.json",
+      "path": "dist/os-deuteranopia.json",
+      "name": "Ordnance Survey - Deuteranopia (Accessible)"
+    },
+    {
+      "id": "os-tritanopia",
+      "file": "os-tritanopia.json",
+      "path": "dist/os-tritanopia.json",
+      "name": "Ordnance Survey - Tritanopia (Accessible)"
+    },
+    {
+      "id": "humanitarian",
+      "file": "humanitarian.json",
+      "path": "dist/humanitarian.json",
+      "name": "Humanitarian (HOT)"
+    },
+    {
+      "id": "transport-transit",
+      "file": "transport-transit.json",
+      "path": "dist/transport-transit.json",
+      "name": "Thunderforest Transport (Transit)"
+    },
+    {
+      "id": "liberty",
+      "file": "liberty.json",
+      "path": "dist/liberty.json",
+      "name": "OpenFreeMap Liberty"
+    },
+    {
+      "id": "bright",
+      "file": "bright.json",
+      "path": "dist/bright.json",
+      "name": "OpenFreeMap Bright"
+    },
+    {
+      "id": "positron",
+      "file": "positron.json",
+      "path": "dist/positron.json",
+      "name": "OpenFreeMap Positron"
+    },
+    {
+      "id": "fiord",
+      "file": "fiord.json",
+      "path": "dist/fiord.json",
+      "name": "OpenFreeMap Fiord"
+    },
+    {
+      "id": "dark",
+      "file": "dark.json",
+      "path": "dist/dark.json",
+      "name": "OpenFreeMap Dark"
     }
   ]
 }

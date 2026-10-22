@@ -114,7 +114,8 @@ async function init() {
     center: initial.center,
     zoom: initial.zoom,
     pitch: initial.pitch,
-    bearing: initial.bearing
+    bearing: initial.bearing,
+    renderWorldCopies: false
   });
 
   // Navigation Controls
@@ -123,11 +124,12 @@ async function init() {
   // Initialize Secondary Map (for comparison)
   mapSecondary = new maplibregl.Map({
     container: 'mapSecondary',
-    style: 'https://tiles.openfreemap.org/styles/bright', // default comparison baseline
+    style: getStyleUrl('positron'), // default comparison baseline
     center: initial.center,
     zoom: initial.zoom,
     pitch: initial.pitch,
-    bearing: initial.bearing
+    bearing: initial.bearing,
+    renderWorldCopies: false
   });
 
   // Synchronize maps
@@ -262,24 +264,30 @@ async function switchStyle(styleId) {
 
 // Update secondary map to an appropriate comparison reference
 function updateSecondaryStyle(styleId) {
-  if (styleId.includes('streetmap')) {
+  if (styleId.includes('streetmap') || styleId === 'aa-atlas' || styleId === 'os-roads') {
     secondaryTag.textContent = 'Ordnance Survey - Roads';
     mapSecondary.setStyle(getStyleUrl('os-roads'));
-  } else if (styleId.includes('osm')) {
-    secondaryTag.textContent = 'OpenFreeMap Standard Liberty';
-    mapSecondary.setStyle('https://tiles.openfreemap.org/styles/liberty');
-  } else if (styleId.includes('dark')) {
-    secondaryTag.textContent = 'OpenFreeMap Standard Dark';
-    mapSecondary.setStyle('https://tiles.openfreemap.org/styles/dark');
-  } else if (styleId.includes('topographic') || styleId.includes('relief') || styleId.includes('outdoor')) {
+  } else if (styleId === 'google-maps' || styleId === 'apple-maps' || styleId === 'bing-maps') {
+    secondaryTag.textContent = 'OpenFreeMap Liberty';
+    mapSecondary.setStyle(getStyleUrl('liberty'));
+  } else if (styleId === 'michelin' || styleId === 'rand-mcnally') {
+    secondaryTag.textContent = 'OpenFreeMap Bright';
+    mapSecondary.setStyle(getStyleUrl('bright'));
+  } else if (styleId === 'stamen-toner' || styleId.includes('dark') || styleId === 'os-zoomstack-night') {
+    secondaryTag.textContent = 'OpenFreeMap Dark';
+    mapSecondary.setStyle(getStyleUrl('dark'));
+  } else if (styleId.includes('osm') || styleId === 'humanitarian') {
+    secondaryTag.textContent = 'OpenFreeMap Liberty';
+    mapSecondary.setStyle(getStyleUrl('liberty'));
+  } else if (styleId.includes('topographic') || styleId.includes('relief') || styleId.includes('outdoor') || styleId === 'natgeo') {
     secondaryTag.textContent = 'OpenFreeMap Shaded Liberty';
-    mapSecondary.setStyle('https://tiles.openfreemap.org/styles/liberty');
+    mapSecondary.setStyle(getStyleUrl('liberty'));
   } else if (styleId.includes('roads')) {
-    secondaryTag.textContent = 'OpenFreeMap Standard Bright';
-    mapSecondary.setStyle('https://tiles.openfreemap.org/styles/bright');
+    secondaryTag.textContent = 'OpenFreeMap Bright';
+    mapSecondary.setStyle(getStyleUrl('bright'));
   } else {
-    secondaryTag.textContent = 'OpenFreeMap Standard Positron';
-    mapSecondary.setStyle('https://tiles.openfreemap.org/styles/positron');
+    secondaryTag.textContent = 'OpenFreeMap Positron';
+    mapSecondary.setStyle(getStyleUrl('positron'));
   }
 }
 

@@ -415,9 +415,9 @@
         "text-size": 14
       },
       "paint": {
-        "text-color": "#74aee9",
-        "text-halo-color": "rgba(255,255,255,0.7)",
-        "text-halo-width": 1.5
+        "text-color": "#888f91",
+        "text-halo-color": "#efefef",
+        "text-halo-width": 1
       }
     },
     {
@@ -488,9 +488,9 @@
         ]
       },
       "paint": {
-        "text-color": "#495e91",
-        "text-halo-color": "rgba(255,255,255,0.7)",
-        "text-halo-width": 1.5
+        "text-color": "#888f91",
+        "text-halo-color": "#efefef",
+        "text-halo-width": 1
       }
     },
     {
@@ -551,9 +551,9 @@
         "text-size": 14
       },
       "paint": {
-        "text-color": "#495e91",
-        "text-halo-color": "rgba(255,255,255,0.7)",
-        "text-halo-width": 1.5
+        "text-color": "#888f91",
+        "text-halo-color": "#efefef",
+        "text-halo-width": 1
       }
     },
     {

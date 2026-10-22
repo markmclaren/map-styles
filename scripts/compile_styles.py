@@ -106,12 +106,15 @@ def compile_style(base_template, theme_config, is_base_only=False, is_ref_only=F
                 })
             continue
 
-        # Apply Water
-        elif s_layer == 'water' or 'water' in l_id:
-            if l_type == 'fill':
-                paint['fill-color'] = theme_config.get('water_fill', '#a7d6fe')
-                if 'water_outline' in theme_config:
-                    paint['fill-outline-color'] = theme_config['water_outline']
+        # Apply Waterways (Rivers, Streams, Canals)
+        elif (s_layer == 'waterway' or 'waterway' in l_id or 'river' in l_id) and l_type == 'line':
+            paint['line-color'] = theme_config.get('waterway_line', theme_config.get('water_fill', '#a7d6fe'))
+
+        # Apply Water Bodies (Lakes, Oceans, Reservoirs)
+        elif (s_layer == 'water' or l_id == 'water' or l_id.startswith('water-') or (l_type == 'fill' and 'water' in l_id and 'waterway' not in l_id)) and l_type == 'fill':
+            paint['fill-color'] = theme_config.get('water_fill', '#a7d6fe')
+            if 'water_outline' in theme_config:
+                paint['fill-outline-color'] = theme_config['water_outline']
             new_layers.append(layer)
             if l_id == 'water' and 'water_outline' in theme_config and not is_ref_only:
                 new_layers.append({
@@ -132,9 +135,6 @@ def compile_style(base_template, theme_config, is_base_only=False, is_ref_only=F
                     }
                 })
             continue
-        elif s_layer == 'waterway':
-            if l_type == 'line':
-                paint['line-color'] = theme_config.get('waterway_line', theme_config.get('water_fill', '#a7d6fe'))
 
         # Apply Landcover / Landuse
         elif s_layer in ['landcover', 'landuse', 'park']:
@@ -244,7 +244,7 @@ def compile_style(base_template, theme_config, is_base_only=False, is_ref_only=F
                     if 'label_country_halo' in theme_config:
                         paint['text-halo-color'] = theme_config['label_country_halo']
                         paint['text-halo-width'] = 1.5
-            elif s_layer == 'water_name':
+            elif s_layer in ['water_name', 'waterway'] or 'water' in l_id:
                 paint['text-color'] = theme_config.get('label_water', '#436fb3')
                 if 'label_water_halo' in theme_config:
                     paint['text-halo-color'] = theme_config['label_water_halo']

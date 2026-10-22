@@ -382,9 +382,9 @@
         "text-size": 14
       },
       "paint": {
-        "text-color": "#74aee9",
-        "text-halo-color": "rgba(255,255,255,0.7)",
-        "text-halo-width": 1.5
+        "text-color": "#626d70",
+        "text-halo-color": "#1d2224",
+        "text-halo-width": 1
       }
     },
     {
@@ -455,9 +455,9 @@
         ]
       },
       "paint": {
-        "text-color": "#495e91",
-        "text-halo-color": "rgba(255,255,255,0.7)",
-        "text-halo-width": 1.5
+        "text-color": "#626d70",
+        "text-halo-color": "#1d2224",
+        "text-halo-width": 1
       }
     },
     {
@@ -518,9 +518,9 @@
         "text-size": 14
       },
       "paint": {
-        "text-color": "#495e91",
-        "text-halo-color": "rgba(255,255,255,0.7)",
-        "text-halo-width": 1.5
+        "text-color": "#626d70",
+        "text-halo-color": "#1d2224",
+        "text-halo-width": 1
       }
     },
     {

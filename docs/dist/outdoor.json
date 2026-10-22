@@ -402,7 +402,7 @@
         "line-cap": "round"
       },
       "paint": {
-        "line-color": "#a0c8f0",
+        "line-color": "#52b8dc",
         "line-dasharray": [
           2,
           4
@@ -457,7 +457,7 @@
         "line-cap": "round"
       },
       "paint": {
-        "line-color": "#a0c8f0",
+        "line-color": "#52b8dc",
         "line-width": [
           "interpolate",
           [
@@ -508,7 +508,7 @@
         "line-cap": "round"
       },
       "paint": {
-        "line-color": "#a0c8f0",
+        "line-color": "#52b8dc",
         "line-dasharray": [
           4,
           3
@@ -570,7 +570,7 @@
         "line-cap": "round"
       },
       "paint": {
-        "line-color": "#a0c8f0",
+        "line-color": "#52b8dc",
         "line-width": [
           "interpolate",
           [
@@ -628,7 +628,7 @@
         "line-cap": "round"
       },
       "paint": {
-        "line-color": "#a0c8f0",
+        "line-color": "#52b8dc",
         "line-dasharray": [
           4,
           3
@@ -685,7 +685,7 @@
         "line-cap": "round"
       },
       "paint": {
-        "line-color": "#a0c8f0",
+        "line-color": "#52b8dc",
         "line-width": [
           "interpolate",
           [
@@ -738,7 +738,7 @@
         "line-cap": "round"
       },
       "paint": {
-        "line-color": "#a0c8f0",
+        "line-color": "#52b8dc",
         "line-dasharray": [
           3,
           2.5
@@ -5173,9 +5173,9 @@
         "text-size": 14
       },
       "paint": {
-        "text-color": "#74aee9",
-        "text-halo-color": "rgba(255,255,255,0.7)",
-        "text-halo-width": 1.5
+        "text-color": "#176387",
+        "text-halo-color": "#F5F1E6",
+        "text-halo-width": 1
       }
     },
     {
@@ -5246,9 +5246,9 @@
         ]
       },
       "paint": {
-        "text-color": "#495e91",
-        "text-halo-color": "rgba(255,255,255,0.7)",
-        "text-halo-width": 1.5
+        "text-color": "#176387",
+        "text-halo-color": "#F5F1E6",
+        "text-halo-width": 1
       }
     },
     {
@@ -5309,9 +5309,9 @@
         "text-size": 14
       },
       "paint": {
-        "text-color": "#495e91",
-        "text-halo-color": "rgba(255,255,255,0.7)",
-        "text-halo-width": 1.5
+        "text-color": "#176387",
+        "text-halo-color": "#F5F1E6",
+        "text-halo-width": 1
       }
     },
     {

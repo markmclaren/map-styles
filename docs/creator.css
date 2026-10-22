@@ -388,6 +388,45 @@
   opacity: 1;
 }
 
+/* HUD Overlay */
+.map-hud {
+  position: absolute;
+  bottom: 24px;
+  right: 24px;
+  background: rgba(15, 23, 42, 0.78);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 20px;
+  padding: 6px 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--text-dim);
+  z-index: 10;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  pointer-events: none;
+}
+
+.hud-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.hud-label {
+  color: var(--text-muted);
+  font-size: 0.68rem;
+}
+
+.hud-divider {
+  width: 1px;
+  height: 12px;
+  background: rgba(255, 255, 255, 0.15);
+}
+
 /* Responsive */
 @media (max-width: 860px) {
   .studio-panel {

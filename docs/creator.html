@@ -112,6 +112,8 @@
             <span>Dark</span>
           </button>
         </div>
+        <!-- Hidden fallback for backward compatibility with cached scripts -->
+        <span id="badgeMode" style="display:none;" aria-hidden="true"></span>
       </div>
       <div class="contrast-pill" id="contrastPill" title="WCAG contrast between typography and canvas">
         <span class="pill-dot"></span>
@@ -269,6 +271,7 @@
   <div class="studio-toast" id="studioToast"></div>
 
   <!-- Scripts -->
+  <script src="dist/bright-template.js"></script>
   <script src="style-engine.js"></script>
   <script src="creator.js"></script>
 </body>

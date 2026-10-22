@@ -71,47 +71,64 @@ async function init() {
   // 1. Read URL params / hash if available
   loadTokensFromUrl();
 
-  // 2. Fetch base template
-  try {
-    const res = await fetch('dist/bright.json');
-    baseTemplate = await res.json();
-  } catch (err) {
-    console.error('Failed to load base template:', err);
-    showToast('Failed to load base MapLibre template');
-    return;
+  // 2. Fetch base template (checks window.BASE_TEMPLATE first for instant & offline/file:// support)
+  if (window.BASE_TEMPLATE) {
+    baseTemplate = window.BASE_TEMPLATE;
+  } else {
+    try {
+      const res = await fetch('dist/bright.json');
+      if (res.ok) {
+        baseTemplate = await res.json();
+      } else {
+        throw new Error(`HTTP ${res.status}`);
+      }
+    } catch (err) {
+      console.warn('Local template fetch failed, attempting remote fallback:', err);
+      try {
+        const resRemote = await fetch('https://tiles.openfreemap.org/styles/bright');
+        baseTemplate = await resRemote.json();
+      } catch (err2) {
+        console.error('All base template sources failed:', err2);
+        showToast('Failed to load map template');
+      }
+    }
   }
 
   // 3. Compile initial style
-  const theme = StyleEngine.generateThemeConfig(tokens);
-  currentStyle = StyleEngine.compileMapLibreStyle(baseTemplate, theme);
+  if (baseTemplate) {
+    const theme = StyleEngine.generateThemeConfig(tokens);
+    currentStyle = StyleEngine.compileMapLibreStyle(baseTemplate, theme);
+  }
 
   // 4. Initialize MapLibre
   const initialLoc = PRESETS.london;
-  map = new maplibregl.Map({
-    container: 'map',
-    style: currentStyle,
-    center: initialLoc.center,
-    zoom: initialLoc.zoom,
-    pitch: initialLoc.pitch,
-    bearing: initialLoc.bearing,
-    renderWorldCopies: false
-  });
+  if (currentStyle) {
+    map = new maplibregl.Map({
+      container: 'map',
+      style: currentStyle,
+      center: initialLoc.center,
+      zoom: initialLoc.zoom,
+      pitch: initialLoc.pitch,
+      bearing: initialLoc.bearing,
+      renderWorldCopies: false
+    });
 
-  map.addControl(new maplibregl.NavigationControl({ visualizePitch: true }), 'top-right');
-  if (maplibregl.GlobeControl) {
-    map.addControl(new maplibregl.GlobeControl(), 'top-right');
+    map.addControl(new maplibregl.NavigationControl({ visualizePitch: true }), 'top-right');
+    if (maplibregl.GlobeControl) {
+      map.addControl(new maplibregl.GlobeControl(), 'top-right');
+    }
+
+    map.on('move', updateHud);
+    map.on('load', updateHud);
+    map.on('projectionchange', (e) => {
+      const p = (e.newProjection && typeof e.newProjection === 'object' ? e.newProjection.type : e.newProjection) || 'mercator';
+      currentProjection = p;
+      if (btnProjMercator) btnProjMercator.classList.toggle('active', p === 'mercator');
+      if (btnProjGlobe) btnProjGlobe.classList.toggle('active', p === 'globe');
+    });
   }
 
-  map.on('move', updateHud);
-  map.on('load', updateHud);
-  map.on('projectionchange', (e) => {
-    const p = (e.newProjection && typeof e.newProjection === 'object' ? e.newProjection.type : e.newProjection) || 'mercator';
-    currentProjection = p;
-    btnProjMercator.classList.toggle('active', p === 'mercator');
-    btnProjGlobe.classList.toggle('active', p === 'globe');
-  });
-
-  // 5. Setup UI & Event Listeners
+  // 5. Setup UI & Event Listeners (ALWAYS execute so UI remains interactive)
   setupTokenBindings();
   renderPresetPills();
   setupEventListeners();
@@ -155,7 +172,7 @@ function onTokenChanged(changedKey, value) {
   clearTimeout(compileTimeout);
   compileTimeout = setTimeout(() => {
     applyCompiledStyle();
-  }, 40);
+  }, 120);
 }
 
 // Compile and update MapLibre in memory
@@ -165,14 +182,16 @@ function applyCompiledStyle() {
   const theme = StyleEngine.generateThemeConfig(tokens);
   currentStyle = StyleEngine.compileMapLibreStyle(baseTemplate, theme);
 
-  map.setStyle(currentStyle);
-  if (currentProjection === 'globe') {
-    map.once('style.load', () => {
-      map.setProjection({ type: 'globe' });
-      updateHud();
-    });
-  } else {
-    map.once('style.load', updateHud);
+  if (map) {
+    map.setStyle(currentStyle);
+    if (currentProjection === 'globe') {
+      map.once('style.load', () => {
+        map.setProjection({ type: 'globe' });
+        updateHud();
+      });
+    } else {
+      map.once('style.load', updateHud);
+    }
   }
 
   updateInspectorJson();
@@ -195,20 +214,31 @@ function updateUiState() {
   currentMode = isDark ? 'dark' : 'light';
 
   // Synchronize explicit Light / Dark mode toggle buttons
-  btnModeLight.classList.toggle('active', !isDark);
-  btnModeDark.classList.toggle('active', isDark);
+  if (btnModeLight) btnModeLight.classList.toggle('active', !isDark);
+  if (btnModeDark) btnModeDark.classList.toggle('active', isDark);
+
+  // Backward compatibility with legacy badge if present
+  const badgeMode = document.getElementById('badgeMode');
+  if (badgeMode) {
+    badgeMode.textContent = isDark ? 'Dark Mode' : 'Light Mode';
+    badgeMode.className = `badge-mode ${isDark ? 'badge-dark' : 'badge-light'}`;
+  }
 
   // Contrast Calculation (Text vs Canvas)
   const ratio = StyleEngine.getContrastRatio(tokens.canvas, tokens.text);
-  contrastValue.textContent = `${ratio.toFixed(1)}:1 (${ratio >= 7.0 ? 'AAA' : (ratio >= 4.5 ? 'AA' : 'Fail')})`;
+  if (contrastValue) {
+    contrastValue.textContent = `${ratio.toFixed(1)}:1 (${ratio >= 7.0 ? 'AAA' : (ratio >= 4.5 ? 'AA' : 'Fail')})`;
+  }
 
-  contrastPill.className = 'contrast-pill';
-  if (ratio >= 7.0) {
-    contrastPill.classList.add('pass-aaa');
-  } else if (ratio >= 4.5) {
-    contrastPill.classList.add('pass-aa');
-  } else {
-    contrastPill.classList.add('fail');
+  if (contrastPill) {
+    contrastPill.className = 'contrast-pill';
+    if (ratio >= 7.0) {
+      contrastPill.classList.add('pass-aaa');
+    } else if (ratio >= 4.5) {
+      contrastPill.classList.add('pass-aa');
+    } else {
+      contrastPill.classList.add('fail');
+    }
   }
 
   // Update active pill highlight
@@ -216,7 +246,7 @@ function updateUiState() {
     const pId = pill.dataset.preset;
     const p = StyleEngine.PRESET_PALETTES[pId];
     if (p) {
-      const match = Object.keys(tokens).every(k => tokens[k].toLowerCase() === p[k].toLowerCase());
+      const match = Object.keys(tokens).every(k => tokens[k] && p[k] && tokens[k].toLowerCase() === p[k].toLowerCase());
       pill.classList.toggle('active', match);
     }
   });
@@ -445,5 +475,9 @@ function showToast(msg) {
   }, 2400);
 }
 
-// Launch
-window.addEventListener('DOMContentLoaded', init);
+// Launch safely regardless of document ready state
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', init);
+} else {
+  init();
+}

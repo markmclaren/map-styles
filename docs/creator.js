@@ -20,6 +20,7 @@ let currentStyle = null;
 let currentProjection = 'mercator';
 let compileTimeout = null;
 let isMonochromeLocked = false;
+let currentMode = 'light'; // 'light' | 'dark'
 
 // Active 6 Design Tokens (defaults to Nordic Slate)
 let tokens = {
@@ -41,7 +42,8 @@ const btnDownload = document.getElementById('btnDownload');
 const btnShuffle = document.getElementById('btnShuffle');
 const btnAutoContrast = document.getElementById('btnAutoContrast');
 const btnMonoLock = document.getElementById('btnMonoLock');
-const badgeMode = document.getElementById('badgeMode');
+const btnModeLight = document.getElementById('btnModeLight');
+const btnModeDark = document.getElementById('btnModeDark');
 const contrastPill = document.getElementById('contrastPill');
 const contrastValue = document.getElementById('contrastValue');
 const presetPillsContainer = document.getElementById('presetPillsContainer');
@@ -186,14 +188,15 @@ function syncTokenInputs() {
   });
 }
 
-// Update badges, contrast scores, and inspector drawer
+// Update mode toggles, contrast scores, and inspector drawer
 function updateUiState() {
   const canvasLum = StyleEngine.getRelativeLuminance(tokens.canvas);
   const isDark = canvasLum < 0.2;
+  currentMode = isDark ? 'dark' : 'light';
 
-  // Mode Badge
-  badgeMode.textContent = isDark ? 'Dark Mode' : 'Light Mode';
-  badgeMode.className = `badge-mode ${isDark ? 'badge-dark' : 'badge-light'}`;
+  // Synchronize explicit Light / Dark mode toggle buttons
+  btnModeLight.classList.toggle('active', !isDark);
+  btnModeDark.classList.toggle('active', isDark);
 
   // Contrast Calculation (Text vs Canvas)
   const ratio = StyleEngine.getContrastRatio(tokens.canvas, tokens.text);
@@ -266,8 +269,34 @@ function updateInspectorJson() {
   }
 }
 
+// Switch theme mode between Light and Dark explicitly
+function setThemeMode(targetMode) {
+  currentMode = targetMode;
+  const isDark = (targetMode === 'dark');
+
+  // Adapt current palette to the chosen mode preserving user's hues and design intent
+  tokens = StyleEngine.invertPaletteMode(tokens, isDark);
+  tokens = StyleEngine.autoBalanceContrast(tokens);
+
+  syncTokenInputs();
+  updateUiState();
+  applyCompiledStyle();
+  showToast(`Switched to ${isDark ? 'Dark' : 'Light'} Mode`);
+}
+
 // Event Listeners
 function setupEventListeners() {
+  // Theme Mode toggles (Light / Dark)
+  btnModeLight.addEventListener('click', () => {
+    if (currentMode === 'light') return;
+    setThemeMode('light');
+  });
+
+  btnModeDark.addEventListener('click', () => {
+    if (currentMode === 'dark') return;
+    setThemeMode('dark');
+  });
+
   // Location select
   locationSelect.addEventListener('change', (e) => {
     const p = PRESETS[e.target.value];
@@ -298,14 +327,17 @@ function setupEventListeners() {
     map.setProjection({ type: 'globe' });
   });
 
-  // Shuffle button
+  // Shuffle button (STRICTLY honors current Light / Dark mode, never flips randomly)
   btnShuffle.addEventListener('click', () => {
-    const isDark = StyleEngine.getRelativeLuminance(tokens.canvas) < 0.2;
+    const isDark = (currentMode === 'dark');
     tokens = StyleEngine.randomBalancedPalette(isDark);
+    if (isMonochromeLocked) {
+      tokens = StyleEngine.generateMonochromeTokens(tokens.roads || tokens.canvas, isDark);
+    }
     syncTokenInputs();
     updateUiState();
     applyCompiledStyle();
-    showToast('Generated random balanced palette');
+    showToast(`Generated balanced ${isDark ? 'dark' : 'light'} palette`);
   });
 
   // Auto-Contrast button
@@ -322,7 +354,7 @@ function setupEventListeners() {
     isMonochromeLocked = !isMonochromeLocked;
     btnMonoLock.classList.toggle('active', isMonochromeLocked);
     if (isMonochromeLocked) {
-      const isDark = StyleEngine.getRelativeLuminance(tokens.canvas) < 0.2;
+      const isDark = (currentMode === 'dark');
       tokens = StyleEngine.generateMonochromeTokens(tokens.roads || tokens.canvas, isDark);
       syncTokenInputs();
       updateUiState();

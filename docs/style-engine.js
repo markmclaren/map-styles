@@ -569,8 +569,8 @@ function generateMonochromeTokens(seedHex, isDark = false) {
 
 // --- Random Harmony Generator ---
 
-function randomBalancedPalette(preferDark = false) {
-  const isDark = preferDark || Math.random() > 0.6;
+function randomBalancedPalette(isDark = false) {
+  // STRICT: Always generate strictly according to isDark (never switch modes randomly)
   const baseHue = Math.floor(Math.random() * 360);
   const roadHue = (baseHue + 120 + Math.floor(Math.random() * 60)) % 360; // Triadic / complementary contrast
 
@@ -579,7 +579,7 @@ function randomBalancedPalette(preferDark = false) {
       canvas: rgbToHex(hslToRgb(baseHue, 30, 6).r, hslToRgb(baseHue, 30, 6).g, hslToRgb(baseHue, 30, 6).b),
       water: rgbToHex(hslToRgb((baseHue + 30) % 360, 40, 14).r, hslToRgb((baseHue + 30) % 360, 40, 14).g, hslToRgb((baseHue + 30) % 360, 40, 14).b),
       greenspace: rgbToHex(hslToRgb(baseHue, 25, 10).r, hslToRgb(baseHue, 25, 10).g, hslToRgb(baseHue, 25, 10).b),
-      roads: rgbToHex(hslToRgb(roadHue, 90, 65).r, hslToRgb(roadHue, 90, 65).g, hslToRgb(roadHue, 90, 65).b),
+      roads: rgbToHex(hslToRgb(roadHue, 90, 68).r, hslToRgb(roadHue, 90, 68).g, hslToRgb(roadHue, 90, 68).b),
       buildings: rgbToHex(hslToRgb(baseHue, 25, 16).r, hslToRgb(baseHue, 25, 16).g, hslToRgb(baseHue, 25, 16).b),
       text: '#ffffff'
     };
@@ -588,9 +588,110 @@ function randomBalancedPalette(preferDark = false) {
       canvas: rgbToHex(hslToRgb(baseHue, 15, 97).r, hslToRgb(baseHue, 15, 97).g, hslToRgb(baseHue, 15, 97).b),
       water: rgbToHex(hslToRgb((baseHue + 40) % 360, 40, 78).r, hslToRgb((baseHue + 40) % 360, 40, 78).g, hslToRgb((baseHue + 40) % 360, 40, 78).b),
       greenspace: rgbToHex(hslToRgb((baseHue + 80) % 360, 30, 88).r, hslToRgb((baseHue + 80) % 360, 30, 88).g, hslToRgb((baseHue + 80) % 360, 30, 88).b),
-      roads: rgbToHex(hslToRgb(roadHue, 80, 45).r, hslToRgb(roadHue, 80, 45).g, hslToRgb(roadHue, 80, 45).b),
+      roads: rgbToHex(hslToRgb(roadHue, 80, 42).r, hslToRgb(roadHue, 80, 42).g, hslToRgb(roadHue, 80, 42).b),
       buildings: rgbToHex(hslToRgb(baseHue, 15, 87).r, hslToRgb(baseHue, 15, 87).g, hslToRgb(baseHue, 15, 87).b),
       text: rgbToHex(hslToRgb(baseHue, 40, 12).r, hslToRgb(baseHue, 40, 12).g, hslToRgb(baseHue, 40, 12).b)
+    };
+  }
+}
+
+// --- Theme Mode Converter (Light <-> Dark) ---
+
+/**
+ * Inverts or adapts a 6-token palette between Light and Dark modes,
+ * preserving each token's hue character while adapting lightness and saturation
+ * for optimal cartographic contrast.
+ */
+function invertPaletteMode(tokens, targetIsDark) {
+  const currentLum = getRelativeLuminance(tokens.canvas);
+  const currentlyDark = currentLum < 0.2;
+
+  if (currentlyDark === targetIsDark) {
+    return { ...tokens };
+  }
+
+  const canvasHsl = rgbToHsl(hexToRgb(tokens.canvas).r, hexToRgb(tokens.canvas).g, hexToRgb(tokens.canvas).b);
+  const waterHsl = rgbToHsl(hexToRgb(tokens.water).r, hexToRgb(tokens.water).g, hexToRgb(tokens.water).b);
+  const greenHsl = rgbToHsl(hexToRgb(tokens.greenspace).r, hexToRgb(tokens.greenspace).g, hexToRgb(tokens.greenspace).b);
+  const roadHsl = rgbToHsl(hexToRgb(tokens.roads).r, hexToRgb(tokens.roads).g, hexToRgb(tokens.roads).b);
+  const bldgHsl = rgbToHsl(hexToRgb(tokens.buildings).r, hexToRgb(tokens.buildings).g, hexToRgb(tokens.buildings).b);
+
+  if (targetIsDark) {
+    // Switch Light -> Dark
+    const darkCanvas = rgbToHex(
+      hslToRgb(canvasHsl.h, Math.min(canvasHsl.s, 25), 7).r,
+      hslToRgb(canvasHsl.h, Math.min(canvasHsl.s, 25), 7).g,
+      hslToRgb(canvasHsl.h, Math.min(canvasHsl.s, 25), 7).b
+    );
+    const darkWater = rgbToHex(
+      hslToRgb(waterHsl.h, Math.min(Math.max(waterHsl.s, 30), 60), 14).r,
+      hslToRgb(waterHsl.h, Math.min(Math.max(waterHsl.s, 30), 60), 14).g,
+      hslToRgb(waterHsl.h, Math.min(Math.max(waterHsl.s, 30), 60), 14).b
+    );
+    const darkGreen = rgbToHex(
+      hslToRgb(greenHsl.h, Math.min(greenHsl.s, 35), 11).r,
+      hslToRgb(greenHsl.h, Math.min(greenHsl.s, 35), 11).g,
+      hslToRgb(greenHsl.h, Math.min(greenHsl.s, 35), 11).b
+    );
+    const darkRoads = rgbToHex(
+      hslToRgb(roadHsl.h, Math.max(roadHsl.s, 65), 70).r,
+      hslToRgb(roadHsl.h, Math.max(roadHsl.s, 65), 70).g,
+      hslToRgb(roadHsl.h, Math.max(roadHsl.s, 65), 70).b
+    );
+    const darkBldg = rgbToHex(
+      hslToRgb(bldgHsl.h, Math.min(bldgHsl.s, 25), 16).r,
+      hslToRgb(bldgHsl.h, Math.min(bldgHsl.s, 25), 16).g,
+      hslToRgb(bldgHsl.h, Math.min(bldgHsl.s, 25), 16).b
+    );
+
+    return {
+      canvas: darkCanvas,
+      water: darkWater,
+      greenspace: darkGreen,
+      roads: darkRoads,
+      buildings: darkBldg,
+      text: '#ffffff'
+    };
+  } else {
+    // Switch Dark -> Light
+    const lightCanvas = rgbToHex(
+      hslToRgb(canvasHsl.h, Math.min(canvasHsl.s, 20), 97).r,
+      hslToRgb(canvasHsl.h, Math.min(canvasHsl.s, 20), 97).g,
+      hslToRgb(canvasHsl.h, Math.min(canvasHsl.s, 20), 97).b
+    );
+    const lightWater = rgbToHex(
+      hslToRgb(waterHsl.h, Math.min(Math.max(waterHsl.s, 30), 55), 80).r,
+      hslToRgb(waterHsl.h, Math.min(Math.max(waterHsl.s, 30), 55), 80).g,
+      hslToRgb(waterHsl.h, Math.min(Math.max(waterHsl.s, 30), 55), 80).b
+    );
+    const lightGreen = rgbToHex(
+      hslToRgb(greenHsl.h, Math.min(greenHsl.s, 35), 90).r,
+      hslToRgb(greenHsl.h, Math.min(greenHsl.s, 35), 90).g,
+      hslToRgb(greenHsl.h, Math.min(greenHsl.s, 35), 90).b
+    );
+    const lightRoads = rgbToHex(
+      hslToRgb(roadHsl.h, Math.min(Math.max(roadHsl.s, 40), 85), 38).r,
+      hslToRgb(roadHsl.h, Math.min(Math.max(roadHsl.s, 40), 85), 38).g,
+      hslToRgb(roadHsl.h, Math.min(Math.max(roadHsl.s, 40), 85), 38).b
+    );
+    const lightBldg = rgbToHex(
+      hslToRgb(bldgHsl.h, Math.min(bldgHsl.s, 20), 86).r,
+      hslToRgb(bldgHsl.h, Math.min(bldgHsl.s, 20), 86).g,
+      hslToRgb(bldgHsl.h, Math.min(bldgHsl.s, 20), 86).b
+    );
+    const lightText = rgbToHex(
+      hslToRgb(canvasHsl.h, Math.min(canvasHsl.s, 40), 12).r,
+      hslToRgb(canvasHsl.h, Math.min(canvasHsl.s, 40), 12).g,
+      hslToRgb(canvasHsl.h, Math.min(canvasHsl.s, 40), 12).b
+    );
+
+    return {
+      canvas: lightCanvas,
+      water: lightWater,
+      greenspace: lightGreen,
+      roads: lightRoads,
+      buildings: lightBldg,
+      text: lightText
     };
   }
 }
@@ -641,5 +742,6 @@ window.StyleEngine = {
   PRESET_PALETTES,
   generateMonochromeTokens,
   randomBalancedPalette,
+  invertPaletteMode,
   autoBalanceContrast
 };

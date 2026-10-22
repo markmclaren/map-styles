@@ -186,10 +186,52 @@ When switching between **Light** and **Dark** modes via the dedicated header but
 | **Buildings** | $L \approx 86\%$, $S \le 20\%$ | $L \approx 16\%$, $S \le 25\%$ | Urban silhouette sits midway between canvas and minor roads. |
 | **Text** | $L \approx 12\%$, $S \le 40\%$ | `#ffffff` ($L = 100\%$) | Inverts from near-black to crisp white for maximum legibility. |
 
-### 4.5 Mode-Locked Shuffle Engine
-Clicking the **Shuffle** button generates harmonious, balanced color relationships using triadic and complementary color theory. The generator is strictly bound to the active mode:
-- If **Dark Mode** is active, `randomBalancedPalette(true)` generates deep canvases ($L \approx 6\%$) with high-saturation neon/pastel road accents ($L \approx 68\%$) and crisp white labels.
-- If **Light Mode** is active, `randomBalancedPalette(false)` generates airy canvases ($L \approx 97\%$) with deep road vectors ($L \approx 42\%$) and dark slate text.
+### 4.5 The Slot-Machine "HOLD" System (One-Armed Bandit Mechanics)
+Inspired by arcade fruit machines ("one-armed bandits"), every token card features an interactive **`HOLD`** button:
+
+```
+┌──────────────────────────────────────────────────────────────────┐
+│  🏞️  Canvas                      [🔒 HELD]  [ 🎨 ] [ #f8fafc ]  │
+│      Base terrain                                                │
+└──────────────────────────────────────────────────────────────────┘
+```
+
+1. **Reel Freezing**: Clicking **`HOLD`** toggles an amber-gold lock state (`.is-held`). When locked, that specific token is completely immune to shuffling.
+2. **Anchor Seed Extraction**: When shuffling with held tokens, the harmony engine analyzes the held colors (prioritizing the transportation network or water) to extract an **Anchor Seed Hue ($\theta_0$)**.
+3. **Contextual Reshuffling**: The unheld reels spin and generate harmonious colors strictly designed to complement and harmonize with the held colors.
+4. **Dynamic Toolbar States**:
+   - The shuffle button dynamically tracks reel status: `Shuffle 🎰` $\to$ `Shuffle 🎰 (1 Held)` $\to$ `Shuffle 🎰 (2 Held)`.
+   - When any tokens are held, a prominent **`Release Holds (N)`** button appears to clear all locks with a single click.
+
+---
+
+### 4.6 Geometric Color Wheel Harmonies in Cartography
+The Style Studio integrates classical color theory into map compilation via `StyleEngine.generateHarmoniousPalette()`. Users can select from 6 distinct geometric harmonies on the $360^\circ$ color circle:
+
+```
+      Complementary (180°)                Triadic (120°)                Split-Complementary
+            [Roads]                          [Roads]                          [Roads]
+               │                                /  \                            /  \
+               │                               /    \                          /    \
+               │                              /      \                        /      \
+            [Canvas]                     [Canvas]  [Parks]               [Water]    [Parks]
+                                                                            \      /
+                                                                             [Canvas]
+```
+
+| Harmony Model | Color Wheel Angles | Cartographic Allocation Strategy | Visual Character & Best Use Cases |
+|---|---|---|---|
+| **Triadic** | $\theta_0$, $\theta_0 + 120^\circ$, $\theta_0 + 240^\circ$ | Ground at $\theta_0$, Roads at $+120^\circ$, Parks/Water at $+240^\circ$ | **Maximum Cartographic Balance**. The gold standard for general-purpose reference and city navigation maps. Features never conflict. |
+| **Complementary** | $\theta_0$, $\theta_0 + 180^\circ$ | Ground/Water at $\theta_0$, Highway network at $\theta_0 + 180^\circ$ | **Maximum Chromatic Tension**. Perfect for motoring atlases and high-glance GPS navigation where highways must instantly jump forward. |
+| **Split-Complementary** | $\theta_0$, $\theta_0 + 150^\circ$, $\theta_0 + 210^\circ$ | Ground at $\theta_0$, Roads at $+150^\circ$, Water/Parks at $+210^\circ$ | **Nuanced Editorial Contrast**. Delivers the drama of complementary contrast without harsh vibration. Ideal for web apps and dashboard basemaps. |
+| **Analogous** | $\theta_0 - 30^\circ$, $\theta_0$, $\theta_0 + 30^\circ$ | Water at $-30^\circ$, Canvas at $\theta_0$, Parks at $+30^\circ$, Roads deep value step | **Serene Natural Cohesion**. Excellent for environmental, marine, forestry, and minimalist Nordic/Scandinavian themes. |
+| **Tetradic (Dual Complement)** | $\theta_0$, $\theta_0 + 60^\circ$, $\theta_0 + 180^\circ$, $\theta_0 + 240^\circ$ | Canvas ($\theta_0$) & Roads ($+180^\circ$); Water ($+60^\circ$) & Greenspace ($+240^\circ$) | **Rich Multi-Accent Cartography**. Two complementary pairs creating deep richness across urban fabric and natural geography. |
+| **Monochromatic** | Single Hue $\theta_0$ ($\Delta\theta = 0^\circ$) | Strict luminance stepping across the 6 planes ($L = 97\% \to 10\%$) | **Architectural & Archival Maps**. High-end single-color maps (blueprint cyan, sepia parchment, indigo wash). |
+
+### 4.7 Mode-Locked Shuffle Engine
+Clicking the **Shuffle 🎰** button generates harmonious, balanced color relationships strictly bound to the active **Light** or **Dark** mode:
+- If **Dark Mode** is active, canvases remain deep ($L \approx 6\%$) with high-saturation neon/pastel road accents ($L \approx 70\%$) and crisp white labels.
+- If **Light Mode** is active, canvases remain airy ($L \approx 97\%$) with deep road vectors ($L \approx 38\%$) and dark slate text.
 - **The Shuffle engine never flips between light and dark modes unpredictably.**
 
 ---
@@ -313,7 +355,9 @@ const map = new maplibregl.Map({
 - `StyleEngine.getRelativeLuminance(hex)`: Returns linear luminance float $[0.0, 1.0]$.
 - `StyleEngine.getContrastRatio(hex1, hex2)`: Returns contrast ratio float $[1.0, 21.0]$.
 - `StyleEngine.adjustHsl(hex, { h, s, l })`: Adjusts color while holding unmentioned channels locked.
+- `StyleEngine.generateHarmoniousPalette({ isDark, harmony, currentTokens, held })`: Generates a balanced 6-token palette using color wheel geometry (Triadic, Complementary, Split-Complementary, Analogous, Tetradic, Monochrome) while preserving any slot-machine `held` tokens.
+- `StyleEngine.HARMONY_MODES`: Object containing supported harmony keys (`TRIADIC`, `COMPLEMENTARY`, `SPLIT_COMPLEMENTARY`, `ANALOGOUS`, `TETRADIC`, `MONOCHROME`, `RANDOM`).
 - `StyleEngine.invertPaletteMode(tokens, targetIsDark)`: Converts palette between Light and Dark mode while preserving hue character.
 - `StyleEngine.autoBalanceContrast(tokens)`: Tunes tokens to meet WCAG AA standards.
 - `StyleEngine.generateMonochromeTokens(seedHex, isDark)`: Derives a 6-token harmonious monochromatic palette from a single seed color.
-- `StyleEngine.randomBalancedPalette(isDark)`: Generates a balanced harmonious palette strictly adhering to the requested mode.
+- `StyleEngine.randomBalancedPalette(isDark, harmony, currentTokens, held)`: Generates a balanced harmonious palette strictly adhering to the requested mode.

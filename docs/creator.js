@@ -21,6 +21,17 @@ let currentProjection = 'mercator';
 let compileTimeout = null;
 let isMonochromeLocked = false;
 let currentMode = 'light'; // 'light' | 'dark'
+let activeHarmony = 'triadic'; // 'triadic' | 'complementary' | 'split-complementary' | 'analogous' | 'tetradic' | 'monochrome' | 'random'
+
+// Slot-Machine "HOLD" state: true prevents the token from spinning during shuffle
+let heldTokens = {
+  canvas: false,
+  water: false,
+  greenspace: false,
+  roads: false,
+  buildings: false,
+  text: false
+};
 
 // Active 6 Design Tokens (defaults to Nordic Slate)
 let tokens = {
@@ -40,8 +51,13 @@ const btnShare = document.getElementById('btnShare');
 const btnInspect = document.getElementById('btnInspect');
 const btnDownload = document.getElementById('btnDownload');
 const btnShuffle = document.getElementById('btnShuffle');
+const shuffleLabel = document.getElementById('shuffleLabel');
 const btnAutoContrast = document.getElementById('btnAutoContrast');
 const btnMonoLock = document.getElementById('btnMonoLock');
+const btnClearHolds = document.getElementById('btnClearHolds');
+const selectHarmony = document.getElementById('selectHarmony');
+const harmonyBadge = document.getElementById('harmonyBadge');
+const btnHarmonize = document.getElementById('btnHarmonize');
 const btnModeLight = document.getElementById('btnModeLight');
 const btnModeDark = document.getElementById('btnModeDark');
 const contrastPill = document.getElementById('contrastPill');
@@ -253,6 +269,127 @@ function updateUiState() {
 
   // Re-render tonal ladders for all 6 tokens
   renderTonalLadders();
+
+  // Synchronize slot machine HOLD states and active harmony badge
+  updateHoldUi();
+  updateHarmonyBadge();
+}
+
+// Toggle slot-machine HOLD for a token
+function toggleHold(tokenKey) {
+  if (heldTokens[tokenKey] === undefined) return;
+  heldTokens[tokenKey] = !heldTokens[tokenKey];
+  updateHoldUi();
+  const isHeld = heldTokens[tokenKey];
+  showToast(isHeld ? `🔒 Held ${tokenKey} (locked from shuffle)` : `Released hold on ${tokenKey}`);
+}
+
+// Synchronize HOLD button visuals and card indicators
+function updateHoldUi() {
+  const count = Object.values(heldTokens).filter(Boolean).length;
+
+  // Update hold buttons on all cards
+  document.querySelectorAll('.btn-hold').forEach(btn => {
+    const key = btn.dataset.token;
+    const isHeld = !!heldTokens[key];
+    btn.classList.toggle('is-held', isHeld);
+    const textSpan = btn.querySelector('.hold-text');
+    if (textSpan) textSpan.textContent = isHeld ? 'HELD' : 'HOLD';
+    btn.title = isHeld ? 'Locked: Color is preserved during shuffle (Click to release)' : 'Hold: Lock color during shuffle';
+
+    // Highlight parent card
+    const card = document.getElementById(`card${key.charAt(0).toUpperCase() + key.slice(1)}`);
+    if (card) card.classList.toggle('token-held', isHeld);
+  });
+
+  // Update Shuffle button label
+  if (shuffleLabel) {
+    if (count === 6) {
+      shuffleLabel.textContent = 'All Held 🔒';
+    } else if (count > 0) {
+      shuffleLabel.textContent = `Shuffle 🎰 (${count} Held)`;
+    } else {
+      shuffleLabel.textContent = 'Shuffle 🎰';
+    }
+  }
+
+  // Update Release Holds button
+  if (btnClearHolds) {
+    btnClearHolds.style.display = count > 0 ? 'flex' : 'none';
+    const span = btnClearHolds.querySelector('span');
+    if (span) span.textContent = `Release Holds (${count})`;
+  }
+}
+
+// Release all active holds with one click
+function clearAllHolds() {
+  Object.keys(heldTokens).forEach(k => { heldTokens[k] = false; });
+  updateHoldUi();
+  showToast('All color holds released');
+}
+
+// Update the harmony pill display
+function updateHarmonyBadge() {
+  if (!harmonyBadge) return;
+  const map = {
+    triadic: 'Triadic 120°',
+    complementary: 'Contrast 180°',
+    'split-complementary': 'Split 150°/210°',
+    analogous: 'Analogous 30°',
+    tetradic: 'Tetradic Dual',
+    monochrome: 'Single Hue',
+    random: 'Surprise'
+  };
+  harmonyBadge.textContent = map[activeHarmony] || activeHarmony;
+}
+
+// Trigger reel spin animation on unheld cards
+function triggerSlotSpinAnimation() {
+  Object.keys(TOKEN_INPUTS).forEach(key => {
+    if (!heldTokens[key]) {
+      const card = document.getElementById(`card${key.charAt(0).toUpperCase() + key.slice(1)}`);
+      if (card) {
+        card.classList.remove('slot-spinning');
+        void card.offsetWidth; // Force CSS reflow
+        card.classList.add('slot-spinning');
+        setTimeout(() => card.classList.remove('slot-spinning'), 360);
+      }
+    }
+  });
+}
+
+// Execute harmonious shuffle honoring held colors
+function executeHarmoniousShuffle(harmonyChoice) {
+  const heldCount = Object.values(heldTokens).filter(Boolean).length;
+  if (heldCount === 6) {
+    showToast('All 6 colors are held! Release at least one hold to shuffle.');
+    return;
+  }
+
+  const isDark = (currentMode === 'dark');
+  const chosenHarmony = harmonyChoice || activeHarmony;
+
+  triggerSlotSpinAnimation();
+
+  if (isMonochromeLocked || chosenHarmony === 'monochrome') {
+    tokens = StyleEngine.generateMonochromeTokens(tokens.roads || tokens.canvas, isDark);
+  } else {
+    tokens = StyleEngine.generateHarmoniousPalette({
+      isDark,
+      harmony: chosenHarmony,
+      currentTokens: tokens,
+      held: heldTokens
+    });
+  }
+
+  syncTokenInputs();
+  updateUiState();
+  applyCompiledStyle();
+
+  const msg = heldCount > 0 
+    ? `Shuffled (${heldCount} held, ${chosenHarmony})` 
+    : `Generated ${chosenHarmony} harmony (${isDark ? 'Dark' : 'Light'})`;
+  showToast(msg);
 }
 
 // Render interactive 5-chip tonal ladder for each token
@@ -408,17 +545,41 @@ function setupEventListeners() {
     map.setProjection({ type: 'globe' });
   });
 
-  // Shuffle button (STRICTLY honors current Light / Dark mode, never flips randomly)
+  // Slot-Machine HOLD Buttons (Clicking toggles hold on that color reel)
+  document.querySelectorAll('.btn-hold').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const tokenKey = btn.dataset.token;
+      toggleHold(tokenKey);
+    });
+  });
+
+  // Color Theory Harmony Selector
+  if (selectHarmony) {
+    selectHarmony.addEventListener('change', (e) => {
+      activeHarmony = e.target.value;
+      updateHarmonyBadge();
+      showToast(`Selected ${activeHarmony.replace('-', ' ')} harmony`);
+    });
+  }
+
+  // Harmonize Button (Applies active harmony without randomizing seed)
+  if (btnHarmonize) {
+    btnHarmonize.addEventListener('click', () => {
+      executeHarmoniousShuffle(activeHarmony);
+    });
+  }
+
+  // Release All Holds Button
+  if (btnClearHolds) {
+    btnClearHolds.addEventListener('click', () => {
+      clearAllHolds();
+    });
+  }
+
+  // Shuffle button (Honors active Light/Dark mode, color harmony, and HOLD locks)
   btnShuffle.addEventListener('click', () => {
-    const isDark = (currentMode === 'dark');
-    tokens = StyleEngine.randomBalancedPalette(isDark);
-    if (isMonochromeLocked) {
-      tokens = StyleEngine.generateMonochromeTokens(tokens.roads || tokens.canvas, isDark);
-    }
-    syncTokenInputs();
-    updateUiState();
-    applyCompiledStyle();
-    showToast(`Generated balanced ${isDark ? 'dark' : 'light'} palette`);
+    executeHarmoniousShuffle(activeHarmony);
   });
 
   // Auto-Contrast button

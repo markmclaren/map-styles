@@ -569,32 +569,184 @@ function generateMonochromeTokens(seedHex, isDark = false) {
   }
 }
 
-// --- Random Harmony Generator ---
+// --- Color Theory & Harmonies Engine ---
 
-function randomBalancedPalette(isDark = false) {
-  // STRICT: Always generate strictly according to isDark (never switch modes randomly)
-  const baseHue = Math.floor(Math.random() * 360);
-  const roadHue = (baseHue + 120 + Math.floor(Math.random() * 60)) % 360; // Triadic / complementary contrast
+const HARMONY_MODES = {
+  TRIADIC: 'triadic',
+  COMPLEMENTARY: 'complementary',
+  SPLIT_COMPLEMENTARY: 'split-complementary',
+  ANALOGOUS: 'analogous',
+  TETRADIC: 'tetradic',
+  MONOCHROME: 'monochrome',
+  RANDOM: 'random'
+};
 
+/**
+ * Generates or harmonizes a 6-token palette using geometric color wheel harmonies,
+ * respecting slot-machine "HOLD" locks on any combination of tokens.
+ *
+ * @param {Object} options
+ * @param {boolean} options.isDark - Light or Dark mode target
+ * @param {string} options.harmony - 'triadic' | 'complementary' | 'split-complementary' | 'analogous' | 'tetradic' | 'monochrome' | 'random'
+ * @param {Object} options.currentTokens - Currently active tokens
+ * @param {Object} options.held - Map of held tokens { canvas: bool, water: bool, ... }
+ * @returns {Object} 6-token palette
+ */
+function generateHarmoniousPalette(options = {}) {
+  const isDark = options.isDark ?? false;
+  let activeHarmony = options.harmony || 'triadic';
+  const currentTokens = options.currentTokens || {};
+  const held = options.held || {};
+
+  if (activeHarmony === 'random') {
+    const pool = ['triadic', 'complementary', 'split-complementary', 'analogous', 'tetradic'];
+    activeHarmony = pool[Math.floor(Math.random() * pool.length)];
+  }
+
+  // Identify anchor seed hue. If tokens are held, extract the seed from the highest-priority held token.
+  let baseHue = null;
+  const heldKeys = Object.keys(held).filter(k => held[k] && currentTokens[k]);
+
+  if (heldKeys.length > 0) {
+    const priority = ['roads', 'water', 'canvas', 'greenspace', 'buildings', 'text'];
+    const anchorKey = priority.find(k => held[k] && currentTokens[k]) || heldKeys[0];
+    const rgb = hexToRgb(currentTokens[anchorKey]);
+    const hsl = rgbToHsl(rgb.r, rgb.g, rgb.b);
+    baseHue = hsl.h;
+  } else {
+    baseHue = Math.floor(Math.random() * 360);
+  }
+
+  // Calculate geometric color wheel angles
+  let canvasHue, waterHue, greenHue, roadHue, bldgHue, textHue;
+
+  switch (activeHarmony) {
+    case 'complementary': {
+      // Direct 180° contrast
+      const compHue = (baseHue + 180) % 360;
+      if (held.roads && !held.canvas) {
+        canvasHue = compHue;
+        waterHue = (compHue + 30) % 360;
+        greenHue = (compHue + 65) % 360;
+        roadHue = baseHue;
+        bldgHue = compHue;
+        textHue = compHue;
+      } else {
+        canvasHue = baseHue;
+        waterHue = (baseHue + 25) % 360;
+        greenHue = (baseHue + 70) % 360;
+        roadHue = compHue;
+        bldgHue = baseHue;
+        textHue = baseHue;
+      }
+      break;
+    }
+    case 'split-complementary': {
+      // 150° and 210° split accents
+      const split1 = (baseHue + 150) % 360;
+      const split2 = (baseHue + 210) % 360;
+      if (held.roads && !held.canvas) {
+        canvasHue = split1;
+        waterHue = split2;
+        greenHue = (split1 + 45) % 360;
+        roadHue = baseHue;
+        bldgHue = split1;
+        textHue = split1;
+      } else {
+        canvasHue = baseHue;
+        waterHue = (baseHue + 30) % 360;
+        greenHue = split2;
+        roadHue = split1;
+        bldgHue = baseHue;
+        textHue = baseHue;
+      }
+      break;
+    }
+    case 'analogous': {
+      // Adjacent hues within ±35°
+      canvasHue = baseHue;
+      waterHue = (baseHue - 30 + 360) % 360;
+      greenHue = (baseHue + 35) % 360;
+      roadHue = (baseHue + 15) % 360;
+      bldgHue = baseHue;
+      textHue = baseHue;
+      break;
+    }
+    case 'tetradic': {
+      // 4 hues: 0°, 60°, 180°, 240° (dual complement)
+      canvasHue = baseHue;
+      waterHue = (baseHue + 60) % 360;
+      roadHue = (baseHue + 180) % 360;
+      greenHue = (baseHue + 240) % 360;
+      bldgHue = baseHue;
+      textHue = baseHue;
+      break;
+    }
+    case 'monochrome': {
+      canvasHue = waterHue = greenHue = roadHue = bldgHue = textHue = baseHue;
+      break;
+    }
+    case 'triadic':
+    default: {
+      // Balanced 120° triad
+      const t1 = (baseHue + 120) % 360;
+      const t2 = (baseHue + 240) % 360;
+      if (held.roads && !held.canvas) {
+        canvasHue = t1;
+        waterHue = t2;
+        greenHue = (t1 + 60) % 360;
+        roadHue = baseHue;
+        bldgHue = t1;
+        textHue = t1;
+      } else {
+        canvasHue = baseHue;
+        waterHue = (baseHue + 35) % 360;
+        greenHue = t2;
+        roadHue = t1;
+        bldgHue = baseHue;
+        textHue = baseHue;
+      }
+      break;
+    }
+  }
+
+  // Light vs Dark photometric budgets
+  let candidate = {};
   if (isDark) {
-    return {
-      canvas: rgbToHex(hslToRgb(baseHue, 30, 6).r, hslToRgb(baseHue, 30, 6).g, hslToRgb(baseHue, 30, 6).b),
-      water: rgbToHex(hslToRgb((baseHue + 30) % 360, 40, 14).r, hslToRgb((baseHue + 30) % 360, 40, 14).g, hslToRgb((baseHue + 30) % 360, 40, 14).b),
-      greenspace: rgbToHex(hslToRgb(baseHue, 25, 10).r, hslToRgb(baseHue, 25, 10).g, hslToRgb(baseHue, 25, 10).b),
-      roads: rgbToHex(hslToRgb(roadHue, 90, 68).r, hslToRgb(roadHue, 90, 68).g, hslToRgb(roadHue, 90, 68).b),
-      buildings: rgbToHex(hslToRgb(baseHue, 25, 16).r, hslToRgb(baseHue, 25, 16).g, hslToRgb(baseHue, 25, 16).b),
+    candidate = {
+      canvas: rgbToHex(hslToRgb(canvasHue, 25, 6).r, hslToRgb(canvasHue, 25, 6).g, hslToRgb(canvasHue, 25, 6).b),
+      water: rgbToHex(hslToRgb(waterHue, 45, 14).r, hslToRgb(waterHue, 45, 14).g, hslToRgb(waterHue, 45, 14).b),
+      greenspace: rgbToHex(hslToRgb(greenHue, 28, 11).r, hslToRgb(greenHue, 28, 11).g, hslToRgb(greenHue, 28, 11).b),
+      roads: rgbToHex(hslToRgb(roadHue, 92, 70).r, hslToRgb(roadHue, 92, 70).g, hslToRgb(roadHue, 92, 70).b),
+      buildings: rgbToHex(hslToRgb(bldgHue, 22, 16).r, hslToRgb(bldgHue, 22, 16).g, hslToRgb(bldgHue, 22, 16).b),
       text: '#ffffff'
     };
   } else {
-    return {
-      canvas: rgbToHex(hslToRgb(baseHue, 15, 97).r, hslToRgb(baseHue, 15, 97).g, hslToRgb(baseHue, 15, 97).b),
-      water: rgbToHex(hslToRgb((baseHue + 40) % 360, 40, 78).r, hslToRgb((baseHue + 40) % 360, 40, 78).g, hslToRgb((baseHue + 40) % 360, 40, 78).b),
-      greenspace: rgbToHex(hslToRgb((baseHue + 80) % 360, 30, 88).r, hslToRgb((baseHue + 80) % 360, 30, 88).g, hslToRgb((baseHue + 80) % 360, 30, 88).b),
-      roads: rgbToHex(hslToRgb(roadHue, 80, 42).r, hslToRgb(roadHue, 80, 42).g, hslToRgb(roadHue, 80, 42).b),
-      buildings: rgbToHex(hslToRgb(baseHue, 15, 87).r, hslToRgb(baseHue, 15, 87).g, hslToRgb(baseHue, 15, 87).b),
-      text: rgbToHex(hslToRgb(baseHue, 40, 12).r, hslToRgb(baseHue, 40, 12).g, hslToRgb(baseHue, 40, 12).b)
+    candidate = {
+      canvas: rgbToHex(hslToRgb(canvasHue, 16, 97).r, hslToRgb(canvasHue, 16, 97).g, hslToRgb(canvasHue, 16, 97).b),
+      water: rgbToHex(hslToRgb(waterHue, 42, 78).r, hslToRgb(waterHue, 42, 78).g, hslToRgb(waterHue, 42, 78).b),
+      greenspace: rgbToHex(hslToRgb(greenHue, 30, 88).r, hslToRgb(greenHue, 30, 88).g, hslToRgb(greenHue, 30, 88).b),
+      roads: rgbToHex(hslToRgb(roadHue, 82, 38).r, hslToRgb(roadHue, 82, 38).g, hslToRgb(roadHue, 82, 38).b),
+      buildings: rgbToHex(hslToRgb(bldgHue, 18, 86).r, hslToRgb(bldgHue, 18, 86).g, hslToRgb(bldgHue, 18, 86).b),
+      text: rgbToHex(hslToRgb(textHue, 40, 11).r, hslToRgb(textHue, 40, 11).g, hslToRgb(textHue, 40, 11).b)
     };
   }
+
+  // Preserve held tokens exactly as locked by user
+  const finalTokens = {};
+  ['canvas', 'water', 'greenspace', 'roads', 'buildings', 'text'].forEach(key => {
+    if (held[key] && currentTokens[key]) {
+      finalTokens[key] = currentTokens[key];
+    } else {
+      finalTokens[key] = candidate[key];
+    }
+  });
+
+  return finalTokens;
+}
+
+function randomBalancedPalette(isDark = false, harmony = 'triadic', currentTokens = {}, held = {}) {
+  return generateHarmoniousPalette({ isDark, harmony, currentTokens, held });
 }
 
 // --- Theme Mode Converter (Light <-> Dark) ---
@@ -744,6 +896,8 @@ window.StyleEngine = {
   PRESET_PALETTES,
   generateMonochromeTokens,
   randomBalancedPalette,
+  generateHarmoniousPalette,
+  HARMONY_MODES,
   invertPaletteMode,
   autoBalanceContrast
 };

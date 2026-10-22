@@ -124,7 +124,7 @@
     <!-- The 6 Semantic Color Inputs -->
     <div class="token-grid">
       <!-- 1. Canvas -->
-      <div class="token-card" data-token="canvas">
+      <div class="token-card" data-token="canvas" id="cardCanvas">
         <div class="token-card-top">
           <div class="token-info">
             <span class="token-icon">🏞️</span>
@@ -134,6 +134,10 @@
             </div>
           </div>
           <div class="token-inputs">
+            <button type="button" class="btn-hold" data-token="canvas" title="Hold color during shuffle (like a slot machine)">
+              <span class="hold-indicator"></span>
+              <span class="hold-text">HOLD</span>
+            </button>
             <input type="color" id="pickerCanvas" class="color-picker" value="#f8fafc">
             <input type="text" id="textCanvas" class="hex-input" value="#f8fafc" maxlength="7">
           </div>
@@ -152,7 +156,7 @@
       </div>
 
       <!-- 2. Water -->
-      <div class="token-card" data-token="water">
+      <div class="token-card" data-token="water" id="cardWater">
         <div class="token-card-top">
           <div class="token-info">
             <span class="token-icon">🌊</span>
@@ -162,6 +166,10 @@
             </div>
           </div>
           <div class="token-inputs">
+            <button type="button" class="btn-hold" data-token="water" title="Hold color during shuffle (like a slot machine)">
+              <span class="hold-indicator"></span>
+              <span class="hold-text">HOLD</span>
+            </button>
             <input type="color" id="pickerWater" class="color-picker" value="#cbd5e1">
             <input type="text" id="textWater" class="hex-input" value="#cbd5e1" maxlength="7">
           </div>
@@ -180,7 +188,7 @@
       </div>
 
       <!-- 3. Greenspace -->
-      <div class="token-card" data-token="greenspace">
+      <div class="token-card" data-token="greenspace" id="cardGreenspace">
         <div class="token-card-top">
           <div class="token-info">
             <span class="token-icon">🌲</span>
@@ -190,6 +198,10 @@
             </div>
           </div>
           <div class="token-inputs">
+            <button type="button" class="btn-hold" data-token="greenspace" title="Hold color during shuffle (like a slot machine)">
+              <span class="hold-indicator"></span>
+              <span class="hold-text">HOLD</span>
+            </button>
             <input type="color" id="pickerGreenspace" class="color-picker" value="#e2e8f0">
             <input type="text" id="textGreenspace" class="hex-input" value="#e2e8f0" maxlength="7">
           </div>
@@ -208,7 +220,7 @@
       </div>
 
       <!-- 4. Roads -->
-      <div class="token-card" data-token="roads">
+      <div class="token-card" data-token="roads" id="cardRoads">
         <div class="token-card-top">
           <div class="token-info">
             <span class="token-icon">🚗</span>
@@ -218,6 +230,10 @@
             </div>
           </div>
           <div class="token-inputs">
+            <button type="button" class="btn-hold" data-token="roads" title="Hold color during shuffle (like a slot machine)">
+              <span class="hold-indicator"></span>
+              <span class="hold-text">HOLD</span>
+            </button>
             <input type="color" id="pickerRoads" class="color-picker" value="#475569">
             <input type="text" id="textRoads" class="hex-input" value="#475569" maxlength="7">
           </div>
@@ -236,7 +252,7 @@
       </div>
 
       <!-- 5. Buildings -->
-      <div class="token-card" data-token="buildings">
+      <div class="token-card" data-token="buildings" id="cardBuildings">
         <div class="token-card-top">
           <div class="token-info">
             <span class="token-icon">🏢</span>
@@ -246,6 +262,10 @@
             </div>
           </div>
           <div class="token-inputs">
+            <button type="button" class="btn-hold" data-token="buildings" title="Hold color during shuffle (like a slot machine)">
+              <span class="hold-indicator"></span>
+              <span class="hold-text">HOLD</span>
+            </button>
             <input type="color" id="pickerBuildings" class="color-picker" value="#e2e8f0">
             <input type="text" id="textBuildings" class="hex-input" value="#e2e8f0" maxlength="7">
           </div>
@@ -264,7 +284,7 @@
       </div>
 
       <!-- 6. Typography -->
-      <div class="token-card" data-token="text">
+      <div class="token-card" data-token="text" id="cardText">
         <div class="token-card-top">
           <div class="token-info">
             <span class="token-icon">🔤</span>
@@ -274,6 +294,10 @@
             </div>
           </div>
           <div class="token-inputs">
+            <button type="button" class="btn-hold" data-token="text" title="Hold color during shuffle (like a slot machine)">
+              <span class="hold-indicator"></span>
+              <span class="hold-text">HOLD</span>
+            </button>
             <input type="color" id="pickerText" class="color-picker" value="#0f172a">
             <input type="text" id="textText" class="hex-input" value="#0f172a" maxlength="7">
           </div>
@@ -292,11 +316,35 @@
       </div>
     </div>
 
+    <!-- Color Theory & Harmonies Bar -->
+    <div class="harmony-control-group">
+      <div class="harmony-header">
+        <span class="control-label">Color Theory Harmony</span>
+        <span class="harmony-badge" id="harmonyBadge">Triadic 120°</span>
+      </div>
+      <div class="harmony-select-row">
+        <div class="select-wrapper harmony-select-wrapper">
+          <select id="selectHarmony" class="select-input select-harmony">
+            <option value="triadic" selected>Triadic (Balanced 120°)</option>
+            <option value="complementary">Complementary (Contrast 180°)</option>
+            <option value="split-complementary">Split-Complementary (150°/210°)</option>
+            <option value="analogous">Analogous (Harmonious 30°)</option>
+            <option value="tetradic">Tetradic (Dual Complement)</option>
+            <option value="monochrome">Monochrome (Single Hue)</option>
+            <option value="random">🎲 Surprise / Any Harmony</option>
+          </select>
+        </div>
+        <button type="button" id="btnHarmonize" class="btn btn-studio btn-harmonize" title="Harmonize unheld colors using selected theory">
+          <span>Harmonize</span>
+        </button>
+      </div>
+    </div>
+
     <!-- Smart Automation Levers -->
     <div class="smart-toolbar">
-      <button id="btnShuffle" class="btn btn-studio" title="Generate a balanced random palette">
+      <button id="btnShuffle" class="btn btn-studio btn-shuffle" title="Spin & shuffle unheld colors (respects HOLD locks)">
         <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"><polyline points="16 3 21 3 21 8"></polyline><line x1="4" y1="20" x2="21" y2="3"></line><polyline points="21 16 21 21 16 21"></polyline><line x1="15" y1="15" x2="21" y2="21"></line><line x1="4" y1="4" x2="9" y2="9"></line></svg>
-        <span>Shuffle</span>
+        <span id="shuffleLabel">Shuffle 🎰</span>
       </button>
 
       <button id="btnAutoContrast" class="btn btn-studio" title="Auto-tune lightness for WCAG AA compliance">
@@ -307,6 +355,10 @@
       <button id="btnMonoLock" class="btn btn-studio" title="Lock palette to single-hue monochrome">
         <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"><circle cx="12" cy="12" r="10"></circle><path d="M12 2a10 10 0 0 1 0 20z" fill="currentColor"></path></svg>
         <span>Monochrome</span>
+      </button>
+
+      <button type="button" id="btnClearHolds" class="btn btn-studio btn-clear-holds" title="Release all active color holds" style="display:none;">
+        <span>Release Holds</span>
       </button>
     </div>
 

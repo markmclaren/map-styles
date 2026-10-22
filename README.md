@@ -57,6 +57,8 @@ All compiled MapLibre style JSON files are located in [`dist/`](dist/) and are r
 | [`dist/monochrome-sepia.json`](dist/monochrome-sepia.json) | **Monochrome Sepia** | 18th-century archival copperplate engraving tone (Hue 35°) with warm burnt umber line hierarchy and parchment canvas |
 | [`dist/monochrome-emerald.json`](dist/monochrome-emerald.json) | **Monochrome Emerald** | Botanical forest green wash (Hue 155°) providing crisp natural separation across urban blocks, roads, and hydrography |
 | [`dist/monochrome-amber.json`](dist/monochrome-amber.json) | **Monochrome Amber** | High-contrast vintage darkroom warm ochre/amber palette (Hue 42°) engineered for maximum legibility |
+| [`dist/monochrome-purple.json`](dist/monochrome-purple.json) | **Monochrome Purple** | Deep dark amethyst / aubergine night theme (Hue 280°) with glowing lilac highway spines and crisp lavender labels |
+| [`dist/monochrome-crimson.json`](dist/monochrome-crimson.json) | **Monochrome Crimson** | Deep dark oxblood / burgundy wine theme (Hue 350°) with illuminated rose-coral arterial ribbons and pale pink typography |
 | **British & Ordnance Survey (UK)** | | |
 | [`dist/os-landranger.json`](dist/os-landranger.json) | **OS Landranger (1:50k Classic)** | Classic Landranger Explorer style with magenta A-roads, orange B-roads, and blue motorways |
 | [`dist/os-outdoor.json`](dist/os-outdoor.json) | **Ordnance Survey - Outdoor** | In the style of classic OS Landranger/Explorer outdoor styling with greenspaces & relief |

@@ -282,6 +282,9 @@ function updateSecondaryStyle(styleId) {
   } else if (styleId.includes('topographic') || styleId.includes('relief') || styleId.includes('outdoor') || styleId === 'natgeo') {
     secondaryTag.textContent = 'OpenFreeMap Shaded Liberty';
     mapSecondary.setStyle(getStyleUrl('liberty'));
+  } else if (styleId === 'monochrome-purple' || styleId === 'monochrome-crimson') {
+    secondaryTag.textContent = 'OpenFreeMap Dark';
+    mapSecondary.setStyle(getStyleUrl('dark'));
   } else if (styleId.startsWith('monochrome')) {
     secondaryTag.textContent = 'OpenFreeMap Positron';
     mapSecondary.setStyle(getStyleUrl('positron'));

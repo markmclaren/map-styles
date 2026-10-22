@@ -352,6 +352,18 @@
       "name": "Monochrome Amber (Warm Ochre)"
     },
     {
+      "id": "monochrome-purple",
+      "file": "monochrome-purple.json",
+      "path": "dist/monochrome-purple.json",
+      "name": "Monochrome Purple (Amethyst Night)"
+    },
+    {
+      "id": "monochrome-crimson",
+      "file": "monochrome-crimson.json",
+      "path": "dist/monochrome-crimson.json",
+      "name": "Monochrome Crimson (Oxblood Night)"
+    },
+    {
       "id": "liberty",
       "file": "liberty.json",
       "path": "dist/liberty.json",

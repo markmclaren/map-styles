@@ -2413,6 +2413,88 @@ THEMES = {
         'label_water_halo': '#e5d39e',
         'label_road': '#3b2705',
         'label_road_halo': '#ffffff'
+    },
+
+    'monochrome-purple': {
+        'name': 'Monochrome Purple (Amethyst Night)',
+        'template': 'bright',
+        'background': '#13091c',
+        'water_fill': '#1e102d',
+        'water_outline': '#432661',
+        'waterway_line': '#432661',
+        'land_fill': '#13091c',
+        'wood_fill': '#190d24',
+        'park_fill': '#190d24',
+        'residential_fill': '#160b20',
+        'commercial_fill': '#1a0e26',
+        'industrial_fill': '#1e112b',
+        'special_fill': '#1e112b',
+        'sand_fill': '#221430',
+        'building_fill': '#231336',
+        'building_outline': '#361d52',
+        'motorway_casing': '#5e298f',
+        'motorway_fill': '#c78cfc',
+        'primary_casing': '#481f6e',
+        'primary_fill': '#a866e8',
+        'secondary_casing': '#391857',
+        'secondary_fill': '#7b42b3',
+        'minor_casing': '#2b1440',
+        'minor_fill': '#53287d',
+        'path_line': '#633394',
+        'rail_line': '#ba7ef2',
+        'include_rail_ticks': True,
+        'rail_ticks_color': '#13091c',
+        'boundary_country': '#894fc4',
+        'boundary_state': '#5b2f87',
+        'label_city': '#eedcff',
+        'label_city_halo': '#13091c',
+        'label_country': '#c89eff',
+        'label_country_halo': '#13091c',
+        'label_water': '#875cb8',
+        'label_water_halo': '#1e102d',
+        'label_road': '#dfc4fc',
+        'label_road_halo': '#13091c'
+    },
+
+    'monochrome-crimson': {
+        'name': 'Monochrome Crimson (Oxblood Night)',
+        'template': 'bright',
+        'background': '#1a080c',
+        'water_fill': '#290d14',
+        'water_outline': '#5e1e2d',
+        'waterway_line': '#5e1e2d',
+        'land_fill': '#1a080c',
+        'wood_fill': '#210b10',
+        'park_fill': '#210b10',
+        'residential_fill': '#1e0a0e',
+        'commercial_fill': '#230c11',
+        'industrial_fill': '#270e13',
+        'special_fill': '#270e13',
+        'sand_fill': '#2b1016',
+        'building_fill': '#2e1117',
+        'building_outline': '#4a1b25',
+        'motorway_casing': '#8a2238',
+        'motorway_fill': '#fa7592',
+        'primary_casing': '#6e1b2d',
+        'primary_fill': '#e64a6d',
+        'secondary_casing': '#521422',
+        'secondary_fill': '#ad324c',
+        'minor_casing': '#380d16',
+        'minor_fill': '#732032',
+        'path_line': '#8a293d',
+        'rail_line': '#f2728d',
+        'include_rail_ticks': True,
+        'rail_ticks_color': '#1a080c',
+        'boundary_country': '#bf3956',
+        'boundary_state': '#822438',
+        'label_city': '#ffe0e6',
+        'label_city_halo': '#1a080c',
+        'label_country': '#faa0b4',
+        'label_country_halo': '#1a080c',
+        'label_water': '#ad4e63',
+        'label_water_halo': '#290d14',
+        'label_road': '#ffd1db',
+        'label_road_halo': '#1a080c'
     }
 }
 
@@ -2887,8 +2969,8 @@ def main():
             json.dump(osm_style, f, indent=2)
         generated.append(f"{osm_id}.json")
 
-    # 13. Monochrome Single-Hue Series (Indigo, Sepia, Emerald, Amber)
-    for mono_id in ['monochrome-indigo', 'monochrome-sepia', 'monochrome-emerald', 'monochrome-amber']:
+    # 13. Monochrome Single-Hue Series (Indigo, Sepia, Emerald, Amber, Purple, Crimson)
+    for mono_id in ['monochrome-indigo', 'monochrome-sepia', 'monochrome-emerald', 'monochrome-amber', 'monochrome-purple', 'monochrome-crimson']:
         mono_theme = THEMES[mono_id]
         mono_style = compile_style(bright_template, mono_theme)
         out_f = os.path.join(dist_dir, f"{mono_id}.json")

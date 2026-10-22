@@ -264,13 +264,13 @@ async function switchStyle(styleId) {
 
 // Update secondary map to an appropriate comparison reference
 function updateSecondaryStyle(styleId) {
-  if (styleId.includes('streetmap') || styleId === 'aa-atlas' || styleId === 'os-roads') {
+  if (styleId.includes('streetmap') || styleId === 'aa-atlas' || styleId === 'os-roads' || styleId === 'os-landranger') {
     secondaryTag.textContent = 'Ordnance Survey - Roads';
     mapSecondary.setStyle(getStyleUrl('os-roads'));
-  } else if (styleId === 'google-maps' || styleId === 'google-maps-retro' || styleId === 'apple-maps' || styleId === 'bing-maps') {
+  } else if (styleId.startsWith('google-maps') || styleId === 'apple-maps' || styleId === 'bing-maps' || styleId === 'mapquest-classic' || styleId === 'here-classic') {
     secondaryTag.textContent = 'OpenFreeMap Liberty';
     mapSecondary.setStyle(getStyleUrl('liberty'));
-  } else if (styleId === 'michelin' || styleId === 'rand-mcnally') {
+  } else if (styleId === 'michelin' || styleId === 'rand-mcnally' || styleId === 'swisstopo') {
     secondaryTag.textContent = 'OpenFreeMap Bright';
     mapSecondary.setStyle(getStyleUrl('bright'));
   } else if (styleId === 'stamen-toner' || styleId.includes('dark') || styleId === 'os-zoomstack-night') {

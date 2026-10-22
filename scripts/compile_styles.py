@@ -1448,7 +1448,7 @@ THEMES = {
     },
 
     'google-maps': {
-        'name': 'Google Maps',
+        'name': 'Google Maps (Warm 2014–2023)',
         'template': 'bright',
         'background': '#f4f3f0',
         'water_fill': '#aad3df',
@@ -1483,6 +1483,84 @@ THEMES = {
         'label_water': '#336799',
         'label_water_halo': '#ffffff',
         'label_road': '#494c4e',
+        'label_road_halo': '#ffffff'
+    },
+
+    'google-maps-modern': {
+        'name': 'Google Maps (2023+ Cool Slate)',
+        'template': 'bright',
+        'background': '#e8eaed',
+        'water_fill': '#85c9d6',
+        'water_outline': '#68aab8',
+        'waterway_line': '#68aab8',
+        'land_fill': '#e8eaed',
+        'wood_fill': '#a8dab5',
+        'park_fill': '#a8dab5',
+        'residential_fill': '#e3e7ea',
+        'commercial_fill': '#dee2e6',
+        'industrial_fill': '#dee1e5',
+        'special_fill': '#e0e4e8',
+        'sand_fill': '#faeed2',
+        'building_fill': '#d7d9dc',
+        'building_outline': '#c8cbce',
+        'motorway_casing': '#435260',
+        'motorway_fill': '#596b79',
+        'primary_casing': '#6c7c8c',
+        'primary_fill': '#8192a2',
+        'secondary_casing': '#b0bac2',
+        'secondary_fill': '#d3dbe2',
+        'minor_casing': '#d5dadf',
+        'minor_fill': '#ffffff',
+        'path_line': '#b8c5b5',
+        'rail_line': '#9ba5ad',
+        'boundary_country': '#8c969e',
+        'boundary_state': '#a6b0b8',
+        'label_city': '#202124',
+        'label_city_halo': '#ffffff',
+        'label_country': '#5f6368',
+        'label_country_halo': '#ffffff',
+        'label_water': '#27606e',
+        'label_water_halo': '#ffffff',
+        'label_road': '#3c4043',
+        'label_road_halo': '#ffffff'
+    },
+
+    'google-maps-2009': {
+        'name': 'Google Maps (Pastel 2009–2013)',
+        'template': 'bright',
+        'background': '#f5f5f3',
+        'water_fill': '#b5d0d0',
+        'water_outline': '#9ec0c0',
+        'waterway_line': '#9ec0c0',
+        'land_fill': '#f5f5f3',
+        'wood_fill': '#cae8be',
+        'park_fill': '#cae8be',
+        'residential_fill': '#f0ede6',
+        'commercial_fill': '#edeae1',
+        'industrial_fill': '#e8e5dc',
+        'special_fill': '#edeae1',
+        'sand_fill': '#faecc9',
+        'building_fill': '#e8e5dc',
+        'building_outline': '#dad5c9',
+        'motorway_casing': '#e5aa38',
+        'motorway_fill': '#fbd16c',
+        'primary_casing': '#e3c574',
+        'primary_fill': '#fff5a6',
+        'secondary_casing': '#dcdad6',
+        'secondary_fill': '#ffffff',
+        'minor_casing': '#e2e0dc',
+        'minor_fill': '#ffffff',
+        'path_line': '#c0d6b6',
+        'rail_line': '#888888',
+        'boundary_country': '#888888',
+        'boundary_state': '#aaaaaa',
+        'label_city': '#222222',
+        'label_city_halo': '#ffffff',
+        'label_country': '#555555',
+        'label_country_halo': '#ffffff',
+        'label_water': '#447788',
+        'label_water_halo': '#ffffff',
+        'label_road': '#444444',
         'label_road_halo': '#ffffff'
     },
 
@@ -1524,6 +1602,86 @@ THEMES = {
         'label_water': '#2b5278',
         'label_water_halo': '#ffffff',
         'label_road': '#111111',
+        'label_road_halo': '#ffffff'
+    },
+
+    'mapquest-classic': {
+        'name': 'MapQuest Classic (1996–2004)',
+        'template': 'bright',
+        'background': '#ffffff',
+        'water_fill': '#66ccff',
+        'water_outline': '#3399cc',
+        'waterway_line': '#3399cc',
+        'land_fill': '#ffffff',
+        'wood_fill': '#99cc99',
+        'park_fill': '#99cc99',
+        'residential_fill': '#ffffff',
+        'commercial_fill': '#f7f7f7',
+        'industrial_fill': '#eeeeee',
+        'special_fill': '#ddffdd',
+        'sand_fill': '#ffffcc',
+        'building_fill': '#dddddd',
+        'building_outline': '#bbbbbb',
+        'motorway_casing': '#000000',
+        'motorway_fill': '#ff9900',
+        'primary_casing': '#222222',
+        'primary_fill': '#ffff00',
+        'secondary_casing': '#444444',
+        'secondary_fill': '#ffffff',
+        'minor_casing': '#888888',
+        'minor_fill': '#ffffff',
+        'path_line': '#669966',
+        'rail_line': '#000000',
+        'include_rail_ticks': True,
+        'rail_ticks_color': '#ffffff',
+        'boundary_country': '#cc0000',
+        'boundary_state': '#cc0000',
+        'label_city': '#000000',
+        'label_city_halo': '#ffffff',
+        'label_country': '#000000',
+        'label_country_halo': '#ffffff',
+        'label_water': '#003399',
+        'label_water_halo': '#ffffff',
+        'label_road': '#000000',
+        'label_road_halo': '#ffffff'
+    },
+
+    'here-classic': {
+        'name': 'HERE Maps / Nokia (Classic)',
+        'template': 'bright',
+        'background': '#f3f3f1',
+        'water_fill': '#7ec7e8',
+        'water_outline': '#54a6cf',
+        'waterway_line': '#54a6cf',
+        'land_fill': '#f3f3f1',
+        'wood_fill': '#c3e7be',
+        'park_fill': '#d1ebd0',
+        'residential_fill': '#eceae4',
+        'commercial_fill': '#e5e2db',
+        'industrial_fill': '#dedad2',
+        'special_fill': '#e5e2db',
+        'sand_fill': '#faeed5',
+        'building_fill': '#dedede',
+        'building_outline': '#cacaca',
+        'motorway_casing': '#c9540e',
+        'motorway_fill': '#ff7b24',
+        'primary_casing': '#c48606',
+        'primary_fill': '#ffb81c',
+        'secondary_casing': '#cac4b7',
+        'secondary_fill': '#fbf9f4',
+        'minor_casing': '#dedad0',
+        'minor_fill': '#ffffff',
+        'path_line': '#95b390',
+        'rail_line': '#687178',
+        'boundary_country': '#63707c',
+        'boundary_state': '#8895a1',
+        'label_city': '#1c2833',
+        'label_city_halo': '#ffffff',
+        'label_country': '#415160',
+        'label_country_halo': '#ffffff',
+        'label_water': '#21618c',
+        'label_water_halo': '#ffffff',
+        'label_road': '#2c3e50',
         'label_road_halo': '#ffffff'
     },
 
@@ -1723,6 +1881,90 @@ THEMES = {
         'label_water': '#164669',
         'label_water_halo': '#faf7ed',
         'label_road': '#292929',
+        'label_road_halo': '#ffffff'
+    },
+
+    'os-landranger': {
+        'name': 'Ordnance Survey Landranger (1:50k)',
+        'template': 'bright',
+        'include_uk_shields': True,
+        'background': '#faf8f2',
+        'water_fill': '#87ceeb',
+        'water_outline': '#4682b4',
+        'waterway_line': '#4682b4',
+        'land_fill': '#faf8f2',
+        'wood_fill': '#c1deb1',
+        'park_fill': '#d2ebd0',
+        'residential_fill': '#f0e6e6',
+        'commercial_fill': '#ebdcdc',
+        'industrial_fill': '#e2dede',
+        'special_fill': '#ebdcdc',
+        'sand_fill': '#fff5cc',
+        'building_fill': '#d4c2b8',
+        'building_outline': '#b8a599',
+        'motorway_casing': '#004e8c',
+        'motorway_fill': '#0078d7',
+        'primary_casing': '#990045',
+        'primary_fill': '#e60067',
+        'secondary_casing': '#cc5500',
+        'secondary_fill': '#ff7700',
+        'minor_casing': '#baa130',
+        'minor_fill': '#ffea6c',
+        'path_line': '#2e8b57',
+        'rail_line': '#000000',
+        'include_rail_ticks': True,
+        'rail_ticks_color': '#ffffff',
+        'boundary_country': '#8b0000',
+        'boundary_state': '#a52a2a',
+        'label_city': '#111111',
+        'label_city_halo': '#faf8f2',
+        'label_country': '#222222',
+        'label_country_halo': '#faf8f2',
+        'label_water': '#004e8c',
+        'label_water_halo': '#faf8f2',
+        'label_road': '#111111',
+        'label_road_halo': '#ffffff'
+    },
+
+    'swisstopo': {
+        'name': 'Swisstopo (Swiss National Map)',
+        'template': 'bright',
+        'include_relief': True,
+        'background': '#faf8f3',
+        'water_fill': '#a0c8e6',
+        'water_outline': '#739ebb',
+        'waterway_line': '#739ebb',
+        'land_fill': '#faf8f3',
+        'wood_fill': '#c5e1be',
+        'park_fill': '#d7ebd2',
+        'residential_fill': '#eeebe3',
+        'commercial_fill': '#eae5dc',
+        'industrial_fill': '#e4ded4',
+        'special_fill': '#eae5dc',
+        'sand_fill': '#f7f0df',
+        'building_fill': '#ded5c4',
+        'building_outline': '#a69f92',
+        'motorway_casing': '#9e1c1c',
+        'motorway_fill': '#dd352e',
+        'primary_casing': '#b36600',
+        'primary_fill': '#f59c16',
+        'secondary_casing': '#baa13b',
+        'secondary_fill': '#fce277',
+        'minor_casing': '#9c9c9c',
+        'minor_fill': '#ffffff',
+        'path_line': '#7a7063',
+        'rail_line': '#333333',
+        'include_rail_ticks': True,
+        'rail_ticks_color': '#ffffff',
+        'boundary_country': '#444444',
+        'boundary_state': '#777777',
+        'label_city': '#111111',
+        'label_city_halo': '#faf8f3',
+        'label_country': '#222222',
+        'label_country_halo': '#faf8f3',
+        'label_water': '#2c5f85',
+        'label_water_halo': '#faf8f3',
+        'label_road': '#222222',
         'label_road_halo': '#ffffff'
     },
 
@@ -1965,6 +2207,47 @@ THEMES = {
         'label_water': '#3b6d8c',
         'label_water_halo': '#ffffff',
         'label_road': '#8c877e',
+        'label_road_halo': '#ffffff'
+    },
+
+    'osm-carto': {
+        'name': 'OpenStreetMap Standard (OSM Carto)',
+        'template': 'bright',
+        'background': '#f2efe9',
+        'water_fill': '#aad3df',
+        'water_outline': '#84b5c4',
+        'waterway_line': '#84b5c4',
+        'land_fill': '#f2efe9',
+        'wood_fill': '#add19e',
+        'park_fill': '#c8facc',
+        'residential_fill': '#e0dfdf',
+        'commercial_fill': '#f2dad9',
+        'industrial_fill': '#dfd1d6',
+        'special_fill': '#ebe6e6',
+        'sand_fill': '#f5e9c6',
+        'building_fill': '#d9d0c9',
+        'building_outline': '#bfb5ad',
+        'motorway_casing': '#c24e6b',
+        'motorway_fill': '#e990a0',
+        'primary_casing': '#d48011',
+        'primary_fill': '#fdbf6f',
+        'secondary_casing': '#caa338',
+        'secondary_fill': '#f7fabf',
+        'minor_casing': '#cfcfcf',
+        'minor_fill': '#ffffff',
+        'path_line': '#999999',
+        'rail_line': '#777777',
+        'include_rail_ticks': True,
+        'rail_ticks_color': '#ffffff',
+        'boundary_country': '#7b68ee',
+        'boundary_state': '#9370db',
+        'label_city': '#000000',
+        'label_city_halo': '#ffffff',
+        'label_country': '#4b0082',
+        'label_country_halo': '#ffffff',
+        'label_water': '#336699',
+        'label_water_halo': '#ffffff',
+        'label_road': '#333333',
         'label_road_halo': '#ffffff'
     }
 }
@@ -2393,8 +2676,8 @@ def main():
             json.dump(ad_style, f, indent=2)
         generated.append(f"{ad_id}.json")
 
-    # 8. Consumer Maps Pack (Google Maps, Google Maps Retro, Apple Maps, Bing Maps)
-    for cs_id in ['google-maps', 'google-maps-retro', 'apple-maps', 'bing-maps']:
+    # 8. Consumer Maps Pack (Google Maps Modern/Warm/Pastel/Retro, MapQuest, HERE, Apple, Bing)
+    for cs_id in ['google-maps-modern', 'google-maps', 'google-maps-2009', 'google-maps-retro', 'mapquest-classic', 'here-classic', 'apple-maps', 'bing-maps']:
         cs_theme = THEMES[cs_id]
         cs_style = compile_style(bright_template, cs_theme)
         out_f = os.path.join(dist_dir, f"{cs_id}.json")
@@ -2402,10 +2685,11 @@ def main():
             json.dump(cs_style, f, indent=2)
         generated.append(f"{cs_id}.json")
 
-    # 9. Motoring & Road Atlases (Michelin, AA Atlas, Rand McNally)
-    for mr_id in ['michelin', 'aa-atlas', 'rand-mcnally']:
+    # 9. Motoring & Road Atlases (Michelin, AA Atlas, Rand McNally, OS Landranger, Swisstopo)
+    for mr_id in ['michelin', 'aa-atlas', 'rand-mcnally', 'os-landranger', 'swisstopo']:
         mr_theme = THEMES[mr_id]
-        mr_style = compile_style(bright_template, mr_theme)
+        include_rel = mr_theme.get('include_relief', False)
+        mr_style = compile_style(bright_template, mr_theme, include_relief=include_rel)
         out_f = os.path.join(dist_dir, f"{mr_id}.json")
         with open(out_f, 'w') as f:
             json.dump(mr_style, f, indent=2)
@@ -2430,8 +2714,8 @@ def main():
             json.dump(os_acc_style, f, indent=2)
         generated.append(f"{os_acc_id}.json")
 
-    # 12. OSM Ecosystem & Transit (Humanitarian HOT, Thunderforest Transport)
-    for osm_id in ['humanitarian', 'transport-transit']:
+    # 12. OSM Ecosystem & Transit (OSM Carto, Humanitarian HOT, Thunderforest Transport)
+    for osm_id in ['osm-carto', 'humanitarian', 'transport-transit']:
         osm_theme = THEMES[osm_id]
         osm_style = compile_style(bright_template, osm_theme)
         out_f = os.path.join(dist_dir, f"{osm_id}.json")

@@ -196,16 +196,40 @@
       "name": "Oceans"
     },
     {
+      "id": "google-maps-modern",
+      "file": "google-maps-modern.json",
+      "path": "dist/google-maps-modern.json",
+      "name": "Google Maps (2023+ Cool Slate)"
+    },
+    {
       "id": "google-maps",
       "file": "google-maps.json",
       "path": "dist/google-maps.json",
-      "name": "Google Maps"
+      "name": "Google Maps (Warm 2014\u20132023)"
+    },
+    {
+      "id": "google-maps-2009",
+      "file": "google-maps-2009.json",
+      "path": "dist/google-maps-2009.json",
+      "name": "Google Maps (Pastel 2009\u20132013)"
     },
     {
       "id": "google-maps-retro",
       "file": "google-maps-retro.json",
       "path": "dist/google-maps-retro.json",
       "name": "Google Maps (Classic 2005\u20132009)"
+    },
+    {
+      "id": "mapquest-classic",
+      "file": "mapquest-classic.json",
+      "path": "dist/mapquest-classic.json",
+      "name": "MapQuest Classic (1996\u20132004)"
+    },
+    {
+      "id": "here-classic",
+      "file": "here-classic.json",
+      "path": "dist/here-classic.json",
+      "name": "HERE Maps / Nokia (Classic)"
     },
     {
       "id": "apple-maps",
@@ -236,6 +260,18 @@
       "file": "rand-mcnally.json",
       "path": "dist/rand-mcnally.json",
       "name": "Rand McNally Road Atlas"
+    },
+    {
+      "id": "os-landranger",
+      "file": "os-landranger.json",
+      "path": "dist/os-landranger.json",
+      "name": "Ordnance Survey Landranger (1:50k)"
+    },
+    {
+      "id": "swisstopo",
+      "file": "swisstopo.json",
+      "path": "dist/swisstopo.json",
+      "name": "Swisstopo (Swiss National Map)"
     },
     {
       "id": "stamen-toner",
@@ -272,6 +308,12 @@
       "file": "os-tritanopia.json",
       "path": "dist/os-tritanopia.json",
       "name": "Ordnance Survey - Tritanopia (Accessible)"
+    },
+    {
+      "id": "osm-carto",
+      "file": "osm-carto.json",
+      "path": "dist/osm-carto.json",
+      "name": "OpenStreetMap Standard (OSM Carto)"
     },
     {
       "id": "humanitarian",

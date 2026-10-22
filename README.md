@@ -15,15 +15,21 @@ All compiled MapLibre style JSON files are located in [`dist/`](dist/) and are r
 
 | Style File | Cartographic Theme | Description |
 |---|---|---|
-| **Consumer Maps** | | |
-| [`dist/google-maps.json`](dist/google-maps.json) | **Google Maps (Modern)** | Inspired by and in the style of Google Maps (warm ivory landcover, soft cyan water, mint parks, and yellow/orange highways) |
+| **Consumer Maps & Web Classics** | | |
+| [`dist/google-maps-modern.json`](dist/google-maps-modern.json) | **Google Maps (2023+ Cool Slate)** | Inspired by Google's late-2023 redesign (deep teal/cyan water `#85c9d6`, cool icy blue-grey land `#e8eaed`, mint-emerald parks `#a8dab5`, and dark slate/blue-gray freeways `#596b79`) |
+| [`dist/google-maps.json`](dist/google-maps.json) | **Google Maps (Warm 2014–2023)** | Inspired by Google's Material Design era (warm ivory landcover `#f4f3f0`, soft cyan water `#aad3df`, sage parks, and warm yellow/orange highways `#fed876`) |
+| [`dist/google-maps-2009.json`](dist/google-maps-2009.json) | **Google Maps (Pastel 2009–2013)** | Inspired by Google's October 2009 clean redesign (pale powder-blue water `#b5d0d0`, clean off-white land `#f5f5f3`, soft pastel butter-yellow arterials `#fff5a6`, and light golden freeways `#fbd16c`) |
 | [`dist/google-maps-retro.json`](dist/google-maps-retro.json) | **Google Maps (Classic 2005–2009)** | Inspired by the original pre-2009 Google Maps design (rich periwinkle water `#99b3cc`, sunny yellow arterials `#fffa73`, golden highways `#f2bf24`, olive parks `#a7cc95`, and bold white streets with dark slate casings) |
+| [`dist/mapquest-classic.json`](dist/mapquest-classic.json) | **MapQuest Classic (1996–2004)** | Inspired by the nostalgic turn-of-the-millennium MapQuest look (electric cyan water `#66ccff`, pure white ground `#ffffff`, black-outlined yellow/orange interstates, and red boundary lines) |
+| [`dist/here-classic.json`](dist/here-classic.json) | **HERE Maps / Nokia (Classic)** | Inspired by Nokia / HERE Maps automotive dashboard navigation (cool titanium gray terrain, vibrant cyan water, and high-visibility neon amber/coral highways) |
 | [`dist/apple-maps.json`](dist/apple-maps.json) | **Apple Maps** | Inspired by and in the style of Apple Maps (clean pastel cartography with crisp white roads, soft borders, sky-blue water, and emerald greenspaces) |
 | [`dist/bing-maps.json`](dist/bing-maps.json) | **Bing Maps** | Inspired by and in the style of Microsoft Bing Maps (muted gray urban fabric, soft yellow highways, and crisp water) |
 | **Motoring & Road Atlases** | | |
 | [`dist/michelin.json`](dist/michelin.json) | **Michelin Road Atlas** | Inspired by and in the style of the French Michelin road atlas (canary yellow secondary roads, vivid red motorways, high-contrast white ground) |
 | [`dist/aa-atlas.json`](dist/aa-atlas.json) | **AA Road Atlas (UK)** | Inspired by and in the style of the British AA Road Atlas (AA yellow accents, motorway blue, emerald A-roads, and TSRGD shields) |
 | [`dist/rand-mcnally.json`](dist/rand-mcnally.json) | **Rand McNally Road Atlas** | Inspired by and in the style of the Rand McNally American Road Atlas (Interstate blue ribbons, US highway red routes, and warm cream land) |
+| [`dist/os-landranger.json`](dist/os-landranger.json) | **OS Landranger (1:50k Classic)** | Inspired by the legendary British Ordnance Survey 1:50,000 Landranger series (iconic cerise magenta A-roads `#e60067`, cadmium orange B-roads `#ff7700`, royal blue motorways `#0078d7`, lemon yellow minor roads, and TSRGD road shields) |
+| [`dist/swisstopo.json`](dist/swisstopo.json) | **Swisstopo (Swiss National Map)** | Inspired by the Swiss Federal Office of Topography (razor-sharp legibility, glacial blue water `#a0c8e6`, red autobahns `#dd352e`, alpine relief shading, and Swiss typography) |
 | [`dist/streetmap.json`](dist/streetmap.json) | **Streetmap UK Classic** | Inspired by and in the style of traditional British street atlases (motorway blue, emerald A-roads, amber B-roads, peach buildings, and TSRGD sign badges) |
 | [`dist/streetmap-minimal.json`](dist/streetmap-minimal.json) | **Streetmap UK (Minimal)** | Lightweight standalone starter style containing core essential layers for high-speed street mapping |
 | [`dist/os-roads.json`](dist/os-roads.json) | **Ordnance Survey - Roads** | In the style of OS UK road network cartography (peach buildings, cyan motorways, green A-roads) |
@@ -47,12 +53,14 @@ All compiled MapLibre style JSON files are located in [`dist/`](dist/) and are r
 | [`dist/midcentury.json`](dist/midcentury.json) | **Midcentury** | 1950s/1960s retro art style featuring turquoise waters, coral highways & mustard accents |
 | [`dist/blueprint.json`](dist/blueprint.json) | **Blueprint** | Architectural drafting blueprint styling with deep blueprint blue & white lines |
 | **British & Ordnance Survey (UK)** | | |
+| [`dist/os-landranger.json`](dist/os-landranger.json) | **OS Landranger (1:50k Classic)** | Classic Landranger Explorer style with magenta A-roads, orange B-roads, and blue motorways |
 | [`dist/os-outdoor.json`](dist/os-outdoor.json) | **Ordnance Survey - Outdoor** | In the style of classic OS Landranger/Explorer outdoor styling with greenspaces & relief |
 | [`dist/os-light.json`](dist/os-light.json) | **Ordnance Survey - Light** | In the style of OS Open Zoomstack Light minimalist backdrop designed for GIS data overlay |
 | [`dist/os-zoomstack-night.json`](dist/os-zoomstack-night.json) | **Ordnance Survey - Night** | In the style of OS Open Zoomstack Night theme with deep obsidian backdrop and glowing cyan/orange roads |
 | [`dist/os-deuteranopia.json`](dist/os-deuteranopia.json) | **OS Deuteranopia (Accessible)** | In the style of OS Zoomstack Deuteranopia for red-green color vision deficiency (purples/blues/ambers) |
 | [`dist/os-tritanopia.json`](dist/os-tritanopia.json) | **OS Tritanopia (Accessible)** | In the style of OS Zoomstack Tritanopia for blue-yellow color vision deficiency (rose/teal/charcoal) |
 | **OSM & Transit Ecosystem** | | |
+| [`dist/osm-carto.json`](dist/osm-carto.json) | **OpenStreetMap Standard (OSM Carto)** | The official OpenStreetMap Mapnik standard stylesheet (salmon-red motorways `#e990a0`, amber A-roads `#fdbf6f`, pale yellow B-roads `#f7fabf`, and powder blue water `#aad3df`) |
 | [`dist/humanitarian.json`](dist/humanitarian.json) | **Humanitarian (HOT)** | In the style of Humanitarian OpenStreetMap Team (HOT) with coral-pink highways, soft blue water, and highlighted facilities |
 | [`dist/transport-transit.json`](dist/transport-transit.json) | **Thunderforest Transport** | Inspired by and in the style of Thunderforest Transport and classic transit maps with prominent rail/subway lines |
 | [`dist/osm.json`](dist/osm.json) | **OpenStreetMap** | Classic OpenStreetMap Daylight cartography |

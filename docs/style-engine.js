@@ -577,7 +577,9 @@ const HARMONY_MODES = {
   SPLIT_COMPLEMENTARY: 'split-complementary',
   ANALOGOUS: 'analogous',
   TETRADIC: 'tetradic',
+  SQUARE: 'square',
   MONOCHROME: 'monochrome',
+  CUSTOM: 'custom',
   RANDOM: 'random'
 };
 
@@ -682,8 +684,29 @@ function generateHarmoniousPalette(options = {}) {
       textHue = baseHue;
       break;
     }
+    case 'square': {
+      // 4 hues evenly spaced at 90°
+      canvasHue = baseHue;
+      waterHue = (baseHue + 90) % 360;
+      roadHue = (baseHue + 180) % 360;
+      greenHue = (baseHue + 270) % 360;
+      bldgHue = baseHue;
+      textHue = baseHue;
+      break;
+    }
     case 'monochrome': {
       canvasHue = waterHue = greenHue = roadHue = bldgHue = textHue = baseHue;
+      break;
+    }
+    case 'custom': {
+      // Retain existing individual hues
+      const getH = (k) => currentTokens[k] ? rgbToHsl(hexToRgb(currentTokens[k]).r, hexToRgb(currentTokens[k]).g, hexToRgb(currentTokens[k]).b).h : baseHue;
+      canvasHue = getH('canvas');
+      waterHue = getH('water');
+      greenHue = getH('greenspace');
+      roadHue = getH('roads');
+      bldgHue = getH('buildings');
+      textHue = getH('text');
       break;
     }
     case 'triadic':

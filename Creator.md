@@ -225,10 +225,47 @@ The Style Studio integrates classical color theory into map compilation via `Sty
 | **Complementary** | $\theta_0$, $\theta_0 + 180^\circ$ | Ground/Water at $\theta_0$, Highway network at $\theta_0 + 180^\circ$ | **Maximum Chromatic Tension**. Perfect for motoring atlases and high-glance GPS navigation where highways must instantly jump forward. |
 | **Split-Complementary** | $\theta_0$, $\theta_0 + 150^\circ$, $\theta_0 + 210^\circ$ | Ground at $\theta_0$, Roads at $+150^\circ$, Water/Parks at $+210^\circ$ | **Nuanced Editorial Contrast**. Delivers the drama of complementary contrast without harsh vibration. Ideal for web apps and dashboard basemaps. |
 | **Analogous** | $\theta_0 - 30^\circ$, $\theta_0$, $\theta_0 + 30^\circ$ | Water at $-30^\circ$, Canvas at $\theta_0$, Parks at $+30^\circ$, Roads deep value step | **Serene Natural Cohesion**. Excellent for environmental, marine, forestry, and minimalist Nordic/Scandinavian themes. |
-| **Tetradic (Dual Complement)** | $\theta_0$, $\theta_0 + 60^\circ$, $\theta_0 + 180^\circ$, $\theta_0 + 240^\circ$ | Canvas ($\theta_0$) & Roads ($+180^\circ$); Water ($+60^\circ$) & Greenspace ($+240^\circ$) | **Rich Multi-Accent Cartography**. Two complementary pairs creating deep richness across urban fabric and natural geography. |
+| **Square** | $\theta_0$, $\theta_0 + 90^\circ$, $\theta_0 + 180^\circ$, $\theta_0 + 270^\circ$ | 4 hues evenly spaced at $90^\circ$ across the wheel | **Dynamic Tetrahedral Balance**. Ideal for rich complex maps with varied POI, transport, and water categorizations. |
 | **Monochromatic** | Single Hue $\theta_0$ ($\Delta\theta = 0^\circ$) | Strict luminance stepping across the 6 planes ($L = 97\% \to 10\%$) | **Architectural & Archival Maps**. High-end single-color maps (blueprint cyan, sepia parchment, indigo wash). |
+| **Custom** | Unconstrained individual pin coordinates | Independent manual dragging of all 6 nodes | **Total Creative Freedom**. Free-form manual placement for unique or unconventional cartographic palettes. |
 
-### 4.7 Mode-Locked Shuffle Engine
+---
+
+### 4.7 The Interactive Adobe-Style Color Wheel
+Inspired by **[Adobe Color](https://color.adobe.com/create/color-wheel)**, the Style Studio features an interactive circular **Color Wheel Widget** (`#colorWheelSection`):
+
+```
+                       0° (Red)
+                          ▲
+                          │     [🚗 Roads 🎯]
+         270° (Purple) ───┼─── 90° (Yellow-Green)
+                          │   \
+            [🌊 Water]    ▼    [🌲 Parks]
+                      180° (Cyan)
+```
+
+1. **Polar Coordinate Chromatic Disc**:
+   - The wheel disc maps colors in polar coordinates:
+     $$\theta = H \quad (\text{Angle from } 0^\circ \text{ to } 360^\circ)$$
+     $$r = \frac{S}{100} \cdot R \quad (\text{Radial distance from center } r=0 \text{ to edge } r=R)$$
+   - The canvas renders a high-DPI anti-aliased saturation disc at $L=50\%$ pure chroma.
+2. **Interactive Draggable Nodes & Harmony Spokes**:
+   - Each of the 6 tokens is rendered as an interactive draggable handle with its semantic icon (🏞️, 🌊, 🌲, 🚗, 🏢, 🔤) and color fill.
+   - White dashed spokes connect each pin to the wheel center, and a semi-transparent geometric polygon connects the active harmony vertices.
+3. **Base Color Anchor (🎯 Base)**:
+   - Any token can be designated as the **Base Color Anchor**.
+   - When dragging the Anchor token, all other **unheld** pins rotate synchronously around the wheel, preserving their exact geometric harmony angles (e.g. $180^\circ$ for Complementary, $120^\circ$ for Triad, $\pm 30^\circ$ for Analogous).
+4. **Integration with Slot-Machine "HOLD" 🔒**:
+   - Any token marked with **HOLD** shows an illuminated gold lock badge (`🔒`) directly on its wheel pin.
+   - When the Anchor rotates or harmonies are changed, **held pins stay completely frozen** in their exact coordinates on the wheel.
+5. **Real-Time Lightness Slider**:
+   - Below the wheel, a dynamic gradient slider allows fine-tuning the selected token's Lightness ($L \in [0\%, 100\%]$) with real-time feedback on the map.
+6. **Multi-View Switcher**:
+   - Users can seamlessly switch between **Color Wheel 🎡**, **Cards & Ladders 🎛️**, or **Both** simultaneously.
+
+---
+
+### 4.8 Mode-Locked Shuffle Engine
 Clicking the **Shuffle 🎰** button generates harmonious, balanced color relationships strictly bound to the active **Light** or **Dark** mode:
 - If **Dark Mode** is active, canvases remain deep ($L \approx 6\%$) with high-saturation neon/pastel road accents ($L \approx 70\%$) and crisp white labels.
 - If **Light Mode** is active, canvases remain airy ($L \approx 97\%$) with deep road vectors ($L \approx 38\%$) and dark slate text.

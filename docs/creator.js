@@ -72,6 +72,40 @@ const hudCoords = document.getElementById('hudCoords');
 const hudZoom = document.getElementById('hudZoom');
 const hudLayers = document.getElementById('hudLayers');
 
+// Adobe Color Wheel & View Mode State
+let currentStudioView = 'wheel'; // 'wheel' | 'cards' | 'both'
+let selectedWheelToken = 'roads';
+let anchorToken = 'roads';
+let draggingWheelPin = null;
+
+// Token Metadata
+const TOKEN_META = {
+  canvas: { name: 'Canvas', icon: '🏞️', desc: 'Base terrain' },
+  water: { name: 'Water', icon: '🌊', desc: 'Oceans & rivers' },
+  greenspace: { name: 'Greenspace', icon: '🌲', desc: 'Parks & nature' },
+  roads: { name: 'Roads', icon: '🚗', desc: 'Highway spine' },
+  buildings: { name: 'Buildings', icon: '🏢', desc: 'Urban blocks' },
+  text: { name: 'Labels', icon: '🔤', desc: 'City text' }
+};
+
+// Color Wheel DOM References
+const colorWheelCanvas = document.getElementById('colorWheelCanvas');
+const colorWheelSvg = document.getElementById('colorWheelSvg');
+const colorWheelSection = document.getElementById('colorWheelSection');
+const tokenGrid = document.getElementById('tokenGrid');
+const tabBtnWheel = document.getElementById('tabBtnWheel');
+const tabBtnCards = document.getElementById('tabBtnCards');
+const tabBtnBoth = document.getElementById('tabBtnBoth');
+const activeTokenIcon = document.getElementById('activeTokenIcon');
+const activeTokenName = document.getElementById('activeTokenName');
+const activeTokenHex = document.getElementById('activeTokenHex');
+const btnSetAnchor = document.getElementById('btnSetAnchor');
+const anchorBtnText = document.getElementById('anchorBtnText');
+const wheelHoldBtn = document.getElementById('wheelHoldBtn');
+const wheelLightnessSlider = document.getElementById('wheelLightnessSlider');
+const wheelLightnessValue = document.getElementById('wheelLightnessValue');
+const wheelSwatchesStrip = document.getElementById('wheelSwatchesStrip');
+
 // Token Element Maps
 const TOKEN_INPUTS = {
   canvas: { picker: document.getElementById('pickerCanvas'), text: document.getElementById('textCanvas') },
@@ -147,7 +181,11 @@ async function init() {
   // 5. Setup UI & Event Listeners (ALWAYS execute so UI remains interactive)
   setupTokenBindings();
   renderPresetPills();
+  renderColorWheelCanvas();
+  setupColorWheelInteractions();
   setupEventListeners();
+  setStudioView('wheel');
+  selectWheelToken('roads');
   updateUiState();
 }
 
@@ -273,6 +311,13 @@ function updateUiState() {
   // Synchronize slot machine HOLD states and active harmony badge
   updateHoldUi();
   updateHarmonyBadge();
+
+  // Synchronize Adobe Color Wheel & mini swatches
+  if (currentStudioView !== 'cards') {
+    updateColorWheelSvg();
+    renderWheelSwatchesStrip();
+    updateActiveTokenBar();
+  }
 }
 
 // Toggle slot-machine HOLD for a token
@@ -280,6 +325,9 @@ function toggleHold(tokenKey) {
   if (heldTokens[tokenKey] === undefined) return;
   heldTokens[tokenKey] = !heldTokens[tokenKey];
   updateHoldUi();
+  updateColorWheelSvg();
+  updateActiveTokenBar();
+  renderWheelSwatchesStrip();
   const isHeld = heldTokens[tokenKey];
   showToast(isHeld ? `🔒 Held ${tokenKey} (locked from shuffle)` : `Released hold on ${tokenKey}`);
 }
@@ -298,7 +346,7 @@ function updateHoldUi() {
     btn.title = isHeld ? 'Locked: Color is preserved during shuffle (Click to release)' : 'Hold: Lock color during shuffle';
 
     // Highlight parent card
-    const card = document.getElementById(`card${key.charAt(0).toUpperCase() + key.slice(1)}`);
+    const card = document.getElementById(`card${key ? key.charAt(0).toUpperCase() + key.slice(1) : ''}`);
     if (card) card.classList.toggle('token-held', isHeld);
   });
 
@@ -325,6 +373,9 @@ function updateHoldUi() {
 function clearAllHolds() {
   Object.keys(heldTokens).forEach(k => { heldTokens[k] = false; });
   updateHoldUi();
+  updateColorWheelSvg();
+  updateActiveTokenBar();
+  renderWheelSwatchesStrip();
   showToast('All color holds released');
 }
 
@@ -337,7 +388,9 @@ function updateHarmonyBadge() {
     'split-complementary': 'Split 150°/210°',
     analogous: 'Analogous 30°',
     tetradic: 'Tetradic Dual',
+    square: 'Square 90°',
     monochrome: 'Single Hue',
+    custom: 'Custom Free',
     random: 'Surprise'
   };
   harmonyBadge.textContent = map[activeHarmony] || activeHarmony;
@@ -390,6 +443,421 @@ function executeHarmoniousShuffle(harmonyChoice) {
     ? `Shuffled (${heldCount} held, ${chosenHarmony})` 
     : `Generated ${chosenHarmony} harmony (${isDark ? 'Dark' : 'Light'})`;
   showToast(msg);
+}
+
+// --- Adobe-Style Color Wheel Implementation ---
+
+// Render high-DPI chromatic saturation disc onto HTML5 canvas
+function renderColorWheelCanvas() {
+  if (!colorWheelCanvas) return;
+  const ctx = colorWheelCanvas.getContext('2d');
+  if (!ctx) return;
+
+  const dpr = window.devicePixelRatio || 1;
+  const size = 260;
+  colorWheelCanvas.width = size * dpr;
+  colorWheelCanvas.height = size * dpr;
+  colorWheelCanvas.style.width = `${size}px`;
+  colorWheelCanvas.style.height = `${size}px`;
+
+  ctx.scale(dpr, dpr);
+
+  const centerX = size / 2;
+  const centerY = size / 2;
+  const radius = 120; // wheel radius
+
+  const imgData = ctx.createImageData(size, size);
+  const data = imgData.data;
+
+  for (let y = 0; y < size; y++) {
+    for (let x = 0; x < size; x++) {
+      const dx = x - centerX;
+      const dy = y - centerY;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+
+      if (dist <= radius) {
+        let angle = Math.atan2(dy, dx) * (180 / Math.PI);
+        if (angle < 0) angle += 360;
+
+        const sat = Math.min(100, (dist / radius) * 100);
+        // Render at L=50 for pure vivid chroma wheel
+        const rgb = StyleEngine.hslToRgb(angle, sat, 50);
+
+        const idx = (y * size + x) * 4;
+        data[idx] = rgb.r;
+        data[idx + 1] = rgb.g;
+        data[idx + 2] = rgb.b;
+
+        // Antialiased edge
+        const edge = radius - dist;
+        const alpha = edge < 1.5 ? Math.max(0, Math.min(255, Math.round(edge * 170))) : 255;
+        data[idx + 3] = alpha;
+      }
+    }
+  }
+  ctx.putImageData(imgData, 0, 0);
+}
+
+// Convert Token to Color Wheel Polar Position
+function getTokenWheelPos(tokenKey) {
+  const hex = tokens[tokenKey] || '#ffffff';
+  const rgb = StyleEngine.hexToRgb(hex);
+  const hsl = StyleEngine.rgbToHsl(rgb.r, rgb.g, rgb.b);
+
+  const centerX = 130;
+  const centerY = 130;
+  const maxRadius = 118;
+
+  const angleRad = (hsl.h * Math.PI) / 180;
+  // Radius mapped from saturation [0, 100] -> [14, maxRadius]
+  const r = 14 + (hsl.s / 100) * (maxRadius - 14);
+
+  const x = centerX + r * Math.cos(angleRad);
+  const y = centerY + r * Math.sin(angleRad);
+
+  return { x, y, r, h: hsl.h, s: hsl.s, l: hsl.l, hex };
+}
+
+// Render SVG Spokes, Polygon, and Draggable Pins
+function updateColorWheelSvg() {
+  if (!colorWheelSvg) return;
+  colorWheelSvg.innerHTML = '';
+
+  const centerX = 130;
+  const centerY = 130;
+
+  // Calculate coordinates for all 6 tokens
+  const keys = ['canvas', 'water', 'greenspace', 'roads', 'buildings', 'text'];
+  const positions = {};
+  keys.forEach(k => {
+    positions[k] = getTokenWheelPos(k);
+  });
+
+  // 1. Draw spokes from center to each pin
+  keys.forEach(k => {
+    const pos = positions[k];
+    const spoke = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+    spoke.setAttribute('x1', centerX);
+    spoke.setAttribute('y1', centerY);
+    spoke.setAttribute('x2', pos.x);
+    spoke.setAttribute('y2', pos.y);
+    spoke.setAttribute('class', 'wheel-spoke');
+    colorWheelSvg.appendChild(spoke);
+  });
+
+  // 2. Draw harmony connecting polygon (in order of angle)
+  const sortedKeys = [...keys].sort((a, b) => positions[a].h - positions[b].h);
+  const pointsStr = sortedKeys.map(k => `${positions[k].x},${positions[k].y}`).join(' ');
+  const poly = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
+  poly.setAttribute('points', pointsStr);
+  poly.setAttribute('class', 'wheel-polygon');
+  colorWheelSvg.appendChild(poly);
+
+  // 3. Center pivot dot
+  const centerDot = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+  centerDot.setAttribute('cx', centerX);
+  centerDot.setAttribute('cy', centerY);
+  centerDot.setAttribute('r', '4');
+  centerDot.setAttribute('fill', '#ffffff');
+  centerDot.setAttribute('opacity', '0.6');
+  colorWheelSvg.appendChild(centerDot);
+
+  // 4. Draw interactive pin groups
+  keys.forEach(k => {
+    const pos = positions[k];
+    const isAnchor = (k === anchorToken);
+    const isHeld = !!heldTokens[k];
+    const isSelected = (k === selectedWheelToken);
+    const meta = TOKEN_META[k];
+
+    const group = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+    group.setAttribute('class', `wheel-pin-group ${k === draggingWheelPin ? 'is-dragging' : ''}`);
+    group.setAttribute('data-token', k);
+    group.setAttribute('transform', `translate(${pos.x}, ${pos.y})`);
+
+    // Pulsing target ring for Anchor token
+    if (isAnchor) {
+      const anchorRing = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+      anchorRing.setAttribute('r', '17');
+      anchorRing.setAttribute('class', 'wheel-pin-anchor-ring');
+      group.appendChild(anchorRing);
+    }
+
+    // Outer halo
+    const halo = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+    halo.setAttribute('r', isSelected ? '14' : '12');
+    halo.setAttribute('class', 'wheel-pin-halo');
+    halo.setAttribute('stroke', isAnchor ? '#38bdf8' : (isHeld ? '#f59e0b' : '#ffffff'));
+    halo.setAttribute('stroke-width', isSelected ? '3.5' : '2.5');
+    group.appendChild(halo);
+
+    // Inner color fill
+    const fillCircle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+    fillCircle.setAttribute('r', isSelected ? '12' : '10');
+    fillCircle.setAttribute('fill', pos.hex);
+    group.appendChild(fillCircle);
+
+    // Emoji icon
+    const iconText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    iconText.setAttribute('font-size', isSelected ? '11' : '9');
+    iconText.setAttribute('text-anchor', 'middle');
+    iconText.setAttribute('dominant-baseline', 'central');
+    iconText.textContent = meta.icon;
+    group.appendChild(iconText);
+
+    // Lock badge if held
+    if (isHeld) {
+      const lockBadge = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+      lockBadge.setAttribute('x', '7');
+      lockBadge.setAttribute('y', '-7');
+      lockBadge.setAttribute('font-size', '10');
+      lockBadge.textContent = '🔒';
+      group.appendChild(lockBadge);
+    }
+
+    // Event listener for dragging and selection
+    group.addEventListener('pointerdown', (e) => {
+      e.stopPropagation();
+      e.preventDefault();
+      group.setPointerCapture(e.pointerId);
+      draggingWheelPin = k;
+      selectWheelToken(k);
+    });
+
+    colorWheelSvg.appendChild(group);
+  });
+}
+
+// Setup pointer drag listeners for the color wheel
+function setupColorWheelInteractions() {
+  if (!colorWheelSvg) return;
+
+  const centerX = 130;
+  const centerY = 130;
+  const maxRadius = 118;
+
+  colorWheelSvg.addEventListener('pointermove', (e) => {
+    if (!draggingWheelPin) return;
+    const rect = colorWheelSvg.getBoundingClientRect();
+    const mouseX = e.clientX - rect.left;
+    const mouseY = e.clientY - rect.top;
+
+    const dx = mouseX - centerX;
+    const dy = mouseY - centerY;
+    const dist = Math.sqrt(dx * dx + dy * dy);
+
+    // Clamp saturation between 12% and 100%
+    const sat = Math.min(100, Math.max(12, Math.round((dist / maxRadius) * 100)));
+
+    let angle = Math.atan2(dy, dx) * (180 / Math.PI);
+    if (angle < 0) angle += 360;
+    const newHue = Math.round(angle);
+
+    const targetKey = draggingWheelPin;
+    const currentHex = tokens[targetKey];
+    const currentHsl = StyleEngine.rgbToHsl(StyleEngine.hexToRgb(currentHex).r, StyleEngine.hexToRgb(currentHex).g, StyleEngine.hexToRgb(currentHex).b);
+
+    // If dragging the Anchor token and harmony is NOT custom, rotate the whole harmony!
+    if (targetKey === anchorToken && activeHarmony !== 'custom' && activeHarmony !== 'monochrome') {
+      const deltaHue = (newHue - currentHsl.h + 360) % 360;
+
+      // Rotate all UNHELD tokens by deltaHue
+      Object.keys(tokens).forEach(k => {
+        if (!heldTokens[k]) {
+          const kHsl = StyleEngine.rgbToHsl(StyleEngine.hexToRgb(tokens[k]).r, StyleEngine.hexToRgb(tokens[k]).g, StyleEngine.hexToRgb(tokens[k]).b);
+          const rotatedHue = (kHsl.h + deltaHue + 360) % 360;
+          const newColor = StyleEngine.rgbToHex(
+            StyleEngine.hslToRgb(rotatedHue, k === targetKey ? sat : kHsl.s, kHsl.l).r,
+            StyleEngine.hslToRgb(rotatedHue, k === targetKey ? sat : kHsl.s, kHsl.l).g,
+            StyleEngine.hslToRgb(rotatedHue, k === targetKey ? sat : kHsl.s, kHsl.l).b
+          );
+          tokens[k] = newColor;
+          if (TOKEN_INPUTS[k]) {
+            TOKEN_INPUTS[k].picker.value = newColor;
+            TOKEN_INPUTS[k].text.value = newColor;
+          }
+        }
+      });
+    } else {
+      // Individual pin manipulation
+      const updatedHex = StyleEngine.rgbToHex(
+        StyleEngine.hslToRgb(newHue, sat, currentHsl.l).r,
+        StyleEngine.hslToRgb(newHue, sat, currentHsl.l).g,
+        StyleEngine.hslToRgb(newHue, sat, currentHsl.l).b
+      );
+      tokens[targetKey] = updatedHex;
+      if (TOKEN_INPUTS[targetKey]) {
+        TOKEN_INPUTS[targetKey].picker.value = updatedHex;
+        TOKEN_INPUTS[targetKey].text.value = updatedHex;
+      }
+    }
+
+    updateUiState();
+
+    clearTimeout(compileTimeout);
+    compileTimeout = setTimeout(() => {
+      applyCompiledStyle();
+    }, 60);
+  });
+
+  const stopDrag = () => {
+    if (draggingWheelPin) {
+      draggingWheelPin = null;
+      updateColorWheelSvg();
+    }
+  };
+
+  colorWheelSvg.addEventListener('pointerup', stopDrag);
+  colorWheelSvg.addEventListener('pointercancel', stopDrag);
+
+  // Set as Base Color Anchor button
+  if (btnSetAnchor) {
+    btnSetAnchor.addEventListener('click', () => {
+      anchorToken = selectedWheelToken;
+      updateActiveTokenBar();
+      updateColorWheelSvg();
+      showToast(`Set ${TOKEN_META[anchorToken].name} as Harmony Anchor 🎯`);
+    });
+  }
+
+  // Wheel Active Bar Hold Button
+  if (wheelHoldBtn) {
+    wheelHoldBtn.addEventListener('click', () => {
+      toggleHold(selectedWheelToken);
+      updateActiveTokenBar();
+      updateColorWheelSvg();
+    });
+  }
+
+  // Wheel Lightness Slider
+  if (wheelLightnessSlider) {
+    wheelLightnessSlider.addEventListener('input', (e) => {
+      const val = parseInt(e.target.value, 10);
+      if (wheelLightnessValue) wheelLightnessValue.textContent = `${val}%`;
+
+      const hex = tokens[selectedWheelToken];
+      const rgb = StyleEngine.hexToRgb(hex);
+      const hsl = StyleEngine.rgbToHsl(rgb.r, rgb.g, rgb.b);
+      const newHex = StyleEngine.rgbToHex(
+        StyleEngine.hslToRgb(hsl.h, hsl.s, val).r,
+        StyleEngine.hslToRgb(hsl.h, hsl.s, val).g,
+        StyleEngine.hslToRgb(hsl.h, hsl.s, val).b
+      );
+
+      onTokenChanged(selectedWheelToken, newHex);
+      if (TOKEN_INPUTS[selectedWheelToken]) {
+        TOKEN_INPUTS[selectedWheelToken].picker.value = newHex;
+        TOKEN_INPUTS[selectedWheelToken].text.value = newHex;
+      }
+      updateActiveTokenBar();
+    });
+  }
+
+  // View Switcher Tabs
+  if (tabBtnWheel) tabBtnWheel.addEventListener('click', () => setStudioView('wheel'));
+  if (tabBtnCards) tabBtnCards.addEventListener('click', () => setStudioView('cards'));
+  if (tabBtnBoth) tabBtnBoth.addEventListener('click', () => setStudioView('both'));
+}
+
+// Select a token to inspect and control in the wheel toolbar
+function selectWheelToken(tokenKey) {
+  selectedWheelToken = tokenKey;
+  updateActiveTokenBar();
+  updateColorWheelSvg();
+  renderWheelSwatchesStrip();
+}
+
+// Update the Inspector strip below the wheel
+function updateActiveTokenBar() {
+  const meta = TOKEN_META[selectedWheelToken] || { name: selectedWheelToken, icon: '🎨' };
+  const hex = tokens[selectedWheelToken] || '#ffffff';
+  const rgb = StyleEngine.hexToRgb(hex);
+  const hsl = StyleEngine.rgbToHsl(rgb.r, rgb.g, rgb.b);
+
+  if (activeTokenIcon) activeTokenIcon.textContent = meta.icon;
+  if (activeTokenName) activeTokenName.textContent = meta.name;
+  if (activeTokenHex) activeTokenHex.textContent = hex.toLowerCase();
+
+  // Anchor button state
+  const isAnchor = (selectedWheelToken === anchorToken);
+  if (btnSetAnchor) {
+    btnSetAnchor.classList.toggle('is-anchor', isAnchor);
+    if (anchorBtnText) anchorBtnText.textContent = isAnchor ? '🎯 Base Active' : 'Set as Base';
+  }
+
+  // Hold button state
+  const isHeld = !!heldTokens[selectedWheelToken];
+  if (wheelHoldBtn) {
+    wheelHoldBtn.classList.toggle('is-held', isHeld);
+    const holdText = wheelHoldBtn.querySelector('.hold-text');
+    if (holdText) holdText.textContent = isHeld ? 'HELD' : 'HOLD';
+  }
+
+  // Lightness Slider state & gradient
+  if (wheelLightnessSlider) {
+    wheelLightnessSlider.value = hsl.l;
+    const pureColor = StyleEngine.rgbToHex(
+      StyleEngine.hslToRgb(hsl.h, hsl.s, 50).r,
+      StyleEngine.hslToRgb(hsl.h, hsl.s, 50).g,
+      StyleEngine.hslToRgb(hsl.h, hsl.s, 50).b
+    );
+    wheelLightnessSlider.style.background = `linear-gradient(to right, #000000 0%, ${pureColor} 50%, #ffffff 100%)`;
+  }
+  if (wheelLightnessValue) {
+    wheelLightnessValue.textContent = `${hsl.l}%`;
+  }
+}
+
+// Render the 6 mini-swatches below the wheel
+function renderWheelSwatchesStrip() {
+  if (!wheelSwatchesStrip) return;
+  wheelSwatchesStrip.innerHTML = '';
+
+  const keys = ['canvas', 'water', 'greenspace', 'roads', 'buildings', 'text'];
+  keys.forEach(k => {
+    const meta = TOKEN_META[k];
+    const hex = tokens[k];
+    const isSelected = (k === selectedWheelToken);
+    const isAnchor = (k === anchorToken);
+    const isHeld = !!heldTokens[k];
+
+    const swatch = document.createElement('div');
+    swatch.className = `mini-swatch ${isSelected ? 'active' : ''} ${isHeld ? 'is-held' : ''}`;
+    swatch.title = `${meta.name}: ${hex}${isAnchor ? ' (🎯 Base)' : ''}${isHeld ? ' (🔒 Held)' : ''}`;
+
+    swatch.innerHTML = `
+      <div class="mini-swatch-chip" style="background: ${hex};"></div>
+      <span class="mini-swatch-label">${meta.icon}</span>
+    `;
+
+    swatch.addEventListener('click', () => {
+      selectWheelToken(k);
+    });
+
+    wheelSwatchesStrip.appendChild(swatch);
+  });
+}
+
+// Toggle between Color Wheel, Cards, and Both views
+function setStudioView(viewMode) {
+  currentStudioView = viewMode;
+
+  if (tabBtnWheel) tabBtnWheel.classList.toggle('active', viewMode === 'wheel');
+  if (tabBtnCards) tabBtnCards.classList.toggle('active', viewMode === 'cards');
+  if (tabBtnBoth) tabBtnBoth.classList.toggle('active', viewMode === 'both');
+
+  if (colorWheelSection) {
+    colorWheelSection.classList.toggle('is-hidden', viewMode === 'cards');
+  }
+  if (tokenGrid) {
+    tokenGrid.classList.toggle('is-hidden', viewMode === 'wheel');
+  }
+
+  if (viewMode !== 'cards') {
+    updateColorWheelSvg();
+    renderWheelSwatchesStrip();
+    updateActiveTokenBar();
+  }
 }
 
 // Render interactive 5-chip tonal ladder for each token

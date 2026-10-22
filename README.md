@@ -131,8 +131,9 @@ Technical Architecture & Accessibility Science: **[`Creator.md`](Creator.md)**
 
 ### Features:
 - **6-Token Simplicity**: Pick 6 intent colors; the engine derives and contrast-checks all 70+ MapLibre layers automatically.
-- **Slot-Machine "HOLD"**: Freeze any combination of colors (like an arcade fruit machine / one-armed bandit) so they remain locked while shuffling the unheld features.
-- **Color Theory Harmonies**: Generate palettes using classical geometric color wheel harmonies (*Triadic 120°*, *Complementary 180°*, *Split-Complementary 150°/210°*, *Analogous 30°*, *Tetradic Dual-Complement*, or *Monochromatic*), anchoring around any held colors.
+- **Adobe-Style Interactive Color Wheel**: Visual chromatic disc with draggable pins, harmony spokes, and geometric polygons. Dragging the **Base Color Anchor** (🎯) synchronously rotates the harmony across the wheel!
+- **Slot-Machine "HOLD"**: Freeze any combination of colors (like an arcade fruit machine / one-armed bandit) so they remain locked while shuffling the unheld features or rotating the wheel.
+- **Color Theory Harmonies**: Generate palettes using classical geometric color wheel harmonies (*Triadic 120°*, *Complementary 180°*, *Split-Complementary 150°/210°*, *Analogous 30°*, *Tetradic Dual-Complement*, *Square 90°*, *Monochromatic*, or *Custom Free Dragging*), anchoring around any held colors.
 - **Tonal Control Bar**: Micro-steppers (`Darker` / `Lighter`) and a 5-step interactive tonal ladder (`-16%` to `+16%`) that adjust lightness while keeping hue and saturation strictly locked.
 - **Auto-Contrast Engine**: One-click ✨ auto-tuning to guarantee WCAG AA / AAA contrast compliance.
 - **Monochrome Lock**: Lock to a single hue to auto-generate a complete, harmonious single-color map.

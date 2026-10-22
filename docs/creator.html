@@ -121,8 +121,68 @@
       </div>
     </div>
 
+    <!-- Studio View Switcher Tabs -->
+    <div class="studio-view-tabs" role="tablist">
+      <button type="button" class="view-tab-btn active" id="tabBtnWheel" data-view="wheel" title="Adobe Color-style interactive wheel">
+        <svg viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" stroke-width="2" fill="none"><circle cx="12" cy="12" r="10"></circle><path d="M12 2a10 10 0 0 1 0 20z" fill="currentColor"></path></svg>
+        <span>Color Wheel 🎡</span>
+      </button>
+      <button type="button" class="view-tab-btn" id="tabBtnCards" data-view="cards" title="Tonal steppers & hex inputs">
+        <svg viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" stroke-width="2" fill="none"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+        <span>Cards & Ladders</span>
+      </button>
+      <button type="button" class="view-tab-btn" id="tabBtnBoth" data-view="both" title="View wheel and cards simultaneously">
+        <svg viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" stroke-width="2" fill="none"><line x1="12" y1="3" x2="12" y2="21"></line><path d="M3 9l9-6 9 6"></path><path d="M3 15l9 6 9-6"></path></svg>
+        <span>Both</span>
+      </button>
+    </div>
+
+    <!-- Adobe-Style Interactive Color Wheel Section -->
+    <div class="color-wheel-section" id="colorWheelSection">
+      <!-- Wheel Stage (Canvas chromatic disc + SVG draggable pins overlay) -->
+      <div class="wheel-stage-container">
+        <div class="wheel-stage" id="wheelStage">
+          <canvas id="colorWheelCanvas" width="260" height="260"></canvas>
+          <svg id="colorWheelSvg" viewBox="0 0 260 260"></svg>
+        </div>
+        <div class="wheel-hint">Drag pins to change hue & saturation. Drag 🎯 Base to rotate harmony.</div>
+      </div>
+
+      <!-- Active Token Inspector & Lightness Slider -->
+      <div class="wheel-active-bar" id="wheelActiveBar">
+        <div class="active-bar-top">
+          <div class="active-token-pill">
+            <span class="active-token-icon" id="activeTokenIcon">🚗</span>
+            <span class="active-token-name" id="activeTokenName">Roads</span>
+            <span class="active-token-hex" id="activeTokenHex">#475569</span>
+          </div>
+          <div class="active-bar-actions">
+            <button type="button" class="btn-set-anchor" id="btnSetAnchor" title="Set this token as the Base Color Anchor for harmony rotation">
+              <span id="anchorBtnText">🎯 Base Color</span>
+            </button>
+            <button type="button" class="btn-hold" id="wheelHoldBtn" title="Hold color during shuffle">
+              <span class="hold-indicator"></span>
+              <span class="hold-text">HOLD</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Lightness / Brightness Slider -->
+        <div class="lightness-slider-row">
+          <span class="slider-label">Lightness:</span>
+          <input type="range" id="wheelLightnessSlider" class="wheel-lightness-slider" min="0" max="100" value="40" step="1">
+          <span class="slider-value" id="wheelLightnessValue">40%</span>
+        </div>
+      </div>
+
+      <!-- Mini Swatches Bar (like Adobe Color) -->
+      <div class="wheel-swatches-strip" id="wheelSwatchesStrip">
+        <!-- Rendered dynamically -->
+      </div>
+    </div>
+
     <!-- The 6 Semantic Color Inputs -->
-    <div class="token-grid">
+    <div class="token-grid" id="tokenGrid">
       <!-- 1. Canvas -->
       <div class="token-card" data-token="canvas" id="cardCanvas">
         <div class="token-card-top">
@@ -330,7 +390,9 @@
             <option value="split-complementary">Split-Complementary (150°/210°)</option>
             <option value="analogous">Analogous (Harmonious 30°)</option>
             <option value="tetradic">Tetradic (Dual Complement)</option>
+            <option value="square">Square (Balanced 90°)</option>
             <option value="monochrome">Monochrome (Single Hue)</option>
+            <option value="custom">Custom (Free Dragging)</option>
             <option value="random">🎲 Surprise / Any Harmony</option>
           </select>
         </div>

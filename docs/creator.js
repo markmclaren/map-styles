@@ -101,14 +101,7 @@ const TOKEN_META = {
 // Colour Wheel DOM References
 const colorWheelCanvas = document.getElementById('colorWheelCanvas');
 const colorWheelSvg = document.getElementById('colorWheelSvg');
-const activeTokenIcon = document.getElementById('activeTokenIcon');
-const activeTokenName = document.getElementById('activeTokenName');
-const activeTokenHex = document.getElementById('activeTokenHex');
-const btnSetAnchor = document.getElementById('btnSetAnchor');
-const anchorBtnText = document.getElementById('anchorBtnText');
-const wheelHoldBtn = document.getElementById('wheelHoldBtn');
-const wheelLightnessSlider = document.getElementById('wheelLightnessSlider');
-const wheelLightnessValue = document.getElementById('wheelLightnessValue');
+
 
 // Populated by buildReels(): { picker, text } per token
 const TOKEN_INPUTS = {};
@@ -297,7 +290,6 @@ function updateUiState() {
   updateHarmonyBadge();
   updateReelsUi();
   updateColorWheelSvg();
-  updateActiveTokenBar();
   updatePaletteUi();
 }
 
@@ -308,7 +300,6 @@ function toggleHold(tokenKey) {
   updateHoldUi();
   updateReelsUi();
   updateColorWheelSvg();
-  updateActiveTokenBar();
   playSound('tick');
 }
 
@@ -372,9 +363,9 @@ function executeHarmoniousShuffle(harmonyChoice) {
   let next;
 
   if (isMonochromeLocked || chosenHarmony === 'monochrome') {
-    // Seed from a held reel if there is one, otherwise a random hue
-    const seedKey = ['roads', 'water', 'canvas', 'greenspace', 'buildings', 'text'].find(k => heldTokens[k]);
-    const seed = seedKey ? tokens[seedKey] : StyleEngine.rgbToHex(...Object.values(StyleEngine.hslToRgb(Math.random() * 360, 60, 45)));
+    // Seed from a held reel if there is one, otherwise the anchor token
+    const seedKey = [anchorToken, 'roads', 'water', 'canvas', 'greenspace', 'buildings', 'text'].find(k => k && heldTokens[k]) || anchorToken;
+    const seed = (seedKey && tokens[seedKey]) ? tokens[seedKey] : StyleEngine.rgbToHex(...Object.values(StyleEngine.hslToRgb(Math.random() * 360, 60, 45)));
     const mono = StyleEngine.generateMonochromeTokens(seed, isDark);
     next = {};
     TOKEN_ORDER.forEach(k => { next[k] = heldTokens[k] ? tokens[k] : mono[k]; });
@@ -383,7 +374,8 @@ function executeHarmoniousShuffle(harmonyChoice) {
       isDark,
       harmony: chosenHarmony,
       currentTokens: tokens,
-      held: heldTokens
+      held: heldTokens,
+      anchorToken: anchorToken
     });
   }
   TOKEN_ORDER.forEach(k => { next[k] = next[k].toLowerCase(); });
@@ -395,13 +387,8 @@ function executeHarmoniousShuffle(harmonyChoice) {
     updateUiState();
     applyCompiledStyle();
     const score = StyleEngine.scorePalette(tokens);
-    if (score.jackpot) {
+    if (score.passed === score.total) {
       playSound('win');
-      if (slotCabinet) {
-        slotCabinet.classList.remove('celebrate');
-        void slotCabinet.offsetWidth;
-        slotCabinet.classList.add('celebrate');
-      }
     } else if (score.passed < score.total) {
       showToast(`${score.total - score.passed} line${score.total - score.passed > 1 ? 's' : ''} below contrast — nudge a reel or hit Fix`);
     }
@@ -411,8 +398,6 @@ function executeHarmoniousShuffle(harmonyChoice) {
 // Select a token to inspect and control in the wheel toolbar
 function selectWheelToken(tokenKey) {
   selectedWheelToken = tokenKey;
-  if (wheelHoldBtn) wheelHoldBtn.dataset.token = tokenKey;
-  updateActiveTokenBar();
   updateColorWheelSvg();
   updateReelsUi();
   updateHoldUi();
@@ -447,6 +432,9 @@ function buildReels() {
     col.className = 'reel-col';
     col.dataset.token = key;
     col.innerHTML = `
+      <button type="button" class="btn-reel-base ${key === anchorToken ? 'is-base' : ''}" data-token="${key}" title="${key === anchorToken ? `Current Base Colour (${meta.name})` : `Set ${meta.name} as Base Colour`}">
+        <span class="base-icon">🎯</span><span class="base-text">BASE</span>
+      </button>
       <div class="reel-label" title="${meta.name}: ${meta.desc}"><span class="reel-icon">${meta.icon}</span><span>${meta.short}</span></div>
       <button type="button" class="reel-nudge" data-dir="1" title="Nudge lighter (+${LSTAR_STEP} L*)" aria-label="${meta.name} lighter">▲</button>
       <div class="reel-window" tabindex="0" role="slider" aria-label="${meta.name} lightness" title="Drag or scroll to change lightness · click to select">
@@ -464,6 +452,14 @@ function buildReels() {
       </button>
     `;
     reelsEl.appendChild(col);
+
+    const baseBtn = col.querySelector('.btn-reel-base');
+    if (baseBtn) {
+      baseBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        setAnchorToken(key);
+      });
+    }
 
     const drum = col.querySelector('.reel-drum');
     const faces = [];
@@ -637,6 +633,15 @@ function bumpLamp(key) {
   lamp.classList.add('bump');
 }
 
+// Set a token as the base colour (harmony anchor)
+function setAnchorToken(tokenKey) {
+  if (!tokens[tokenKey]) return;
+  anchorToken = tokenKey;
+  updateReelsUi();
+  updateColorWheelSvg();
+  showToast(`Set ${TOKEN_META[anchorToken].name} as Base Colour 🎯`);
+}
+
 // Repaint all idle reels and the contrast lamps / marquee
 function updateReelsUi() {
   TOKEN_ORDER.forEach(key => {
@@ -645,7 +650,18 @@ function updateReelsUi() {
     if (!st.dragging && !st.spinning) paintReel(key);
     st.col.classList.toggle('is-held', !!heldTokens[key]);
     st.col.classList.toggle('is-selected', key === selectedWheelToken);
+    st.col.classList.toggle('is-base-token', key === anchorToken);
+    const baseBtn = st.col.querySelector('.btn-reel-base');
+    if (baseBtn) {
+      const isBase = (key === anchorToken);
+      baseBtn.classList.toggle('is-base', isBase);
+      baseBtn.title = isBase ? `Current Base Colour (${TOKEN_META[key].name})` : `Set ${TOKEN_META[key].name} as Base Colour`;
+    }
   });
+  const selBase = document.getElementById('selectBaseToken');
+  if (selBase && selBase.value !== anchorToken) {
+    selBase.value = anchorToken;
+  }
   updateScoreUi();
 }
 
@@ -675,9 +691,12 @@ function updateScoreUi() {
     marqueeStars.textContent = '★'.repeat(score.passed) + '☆'.repeat(score.total - score.passed);
   }
   if (marqueeText) {
-    marqueeText.textContent = score.jackpot ? 'JACKPOT' : (score.passed === score.total ? 'ALL LINES' : `${score.passed}/${score.total} LINES`);
+    marqueeText.textContent = score.passed === score.total
+      ? (score.lines.text.aaa ? 'ALL LINES (AAA)' : 'ALL LINES')
+      : `${score.passed}/${score.total} LINES`;
   }
   if (slotCabinet) {
+    slotCabinet.classList.toggle('is-all-pass', score.passed === score.total);
     slotCabinet.classList.toggle('is-jackpot', score.jackpot);
     slotCabinet.classList.toggle('has-fail', score.passed < score.total);
   }
@@ -834,10 +853,6 @@ function setupLever() {
       if (soundOn) playSound('tick');
     });
   }
-
-  // Bulbs around the marquee
-  const bulbs = document.querySelector('.marquee-bulbs');
-  if (bulbs) for (let i = 0; i < 18; i++) bulbs.appendChild(document.createElement('i'));
 }
 
 
@@ -986,23 +1001,24 @@ function renderColorWheelCanvas() {
   if (!ctx) return;
 
   const dpr = window.devicePixelRatio || 1;
-  const size = 260;
-  colorWheelCanvas.width = size * dpr;
-  colorWheelCanvas.height = size * dpr;
-  colorWheelCanvas.style.width = `${size}px`;
-  colorWheelCanvas.style.height = `${size}px`;
+  const cssSize = 260;
+  const width = Math.round(cssSize * dpr);
+  const height = Math.round(cssSize * dpr);
 
-  ctx.scale(dpr, dpr);
+  colorWheelCanvas.width = width;
+  colorWheelCanvas.height = height;
+  colorWheelCanvas.style.width = `${cssSize}px`;
+  colorWheelCanvas.style.height = `${cssSize}px`;
 
-  const centerX = size / 2;
-  const centerY = size / 2;
-  const radius = 120; // wheel radius
+  const centerX = width / 2;
+  const centerY = height / 2;
+  const radius = width / 2; // fill the full 260px diameter circle
 
-  const imgData = ctx.createImageData(size, size);
+  const imgData = ctx.createImageData(width, height);
   const data = imgData.data;
 
-  for (let y = 0; y < size; y++) {
-    for (let x = 0; x < size; x++) {
+  for (let y = 0; y < height; y++) {
+    for (let x = 0; x < width; x++) {
       const dx = x - centerX;
       const dy = y - centerY;
       const dist = Math.sqrt(dx * dx + dy * dy);
@@ -1015,14 +1031,14 @@ function renderColorWheelCanvas() {
         // Render at L=50 for pure vivid chroma wheel
         const rgb = StyleEngine.hslToRgb(angle, sat, 50);
 
-        const idx = (y * size + x) * 4;
+        const idx = (y * width + x) * 4;
         data[idx] = rgb.r;
         data[idx + 1] = rgb.g;
         data[idx + 2] = rgb.b;
 
-        // Antialiased edge
+        // Smooth antialiased edge
         const edge = radius - dist;
-        const alpha = edge < 1.5 ? Math.max(0, Math.min(255, Math.round(edge * 170))) : 255;
+        const alpha = edge < (1.2 * dpr) ? Math.max(0, Math.min(255, Math.round((edge / (1.2 * dpr)) * 255))) : 255;
         data[idx + 3] = alpha;
       }
     }
@@ -1241,91 +1257,6 @@ function setupColorWheelInteractions() {
 
   colorWheelSvg.addEventListener('pointerup', stopDrag);
   colorWheelSvg.addEventListener('pointercancel', stopDrag);
-
-  // Set as Base Color Anchor button
-  if (btnSetAnchor) {
-    btnSetAnchor.addEventListener('click', () => {
-      anchorToken = selectedWheelToken;
-      updateActiveTokenBar();
-      updateColorWheelSvg();
-      showToast(`Set ${TOKEN_META[anchorToken].name} as Harmony Anchor 🎯`);
-    });
-  }
-
-  // Wheel Active Bar Hold Button
-  if (wheelHoldBtn) {
-    wheelHoldBtn.addEventListener('click', () => {
-      toggleHold(selectedWheelToken);
-      updateActiveTokenBar();
-      updateColorWheelSvg();
-    });
-  }
-
-  // Wheel Lightness Slider
-  if (wheelLightnessSlider) {
-    wheelLightnessSlider.addEventListener('input', (e) => {
-      const val = parseInt(e.target.value, 10);
-      if (wheelLightnessValue) wheelLightnessValue.textContent = `${val}%`;
-
-      const hex = tokens[selectedWheelToken];
-      const rgb = StyleEngine.hexToRgb(hex);
-      const hsl = StyleEngine.rgbToHsl(rgb.r, rgb.g, rgb.b);
-      const newHex = StyleEngine.rgbToHex(
-        StyleEngine.hslToRgb(hsl.h, hsl.s, val).r,
-        StyleEngine.hslToRgb(hsl.h, hsl.s, val).g,
-        StyleEngine.hslToRgb(hsl.h, hsl.s, val).b
-      );
-
-      onTokenChanged(selectedWheelToken, newHex);
-      if (TOKEN_INPUTS[selectedWheelToken]) {
-        TOKEN_INPUTS[selectedWheelToken].picker.value = newHex;
-        TOKEN_INPUTS[selectedWheelToken].text.value = newHex;
-      }
-      updateActiveTokenBar();
-    });
-  }
-
-}
-
-// Update the Inspector strip below the wheel
-function updateActiveTokenBar() {
-  const meta = TOKEN_META[selectedWheelToken] || { name: selectedWheelToken, icon: '🎨' };
-  const hex = tokens[selectedWheelToken] || '#ffffff';
-  const rgb = StyleEngine.hexToRgb(hex);
-  const hsl = StyleEngine.rgbToHsl(rgb.r, rgb.g, rgb.b);
-
-  if (activeTokenIcon) activeTokenIcon.textContent = meta.icon;
-  if (activeTokenName) activeTokenName.textContent = meta.name;
-  if (activeTokenHex) activeTokenHex.textContent = hex.toLowerCase();
-
-  // Anchor button state
-  const isAnchor = (selectedWheelToken === anchorToken);
-  if (btnSetAnchor) {
-    btnSetAnchor.classList.toggle('is-anchor', isAnchor);
-    if (anchorBtnText) anchorBtnText.textContent = isAnchor ? '🎯 Base Active' : 'Set as Base';
-  }
-
-  // Hold button state
-  const isHeld = !!heldTokens[selectedWheelToken];
-  if (wheelHoldBtn) {
-    wheelHoldBtn.classList.toggle('is-held', isHeld);
-    const holdText = wheelHoldBtn.querySelector('.hold-text');
-    if (holdText) holdText.textContent = isHeld ? 'HELD' : 'HOLD';
-  }
-
-  // Lightness Slider state & gradient
-  if (wheelLightnessSlider) {
-    wheelLightnessSlider.value = hsl.l;
-    const pureColor = StyleEngine.rgbToHex(
-      StyleEngine.hslToRgb(hsl.h, hsl.s, 50).r,
-      StyleEngine.hslToRgb(hsl.h, hsl.s, 50).g,
-      StyleEngine.hslToRgb(hsl.h, hsl.s, 50).b
-    );
-    wheelLightnessSlider.style.background = `linear-gradient(to right, #000000 0%, ${pureColor} 50%, #ffffff 100%)`;
-  }
-  if (wheelLightnessValue) {
-    wheelLightnessValue.textContent = `${hsl.l}%`;
-  }
 }
 
 // Render the curated preset pills
@@ -1430,6 +1361,15 @@ function setupEventListeners() {
     });
   });
 
+  // Base colour selector
+  const selectBaseToken = document.getElementById('selectBaseToken');
+  if (selectBaseToken) {
+    selectBaseToken.value = anchorToken;
+    selectBaseToken.addEventListener('change', (e) => {
+      setAnchorToken(e.target.value);
+    });
+  }
+
   // Harmony ("game") selector
   if (selectHarmony) {
     selectHarmony.addEventListener('change', (e) => {
@@ -1518,6 +1458,10 @@ function setupEventListeners() {
     }
     const n = parseInt(e.key, 10);
     if (n >= 1 && n <= 6) toggleHold(TOKEN_ORDER[n - 1]);
+  });
+
+  window.addEventListener('resize', () => {
+    renderColorWheelCanvas();
   });
 }
 

@@ -101,17 +101,6 @@
     <div class="studio-header">
       <div class="studio-title-group">
         <h2 class="studio-heading">Palette Machine</h2>
-        <!-- Explicit Light / Dark Mode Segmented Toggle -->
-        <div class="mode-toggle-group" role="group" aria-label="Theme mode toggle">
-          <button type="button" id="btnModeLight" class="btn-mode-toggle active" title="Switch to Light Theme">
-            <svg viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" stroke-width="2" fill="none"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
-            <span>Light</span>
-          </button>
-          <button type="button" id="btnModeDark" class="btn-mode-toggle" title="Switch to Dark Theme">
-            <svg viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" stroke-width="2" fill="none"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
-            <span>Dark</span>
-          </button>
-        </div>
         <!-- Hidden fallback for backward compatibility with cached scripts -->
         <span id="badgeMode" style="display:none;" aria-hidden="true"></span>
       </div>
@@ -123,14 +112,27 @@
 
     <!-- ===================== SLOT MACHINE CABINET ===================== -->
     <section class="slot-cabinet" id="slotCabinet" aria-label="Palette slot machine">
-      <!-- LED marquee: contrast score -->
-      <div class="cabinet-marquee">
-        <div class="marquee-bulbs" aria-hidden="true"></div>
-        <div class="marquee-screen" id="marqueeScreen" title="Each reel is scored against the canvas using WCAG relative-luminance contrast">
-          <span class="marquee-stars" id="marqueeStars">★★★★★</span>
-          <span class="marquee-text" id="marqueeText">JACKPOT</span>
+      <!-- Top header bar: Theme mode toggle + Sound -->
+      <div class="cabinet-top">
+        <div class="mode-toggle-group" role="group" aria-label="Theme mode toggle">
+          <button type="button" id="btnModeLight" class="btn-mode-toggle active" title="Switch to Light Theme">
+            <svg viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" stroke-width="2" fill="none"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+            <span>Light</span>
+          </button>
+          <button type="button" id="btnModeDark" class="btn-mode-toggle" title="Switch to Dark Theme">
+            <svg viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" stroke-width="2" fill="none"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+            <span>Dark</span>
+          </button>
         </div>
         <button type="button" class="btn-sound" id="btnSound" title="Sound effects (off)" aria-pressed="false">🔇</button>
+      </div>
+
+      <!-- Contrast score bar -->
+      <div class="cabinet-marquee">
+        <div class="marquee-screen" id="marqueeScreen" title="Each reel is scored against the canvas using WCAG relative-luminance contrast">
+          <span class="marquee-stars" id="marqueeStars">★★★★★</span>
+          <span class="marquee-text" id="marqueeText">ALL LINES</span>
+        </div>
       </div>
 
       <div class="cabinet-body">
@@ -144,44 +146,57 @@
         </div>
       </div>
 
-      <!-- Game (harmony) + Spin -->
+      <!-- Game (harmony) + Base Colour + Spin -->
       <div class="cabinet-deck">
-        <div class="select-wrapper game-select-wrapper">
-          <label for="selectHarmony" class="sr-only">Colour harmony</label>
-          <select id="selectHarmony" class="select-input select-harmony" title="Colour-theory rule the reels land on">
-            <option value="triadic" selected>Triadic · 120°</option>
-            <option value="complementary">Complementary · 180°</option>
-            <option value="split-complementary">Split comp. · 150°/210°</option>
-            <option value="analogous">Analogous · ±30°</option>
-            <option value="tetradic">Tetradic · dual pair</option>
-            <option value="square">Square · 90°</option>
-            <option value="monochrome">Monochrome · one hue</option>
-            <option value="custom">Keep hues · re-weight only</option>
-            <option value="random">🎲 Any harmony</option>
-          </select>
+        <div class="deck-controls">
+          <div class="select-wrapper base-select-wrapper">
+            <label for="selectBaseToken" class="sr-only">Base colour</label>
+            <select id="selectBaseToken" class="select-input select-base" title="Base colour (harmony root that drives palette generation)">
+              <option value="canvas">Base: 🗺️ Canvas</option>
+              <option value="water">Base: 💧 Water</option>
+              <option value="greenspace">Base: 🌲 Greens</option>
+              <option value="roads" selected>Base: 🚗 Roads</option>
+              <option value="buildings">Base: 🏢 Buildings</option>
+              <option value="text">Base: 🏷️ Labels</option>
+            </select>
+          </div>
+          <div class="select-wrapper game-select-wrapper">
+            <label for="selectHarmony" class="sr-only">Colour harmony</label>
+            <select id="selectHarmony" class="select-input select-harmony" title="Colour-theory rule the reels land on">
+              <option value="triadic" selected>Triadic · 120°</option>
+              <option value="complementary">Complementary · 180°</option>
+              <option value="split-complementary">Split comp. · 150°/210°</option>
+              <option value="analogous">Analogous · ±30°</option>
+              <option value="tetradic">Tetradic · dual pair</option>
+              <option value="square">Square · 90°</option>
+              <option value="monochrome">Monochrome · one hue</option>
+              <option value="custom">Keep hues · re-weight only</option>
+              <option value="random">🎲 Any harmony</option>
+            </select>
+          </div>
         </div>
         <button id="btnShuffle" class="btn-spin" title="Spin unheld reels (Space)">
           <span id="shuffleLabel">SPIN</span>
         </button>
       </div>
 
-      <div class="cabinet-help">Drag or scroll a reel to change lightness · ▲▼ nudge · HOLD locks a reel · keys 1–6 hold</div>
-    </section>
+      <!-- Cabinet Actions -->
+      <div class="cabinet-actions">
+        <button type="button" id="btnAutoContrast" class="btn btn-studio btn-cab-action" title="Fix every failing contrast line with the smallest possible lightness change">
+          <svg viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" stroke-width="2" fill="none"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"></path></svg>
+          <span>Fix contrast</span>
+        </button>
+        <button type="button" id="btnMonoLock" class="btn btn-studio btn-cab-action" title="Lock palette to single-hue monochrome">
+          <svg viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" stroke-width="2" fill="none"><circle cx="12" cy="12" r="10"></circle><path d="M12 2a10 10 0 0 1 0 20z" fill="currentColor"></path></svg>
+          <span>Mono</span>
+        </button>
+        <button type="button" id="btnClearHolds" class="btn btn-studio btn-cab-action btn-clear-holds" title="Release all active holds" style="display:none;">
+          <span>Release holds</span>
+        </button>
+      </div>
 
-    <!-- Smart Automation Levers -->
-    <div class="smart-toolbar">
-      <button id="btnAutoContrast" class="btn btn-studio" title="Fix every failing contrast line with the smallest possible lightness change">
-        <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"></path></svg>
-        <span>Fix contrast</span>
-      </button>
-      <button id="btnMonoLock" class="btn btn-studio" title="Lock palette to single-hue monochrome">
-        <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"><circle cx="12" cy="12" r="10"></circle><path d="M12 2a10 10 0 0 1 0 20z" fill="currentColor"></path></svg>
-        <span>Mono lock</span>
-      </button>
-      <button type="button" id="btnClearHolds" class="btn btn-studio btn-clear-holds" title="Release all active holds" style="display:none;">
-        <span>Release holds</span>
-      </button>
-    </div>
+      <div class="cabinet-help">▲▼ nudge lightness · 🎯 BASE sets harmony root · HOLD locks a reel · keys 1–6 hold</div>
+    </section>
 
     <!-- Harmony Wheel (hue & saturation) -->
     <details class="wheel-details" id="wheelDetails" open>
@@ -196,30 +211,6 @@
             <svg id="colorWheelSvg" viewBox="0 0 260 260"></svg>
           </div>
           <div class="wheel-hint">Drag pins for hue &amp; saturation. Drag the 🎯 base pin to rotate the whole harmony.</div>
-        </div>
-
-        <div class="wheel-active-bar" id="wheelActiveBar">
-          <div class="active-bar-top">
-            <div class="active-token-pill">
-              <span class="active-token-icon" id="activeTokenIcon">🚗</span>
-              <span class="active-token-name" id="activeTokenName">Roads</span>
-              <span class="active-token-hex" id="activeTokenHex">#475569</span>
-            </div>
-            <div class="active-bar-actions">
-              <button type="button" class="btn-set-anchor" id="btnSetAnchor" title="Use this colour as the base for harmony rotation">
-                <span id="anchorBtnText">🎯 Base Color</span>
-              </button>
-              <button type="button" class="btn-hold" id="wheelHoldBtn" title="Hold colour during spin">
-                <span class="hold-indicator"></span>
-                <span class="hold-text">HOLD</span>
-              </button>
-            </div>
-          </div>
-          <div class="lightness-slider-row">
-            <span class="slider-label">Lightness:</span>
-            <input type="range" id="wheelLightnessSlider" class="wheel-lightness-slider" min="0" max="100" value="40" step="1">
-            <span class="slider-value" id="wheelLightnessValue">40%</span>
-          </div>
         </div>
       </div>
     </details>

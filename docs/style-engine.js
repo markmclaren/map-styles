@@ -205,7 +205,9 @@ function scorePalette(tokens) {
     lines[k] = { ratio, pass, aaa: rule.aaa ? ratio >= rule.aaa : false, min: rule.min };
   });
   const total = Object.keys(CONTRAST_RULES).length;
-  return { lines, passed, total, jackpot: passed === total && lines.text.aaa };
+  const allPass = passed === total;
+  const allAaa = allPass && lines.text.aaa;
+  return { lines, passed, total, allPass, allAaa, jackpot: allAaa };
 }
 
 // --- Algorithmic Theme Synthesizer ---
@@ -713,12 +715,16 @@ function generateHarmoniousPalette(options = {}) {
     activeHarmony = pool[Math.floor(Math.random() * pool.length)];
   }
 
-  // Identify anchor seed hue. If tokens are held, extract the seed from the highest-priority held token.
+  // Identify anchor seed hue. If tokens are held, extract the seed from the base/anchor token or highest-priority held token.
   let baseHue = null;
+  const anchorToken = options.anchorToken;
   const heldKeys = Object.keys(held).filter(k => held[k] && currentTokens[k]);
 
-  if (heldKeys.length > 0) {
-    const priority = ['roads', 'water', 'canvas', 'greenspace', 'buildings', 'text'];
+  if (anchorToken && held[anchorToken] && currentTokens[anchorToken]) {
+    const rgb = hexToRgb(currentTokens[anchorToken]);
+    baseHue = rgbToHsl(rgb.r, rgb.g, rgb.b).h;
+  } else if (heldKeys.length > 0) {
+    const priority = [anchorToken, 'roads', 'water', 'canvas', 'greenspace', 'buildings', 'text'].filter(Boolean);
     const anchorKey = priority.find(k => held[k] && currentTokens[k]) || heldKeys[0];
     const rgb = hexToRgb(currentTokens[anchorKey]);
     const hsl = rgbToHsl(rgb.r, rgb.g, rgb.b);

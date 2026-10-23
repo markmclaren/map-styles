@@ -256,12 +256,14 @@ Inspired by **[Adobe Color](https://color.adobe.com/create/color-wheel)**, the S
    - Any token can be designated as the **Base Color Anchor**.
    - When dragging the Anchor token, all other **unheld** pins rotate synchronously around the wheel, preserving their exact geometric harmony angles (e.g. $180^\circ$ for Complementary, $120^\circ$ for Triad, $\pm 30^\circ$ for Analogous).
 4. **Integration with Slot-Machine "HOLD" 🔒**:
-   - Any token marked with **HOLD** shows an illuminated gold lock badge (`🔒`) directly on its wheel pin.
-   - When the Anchor rotates or harmonies are changed, **held pins stay completely frozen** in their exact coordinates on the wheel.
-5. **Real-Time Lightness Slider**:
-   - Below the wheel, a dynamic gradient slider allows fine-tuning the selected token's Lightness ($L \in [0\%, 100\%]$) with real-time feedback on the map.
-6. **Multi-View Switcher**:
-   - Users can seamlessly switch between **Color Wheel 🎡**, **Cards & Ladders 🎛️**, or **Both** simultaneously.
+   - Any token marked with **HOLD** shows an illuminated lock badge directly on its wheel pin.
+   - When the Anchor rotates or harmonies are changed, held pins remain locked in place.
+5. **Integrated Slot Machine Cabinet & Cog Controls**:
+   - The Theme Mode toggle (**Light** / **Dark**) and sound mute are positioned directly at the top of the slot machine cabinet.
+   - Lightness is tuned directly per-feature on each reel cog using perceptual $L^*$ stepping buttons (`▲` / `▼`).
+   - The Base Color Anchor is selectable directly above each cog with `🎯 BASE` or via the cabinet base dropdown.
+   - Smart automation actions (**Fix contrast**, **Mono lock**, and **Release holds**) are integrated directly into the slot machine cabinet deck.
+
 
 ---
 
@@ -426,10 +428,10 @@ lighter side: Y_fg = ratio × (Y_canvas + 0.05) − 0.05
 | Buildings | 1.10:1 | distinguishable fill |
 | Parks | 1.05:1 | distinguishable fill |
 
-The marquee shows lines passed; **JACKPOT** means every line passes and labels reach AAA.
+The marquee shows lines passed; **ALL LINES (AAA)** means every line passes and labels reach AAA.
 
 **Fix contrast** uses `ensureContrast()`: tokens that already pass are untouched, and failing tokens move to the nearest (in L\*) colour of the same hue that meets the threshold, on whichever side of the canvas is closer.
 
 **Swatch palette bar.** Native colour pickers are replaced by an Inkscape-style bar docked along the bottom of the map. It shows fixed, distinct swatches: a column each for grey (with pure white and black), slate, stone and 15 hues. Rows are equal steps of CIE L\* (97 → 14), so the row tells you roughly how much contrast a swatch gives. Click a reel (or its colour chip) to choose what you're painting, then click a swatch, or drag any swatch straight onto a reel. Swatches with a red slash would break that reel's contrast line; for the canvas, a slash means at least one line would fail. The six small swatches at the left are the live palette, so you can drag one reel's colour onto another. Hex fields stay on each reel for exact values.
 
-**Controls:** pull the lever, press SPIN, or hit Space. HOLD (or keys 1–6) locks a reel. The harmony wheel below the cabinet still sets hue and saturation by dragging pins; the 🎯 base pin rotates the whole harmony. Sound effects are off by default (🔇 toggle).
+**Controls:** pull the lever, press SPIN, or hit Space. Set the **Base Colour** directly via the 🎯 BASE button on any cog or via the Base selector in the cabinet deck. ▲▼ nudge lightness on each cog in perceptual CIE L\* steps. HOLD (or keys 1–6) locks a reel. The harmony wheel below the cabinet sets hue and saturation by dragging pins; dragging the 🎯 base pin rotates the whole harmony. Sound effects are off by default (🔇 toggle).

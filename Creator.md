@@ -275,6 +275,90 @@ Clicking the **Shuffle 🎰** button generates harmonious, balanced color relati
 
 ---
 
+### 4.9 Deep Dive: How the Palette Machine Operates Under the Hood
+
+To understand why the Palette Machine produces clean, professional cartography rather than a chaotic clash of random colors, we examine the four interlocking mathematical and cartographic subsystems operating on every spin:
+
+```
+┌────────────────────────────────────────────────────────────────────────┐
+│                        THE SPIN PIPELINE IN 5 PHASES                   │
+├────────────────────────────────────────────────────────────────────────┤
+│ 1. ANCHOR EXTRACTION     Identify the Base Anchor Hue (θ₀)             │
+│                          from the selected Base token or held reels.   │
+│                                      │                                 │
+│ 2. HARMONIC ROTATION     Calculate the 6 entity hues across the 360°   │
+│                          wheel using geometric color-theory angles.   │
+│                                      │                                 │
+│ 3. PHOTOMETRIC SOLVER    Solve lightness and saturation using spatial  │
+│                          frequency budgets & WCAG contrast algebra.    │
+│                                      │                                 │
+│ 4. REEL DRUM ANIMATION   Spin unheld reels to target colors and        │
+│                          score the 5 contrast paylines on the marquee. │
+│                                      │                                 │
+│ 5. MAP COMPILATION       Derive 35+ layer rules and hot-patch the      │
+│                          live MapLibre vector style in real time.      │
+└────────────────────────────────────────────────────────────────────────┘
+```
+
+#### 1. What Effect the Chosen "Base" Colour Makes
+In classical color theory and cartographic design, harmonies cannot exist in a vacuum; they must be measured relative to a designated **Root Angle** or **Keynote**. In the Palette Machine, the **Base Colour (`🎯 BASE`)** acts as that keynote ($\theta_0 \in [0^\circ, 360^\circ)$):
+
+- **The Harmonic Root ($\theta_0$)**: When you set an entity as **Base** (e.g. Roads, Water, or Canvas), its hue angle becomes the zero-degree point from which all other angles are measured.
+- **Spinning with Unheld Base**: If the Base token is not held, spinning picks a new random $\theta_0$ across the wheel, and all 6 entities rotate together into a fresh color world while preserving their mutual geometric harmony.
+- **Spinning with Held Base**: If you lock the Base token with **`HOLD`**, $\theta_0$ is frozen. Spinning generates fresh, harmonious complementary or triadic choices for the unheld features that are mathematically guaranteed to match your chosen base.
+- **Interactive Harmony Steering**: On the interactive Color Wheel, the Base token is designated with the `🎯` badge. Dragging the Base pin acts like a steering wheel—it rotates all unheld pins synchronously around the wheel. In contrast, dragging any non-base pin rotates only that single feature.
+
+#### 2. How the Colour Harmonies Come Into Play
+When the machine spins, it applies the selected **Harmony Model** to assign specific hue angles to each of the 6 map features:
+
+| Harmony Model | Geometric Angle Formula | Entity Allocation Strategy | Cartographic Behavior |
+|---|---|---|---|
+| **Triadic** (Default) | $\theta_0$, $\theta_0 + 120^\circ$, $\theta_0 + 240^\circ$ | **Roads** at $\theta_0 + 120^\circ$, **Water** at $+35^\circ$ or $+240^\circ$, **Parks** at $+240^\circ$, **Ground/Buildings** at $\theta_0$ | **Triangular Equilibrium**. Ensures the three primary visual planes (land, water, and highways) each occupy distinct 120° thirds of the spectrum. |
+| **Complementary** | $\theta_0$, $\theta_0 + 180^\circ$ | **Roads** at $\theta_0 + 180^\circ$ (direct opposite), **Ground/Buildings/Water** clustered around $\theta_0$ | **Maximum Figure-Ground Pop**. The transportation network directly opposes the landcover, making highways instantly cut through the map. |
+| **Split-Complementary** | $\theta_0$, $\theta_0 + 150^\circ$, $\theta_0 + 210^\circ$ | **Roads** at $\theta_0 + 150^\circ$, **Parks/Water** at $\theta_0 + 210^\circ$, **Ground** at $\theta_0$ | **Softened Tension**. Delivers high contrast for roads without the visual vibration of a pure 180° opposite. |
+| **Analogous** | $\theta_0 \pm 35^\circ$ | **Water** at $-30^\circ$, **Canvas** at $\theta_0$, **Roads** at $+15^\circ$, **Parks** at $+35^\circ$ | **Monochromatic Mood**. All features share neighboring wavelengths. Contrast is achieved through luminance rather than hue clash. |
+| **Square & Tetradic** | $\theta_0 + 90^\circ, 180^\circ, 270^\circ$ | 4 distinct hues distributed evenly across water, roads, parks, and land | **Rich Civic Palette**. Suitable for complex metropolitan maps with dense zoning. |
+| **Monochrome** | $\theta_0$ (All hues identical) | Every token set to $\theta_0$; relies strictly on luminance steps ($L = 6\% \to 100\%$) | **Architectural & Archival**. Blueprints, sepia prints, and minimalist night maps. |
+
+#### 3. Why Some Entities Seem Much More Colourful and "Random" Than Others
+Users frequently notice that **Roads** and **Water** often appear bright and colorful, while **Canvas**, **Buildings**, and **Parks** remain subdued or neutral. This is not accidental—it is governed by the **Cartographic Saturation and Area Law**:
+
+##### A. The Area vs. Saturation Rule (Spatial Frequency in Vision)
+- **Canvas (70%–80% of screen area)**: Large polygon fills must have low saturation ($S \le 16\%$ in Light Mode, $S \le 25\%$ in Dark Mode). If the ground canvas were set to high saturation (e.g. 80% saturated red or yellow), the map would cause severe optical fatigue and vibration.
+- **Buildings & Greenspace (10%–20% of screen area)**: As secondary polygon fills, their job is background texture. Their saturation is budgeted moderately ($18\% \le S \le 32\%$) with low contrast against the land ($CR \approx 1.16\text{--}1.35:1$).
+- **Roads (< 2% of screen area)**: Roads are thin linear vectors ($1\text{--}3\text{px}$ wide). Due to the high spatial frequency of thin lines, human vision requires **dramatically higher saturation ($S \ge 80\text{--}90\%$)** and **high contrast ($CR \ge 5.5\text{--}8.5:1$)** for the network to remain visible and recognizable at a glance.
+- **Labels / Typography**: High contrast ($CR \ge 15.0:1$) with moderate saturation ($25\text{--}40\%$) guarantees crisp WCAG AAA legibility without letterform color bleeding.
+
+##### B. Why Roads Jumps Across Colors While Buildings Stays Steady
+- In the harmony engine, **Roads** is explicitly assigned the primary accent angle (e.g. $+120^\circ$ in Triadic, $+180^\circ$ in Complementary). When you spin, Roads sweeps across vibrant complementary hues (e.g. from hot orange to electric cyan).
+- **Buildings**, on the other hand, is deliberately anchored to the canvas ground hue ($\theta_{canvas}$) in most harmonies. A city map where each building has an independent random hue looks like confetti noise; keeping buildings harmonic with the ground preserves architectural elegance.
+- **Target Luminance Jitter**: The solver applies a small randomized jitter factor:
+  $$\text{jitter}(r) = 1 + (r - 1) \cdot (0.88 + \text{rand}(0.24))$$
+  Because Roads targets a wide contrast ratio ($8.5:1$), a $\pm 12\%$ jitter causes a substantial, noticeable shift in road brightness. For buildings ($1.28:1$), the same $\pm 12\%$ jitter produces a tiny lightness variation of barely $1\%$, keeping the urban footprint calm and stable.
+
+#### 4. The Photometric Contrast Solver (`colorAtContrast`)
+Unlike naive randomizers that roll random RGB numbers (often producing muddy, unreadable maps), the Palette Machine **analytically solves for exact WCAG contrast**:
+
+```
+Given:
+  - Background Canvas Luminance: Y_bg
+  - Target Feature Hue: H
+  - Feature Saturation Budget: S
+  - Target Contrast Ratio: CR (e.g. 5.5:1 for Roads, 1.16:1 for Parks)
+
+Solve for Target Relative Luminance Y:
+  If Darker:  Y = (Y_bg + 0.05) / CR - 0.05
+  If Lighter: Y = CR * (Y_bg + 0.05) - 0.05
+
+Synthesize Color:
+  Binary search or analytical conversion in CIE / HSL space to find
+  the exact Hex color with Hue H, Saturation S, and Luminance Y.
+```
+
+By separating **Hue** (governed by color harmonies), **Saturation** (governed by map feature area), and **Lightness** (governed by WCAG contrast algebra), every spin of the Palette Machine produces a fresh, visually exciting, yet fully legible and cartographically sound result.
+
+---
+
 ## 5. Style Engine Compiler Architecture
 
 The style compiler takes a clean MapLibre base template (`dist/bright.json` or bundled `docs/dist/bright-template.js`) and transforms it into the final stylesheet:

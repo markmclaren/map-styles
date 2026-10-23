@@ -249,19 +249,25 @@ Inspired by **[Adobe Color](https://color.adobe.com/create/color-wheel)**, the S
      $$\theta = H \quad (\text{Angle from } 0^\circ \text{ to } 360^\circ)$$
      $$r = \frac{S}{100} \cdot R \quad (\text{Radial distance from center } r=0 \text{ to edge } r=R)$$
    - The canvas renders a high-DPI anti-aliased saturation disc at $L=50\%$ pure chroma.
-2. **Interactive Draggable Nodes & Harmony Spokes**:
-   - Each of the 6 tokens is rendered as an interactive draggable handle with its semantic icon (🏞️, 🌊, 🌲, 🚗, 🏢, 🔤) and color fill.
+2. **Interactive Semantic Nodes & Harmony Spokes**:
+   - Each of the 6 tokens is rendered as an interactive node with its semantic icon (🏞️, 🌊, 🌲, 🚗, 🏢, 🔤) and color fill.
+   - Clicking any pin immediately selects that token and opens the **Distinct Colour Popover** picker.
    - White dashed spokes connect each pin to the wheel center, and a semi-transparent geometric polygon connects the active harmony vertices.
-3. **Base Color Anchor (🎯 Base)**:
-   - Any token can be designated as the **Base Color Anchor**.
-   - When dragging the Anchor token, all other **unheld** pins rotate synchronously around the wheel, preserving their exact geometric harmony angles (e.g. $180^\circ$ for Complementary, $120^\circ$ for Triad, $\pm 30^\circ$ for Analogous).
+3. **Base Color Anchor (🎯 Base) & Discrete Harmony Rotation**:
+   - Any token can be designated as the **Base Color Anchor** (via the `🎯 BASE` button atop each cog or the cabinet dropdown).
+   - Rotating the harmony is executed cleanly without fussy dragging using dedicated side-to-side buttons (`◀` / `▶` or keyboard shortcuts `[` / `]`), stepping all unheld tokens in calibrated $15^\circ$ increments around the circle while strictly preserving their harmonic intervals (e.g. $180^\circ$ for Complementary, $120^\circ$ for Triad, $\pm 30^\circ$ for Analogous).
 4. **Integration with Slot-Machine "HOLD" 🔒**:
-   - Any token marked with **HOLD** shows an illuminated gold lock badge (`🔒`) directly on its wheel pin.
-   - When the Anchor rotates or harmonies are changed, **held pins stay completely frozen** in their exact coordinates on the wheel.
-5. **Real-Time Lightness Slider**:
-   - Below the wheel, a dynamic gradient slider allows fine-tuning the selected token's Lightness ($L \in [0\%, 100\%]$) with real-time feedback on the map.
-6. **Multi-View Switcher**:
-   - Users can seamlessly switch between **Color Wheel 🎡**, **Cards & Ladders 🎛️**, or **Both** simultaneously.
+   - Any token marked with **HOLD** shows an illuminated lock badge directly on its wheel pin.
+   - When harmonies are rotated or randomized, held pins remain locked in place.
+5. **Integrated Slot Machine Cabinet, Cog Controls & Distinct Colour Popover**:
+   - The Theme Mode toggle (**Light** / **Dark**) and sound mute are positioned directly at the top of the slot machine cabinet.
+   - Lightness is tuned directly per-feature on each reel cog using perceptual $L^*$ stepping buttons (`▲` / `▼`).
+   - The Base Color Anchor is selectable directly above each cog with `🎯 BASE` or via the cabinet base dropdown.
+   - **Distinct Colour Popover (No Drag and Drop)**: Clicking any cog reel's color chip or hex input opens an anchored modal overlay featuring 48 curated, distinct cartographic colors categorized into **Accents & Primaries**, **Soft Fills & Naturals**, and **Neutrals & Monochromes**, with real-time WCAG contrast scoring and custom hex input.
+   - **Colour Harmony Cycle & Spin Buttons (`◀` / `▶`)**: Positioned directly beside the Colour Harmony dropdown, these step to the previous or next harmony rule and automatically execute a spin to update unheld reels in real time.
+   - **Wheel Rotation Buttons (`-15°` / `+15°`, keys `[` / `]`)**: Positioned beneath the color wheel disc, these rotate the active harmony angles across the $360^\circ$ circle in $15^\circ$ increments.
+   - Smart automation actions (**Fix contrast**, **Mono lock**, and **Release holds**) are integrated directly into the slot machine cabinet deck.
+
 
 ---
 
@@ -270,6 +276,90 @@ Clicking the **Shuffle 🎰** button generates harmonious, balanced color relati
 - If **Dark Mode** is active, canvases remain deep ($L \approx 6\%$) with high-saturation neon/pastel road accents ($L \approx 70\%$) and crisp white labels.
 - If **Light Mode** is active, canvases remain airy ($L \approx 97\%$) with deep road vectors ($L \approx 38\%$) and dark slate text.
 - **The Shuffle engine never flips between light and dark modes unpredictably.**
+
+---
+
+### 4.9 Deep Dive: How the Palette Machine Operates Under the Hood
+
+To understand why the Palette Machine produces clean, professional cartography rather than a chaotic clash of random colors, we examine the four interlocking mathematical and cartographic subsystems operating on every spin:
+
+```
+┌────────────────────────────────────────────────────────────────────────┐
+│                        THE SPIN PIPELINE IN 5 PHASES                   │
+├────────────────────────────────────────────────────────────────────────┤
+│ 1. ANCHOR EXTRACTION     Identify the Base Anchor Hue (θ₀)             │
+│                          from the selected Base token or held reels.   │
+│                                      │                                 │
+│ 2. HARMONIC ROTATION     Calculate the 6 entity hues across the 360°   │
+│                          wheel using geometric color-theory angles.   │
+│                                      │                                 │
+│ 3. PHOTOMETRIC SOLVER    Solve lightness and saturation using spatial  │
+│                          frequency budgets & WCAG contrast algebra.    │
+│                                      │                                 │
+│ 4. REEL DRUM ANIMATION   Spin unheld reels to target colors and        │
+│                          score the 5 contrast paylines on the marquee. │
+│                                      │                                 │
+│ 5. MAP COMPILATION       Derive 35+ layer rules and hot-patch the      │
+│                          live MapLibre vector style in real time.      │
+└────────────────────────────────────────────────────────────────────────┘
+```
+
+#### 1. What Effect the Chosen "Base" Colour Makes
+In classical color theory and cartographic design, harmonies cannot exist in a vacuum; they must be measured relative to a designated **Root Angle** or **Keynote**. In the Palette Machine, the **Base Colour (`🎯 BASE`)** acts as that keynote ($\theta_0 \in [0^\circ, 360^\circ)$):
+
+- **The Harmonic Root ($\theta_0$)**: When you set an entity as **Base** (e.g. Roads, Water, or Canvas), its hue angle becomes the zero-degree point from which all other angles are measured.
+- **Spinning with Unheld Base**: If the Base token is not held, spinning picks a new random $\theta_0$ across the wheel, and all 6 entities rotate together into a fresh color world while preserving their mutual geometric harmony.
+- **Spinning with Held Base**: If you lock the Base token with **`HOLD`**, $\theta_0$ is frozen. Spinning generates fresh, harmonious complementary or triadic choices for the unheld features that are mathematically guaranteed to match your chosen base.
+- **Interactive Harmony Steering**: On the interactive Color Wheel, the Base token is designated with the `🎯` badge. Dragging the Base pin acts like a steering wheel—it rotates all unheld pins synchronously around the wheel. In contrast, dragging any non-base pin rotates only that single feature.
+
+#### 2. How the Colour Harmonies Come Into Play
+When the machine spins, it applies the selected **Harmony Model** to assign specific hue angles to each of the 6 map features:
+
+| Harmony Model | Geometric Angle Formula | Entity Allocation Strategy | Cartographic Behavior |
+|---|---|---|---|
+| **Triadic** (Default) | $\theta_0$, $\theta_0 + 120^\circ$, $\theta_0 + 240^\circ$ | **Roads** at $\theta_0 + 120^\circ$, **Water** at $+35^\circ$ or $+240^\circ$, **Parks** at $+240^\circ$, **Ground/Buildings** at $\theta_0$ | **Triangular Equilibrium**. Ensures the three primary visual planes (land, water, and highways) each occupy distinct 120° thirds of the spectrum. |
+| **Complementary** | $\theta_0$, $\theta_0 + 180^\circ$ | **Roads** at $\theta_0 + 180^\circ$ (direct opposite), **Ground/Buildings/Water** clustered around $\theta_0$ | **Maximum Figure-Ground Pop**. The transportation network directly opposes the landcover, making highways instantly cut through the map. |
+| **Split-Complementary** | $\theta_0$, $\theta_0 + 150^\circ$, $\theta_0 + 210^\circ$ | **Roads** at $\theta_0 + 150^\circ$, **Parks/Water** at $\theta_0 + 210^\circ$, **Ground** at $\theta_0$ | **Softened Tension**. Delivers high contrast for roads without the visual vibration of a pure 180° opposite. |
+| **Analogous** | $\theta_0 \pm 35^\circ$ | **Water** at $-30^\circ$, **Canvas** at $\theta_0$, **Roads** at $+15^\circ$, **Parks** at $+35^\circ$ | **Monochromatic Mood**. All features share neighboring wavelengths. Contrast is achieved through luminance rather than hue clash. |
+| **Square & Tetradic** | $\theta_0 + 90^\circ, 180^\circ, 270^\circ$ | 4 distinct hues distributed evenly across water, roads, parks, and land | **Rich Civic Palette**. Suitable for complex metropolitan maps with dense zoning. |
+| **Monochrome** | $\theta_0$ (All hues identical) | Every token set to $\theta_0$; relies strictly on luminance steps ($L = 6\% \to 100\%$) | **Architectural & Archival**. Blueprints, sepia prints, and minimalist night maps. |
+
+#### 3. Why Some Entities Seem Much More Colourful and "Random" Than Others
+Users frequently notice that **Roads** and **Water** often appear bright and colorful, while **Canvas**, **Buildings**, and **Parks** remain subdued or neutral. This is not accidental—it is governed by the **Cartographic Saturation and Area Law**:
+
+##### A. The Area vs. Saturation Rule (Spatial Frequency in Vision)
+- **Canvas (70%–80% of screen area)**: Large polygon fills must have low saturation ($S \le 16\%$ in Light Mode, $S \le 25\%$ in Dark Mode). If the ground canvas were set to high saturation (e.g. 80% saturated red or yellow), the map would cause severe optical fatigue and vibration.
+- **Buildings & Greenspace (10%–20% of screen area)**: As secondary polygon fills, their job is background texture. Their saturation is budgeted moderately ($18\% \le S \le 32\%$) with low contrast against the land ($CR \approx 1.16\text{--}1.35:1$).
+- **Roads (< 2% of screen area)**: Roads are thin linear vectors ($1\text{--}3\text{px}$ wide). Due to the high spatial frequency of thin lines, human vision requires **dramatically higher saturation ($S \ge 80\text{--}90\%$)** and **high contrast ($CR \ge 5.5\text{--}8.5:1$)** for the network to remain visible and recognizable at a glance.
+- **Labels / Typography**: High contrast ($CR \ge 15.0:1$) with moderate saturation ($25\text{--}40\%$) guarantees crisp WCAG AAA legibility without letterform color bleeding.
+
+##### B. Why Roads Jumps Across Colors While Buildings Stays Steady
+- In the harmony engine, **Roads** is explicitly assigned the primary accent angle (e.g. $+120^\circ$ in Triadic, $+180^\circ$ in Complementary). When you spin, Roads sweeps across vibrant complementary hues (e.g. from hot orange to electric cyan).
+- **Buildings**, on the other hand, is deliberately anchored to the canvas ground hue ($\theta_{canvas}$) in most harmonies. A city map where each building has an independent random hue looks like confetti noise; keeping buildings harmonic with the ground preserves architectural elegance.
+- **Target Luminance Jitter**: The solver applies a small randomized jitter factor:
+  $$\text{jitter}(r) = 1 + (r - 1) \cdot (0.88 + \text{rand}(0.24))$$
+  Because Roads targets a wide contrast ratio ($8.5:1$), a $\pm 12\%$ jitter causes a substantial, noticeable shift in road brightness. For buildings ($1.28:1$), the same $\pm 12\%$ jitter produces a tiny lightness variation of barely $1\%$, keeping the urban footprint calm and stable.
+
+#### 4. The Photometric Contrast Solver (`colorAtContrast`)
+Unlike naive randomizers that roll random RGB numbers (often producing muddy, unreadable maps), the Palette Machine **analytically solves for exact WCAG contrast**:
+
+```
+Given:
+  - Background Canvas Luminance: Y_bg
+  - Target Feature Hue: H
+  - Feature Saturation Budget: S
+  - Target Contrast Ratio: CR (e.g. 5.5:1 for Roads, 1.16:1 for Parks)
+
+Solve for Target Relative Luminance Y:
+  If Darker:  Y = (Y_bg + 0.05) / CR - 0.05
+  If Lighter: Y = CR * (Y_bg + 0.05) - 0.05
+
+Synthesize Color:
+  Binary search or analytical conversion in CIE / HSL space to find
+  the exact Hex color with Hue H, Saturation S, and Luminance Y.
+```
+
+By separating **Hue** (governed by color harmonies), **Saturation** (governed by map feature area), and **Lightness** (governed by WCAG contrast algebra), every spin of the Palette Machine produces a fresh, visually exciting, yet fully legible and cartographically sound result.
 
 ---
 
@@ -398,3 +488,38 @@ const map = new maplibregl.Map({
 - `StyleEngine.autoBalanceContrast(tokens)`: Tunes tokens to meet WCAG AA standards.
 - `StyleEngine.generateMonochromeTokens(seedHex, isDark)`: Derives a 6-token harmonious monochromatic palette from a single seed color.
 - `StyleEngine.randomBalancedPalette(isDark, harmony, currentTokens, held)`: Generates a balanced harmonious palette strictly adhering to the requested mode.
+
+---
+
+## Palette Machine (slot-machine reels)
+
+The token editor is a fruit machine. Each of the six tokens is a 12-faced 3D reel; the colour on the red payline is the live token.
+
+**Reels step in perceptual lightness.** Faces above the payline are lighter and faces below are darker, each one notch of **5 CIE L\*** apart (the small number on each face is its L\*). Because L\* is perceptually uniform, every notch looks like the same amount of change whether the reel is yellow or navy. HSL lightness is not uniform, which is why the old ±8% ladders felt uneven. Drag a reel, scroll over it, use the ▲▼ nudge buttons, or focus it and use the arrow keys.
+
+**Spins are solved for contrast, not picked in HSL.** A spin chooses hues from the selected harmony, then solves each token's luminance exactly for a target contrast ratio against the canvas:
+
+```
+darker side:  Y_fg = (Y_canvas + 0.05) / ratio − 0.05
+lighter side: Y_fg = ratio × (Y_canvas + 0.05) − 0.05
+```
+
+`colorWithLuminance()` then bisects HSL lightness (luminance is monotonic in it) to hit that Y at the chosen hue and saturation. A yellow road and a blue road therefore land with the same visual weight. Small random jitter on the targets keeps spins varied.
+
+**Contrast paylines.** Each reel has a lamp scoring it against the canvas (`CONTRAST_RULES` in `style-engine.js`):
+
+| Reel | Minimum | Basis |
+|---|---|---|
+| Labels | 4.5:1 (AAA 7:1, gold lamp) | WCAG 2.1 SC 1.4.3 |
+| Roads | 3:1 | WCAG 2.1 SC 1.4.11 non-text |
+| Water | 1.10:1 | distinguishable fill |
+| Buildings | 1.10:1 | distinguishable fill |
+| Parks | 1.05:1 | distinguishable fill |
+
+The marquee shows lines passed; **ALL LINES (AAA)** means every line passes and labels reach AAA.
+
+**Fix contrast** uses `ensureContrast()`: tokens that already pass are untouched, and failing tokens move to the nearest (in L\*) colour of the same hue that meets the threshold, on whichever side of the canvas is closer.
+
+**Swatch palette bar.** Native colour pickers are replaced by an Inkscape-style bar docked along the bottom of the map. It shows fixed, distinct swatches: a column each for grey (with pure white and black), slate, stone and 15 hues. Rows are equal steps of CIE L\* (97 → 14), so the row tells you roughly how much contrast a swatch gives. Click a reel (or its colour chip) to choose what you're painting, then click a swatch, or drag any swatch straight onto a reel. Swatches with a red slash would break that reel's contrast line; for the canvas, a slash means at least one line would fail. The six small swatches at the left are the live palette, so you can drag one reel's colour onto another. Hex fields stay on each reel for exact values.
+
+**Controls:** pull the lever, press SPIN, or hit Space. Set the **Base Colour** directly via the 🎯 BASE button on any cog or via the Base selector in the cabinet deck. ▲▼ nudge lightness on each cog in perceptual CIE L\* steps. HOLD (or keys 1–6) locks a reel. The harmony wheel below the cabinet sets hue and saturation by dragging pins; dragging the 🎯 base pin rotates the whole harmony. Sound effects are off by default (🔇 toggle).

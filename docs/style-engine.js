@@ -100,6 +100,116 @@ function getContrastRatio(hex1, hex2) {
   return (high + 0.05) / (low + 0.05);
 }
 
+// --- Perceptual Lightness & Contrast Solvers ---
+// WCAG contrast is a function of relative luminance (Y) only, so for any hue/saturation
+// we can solve *exactly* for the luminance that produces a target ratio, then find the
+// HSL lightness that yields that luminance. Reel notches step in CIE L* (perceptual
+// lightness) so every click looks like the same amount of change, whatever the hue.
+
+function luminanceToLstar(Y) {
+  const f = Y > 216 / 24389 ? Math.cbrt(Y) : (24389 / 27 * Y + 16) / 116;
+  return 116 * f - 16;
+}
+
+function lstarToLuminance(L) {
+  const f = (L + 16) / 116;
+  return f * f * f > 216 / 24389 ? f * f * f : (116 * f - 16) / (24389 / 27);
+}
+
+function getLstar(hex) {
+  return luminanceToLstar(getRelativeLuminance(hex));
+}
+
+// Hex colour with the given hue & saturation whose relative luminance is as close as possible to Y.
+// Luminance rises monotonically with HSL lightness, so a bisection converges quickly.
+function colorWithLuminance(h, s, targetY) {
+  targetY = clamp(targetY, 0, 1);
+  let lo = 0, hi = 100, best = null;
+  for (let i = 0; i < 22; i++) {
+    const mid = (lo + hi) / 2;
+    const rgb = hslToRgb(h, s, mid);
+    const hex = rgbToHex(rgb.r, rgb.g, rgb.b);
+    const y = getRelativeLuminance(hex);
+    if (best === null || Math.abs(y - targetY) < Math.abs(best.y - targetY)) best = { hex, y };
+    if (y < targetY) lo = mid; else hi = mid;
+  }
+  return best.hex;
+}
+
+// Step a colour by N perceptual notches (CIE L*), keeping its hue and saturation.
+function stepLightness(hex, steps, stepSize = 5) {
+  if (!steps) return hex.toLowerCase();
+  const rgb = hexToRgb(hex);
+  const hsl = rgbToHsl(rgb.r, rgb.g, rgb.b);
+  const targetL = clamp(getLstar(hex) + steps * stepSize, 2, 99);
+  return colorWithLuminance(hsl.h, hsl.s, lstarToLuminance(targetL));
+}
+
+// Luminance a colour must have to sit at `ratio` against a background, on the given side.
+function luminanceForContrast(bgHex, ratio, side) {
+  const yb = getRelativeLuminance(bgHex);
+  const y = side === 'darker' ? (yb + 0.05) / ratio - 0.05 : ratio * (yb + 0.05) - 0.05;
+  return (y < 0 || y > 1) ? null : y;
+}
+
+// Colour of hue h / saturation s that sits at exactly `ratio`:1 against bgHex.
+function colorAtContrast(h, s, bgHex, ratio, side) {
+  let y = luminanceForContrast(bgHex, ratio, side);
+  if (y === null) y = side === 'darker' ? 0 : 1; // target unreachable: go as far as possible
+  return colorWithLuminance(h, s, y);
+}
+
+// Minimal-change contrast repair: if fg already meets the target it is untouched; otherwise
+// solve for the nearest (in L*) colour of the same hue that does.
+function ensureContrast(fgHex, bgHex, target) {
+  if (getContrastRatio(fgHex, bgHex) >= target) return fgHex;
+  const rgb = hexToRgb(fgHex);
+  const hsl = rgbToHsl(rgb.r, rgb.g, rgb.b);
+  const currentL = getLstar(fgHex);
+  const options = ['darker', 'lighter']
+    .map(side => ({ side, y: luminanceForContrast(bgHex, target, side) }))
+    .filter(o => o.y !== null)
+    .map(o => {
+      // nudge slightly past the threshold so rounding to 8-bit RGB can't drop us under it
+      const y = o.side === 'darker' ? o.y * 0.985 : Math.min(1, o.y * 1.015 + 0.001);
+      return { hex: colorWithLuminance(hsl.h, hsl.s, y), dist: Math.abs(luminanceToLstar(y) - currentL) };
+    })
+    .filter(o => getContrastRatio(o.hex, bgHex) >= target)
+    .sort((a, b) => a.dist - b.dist);
+  if (options.length) return options[0].hex;
+  // Unreachable at this saturation: fall back to whichever extreme contrasts more
+  return getContrastRatio('#000000', bgHex) > getContrastRatio('#ffffff', bgHex) ? '#000000' : '#ffffff';
+}
+
+/**
+ * Contrast "paylines": every token except the canvas is scored against the canvas.
+ * text & roads use WCAG 2.1 thresholds (1.4.3 text, 1.4.11 non-text graphics);
+ * the area fills only need to be distinguishable from the land.
+ */
+const CONTRAST_RULES = {
+  water:      { min: 1.10, label: 'Water vs land',      why: 'Coastlines read without needing an outline' },
+  greenspace: { min: 1.05, label: 'Parks vs land',      why: 'Parks are distinguishable from the canvas' },
+  roads:      { min: 3.00, label: 'Roads vs land',      why: 'WCAG 2.1 SC 1.4.11 non-text contrast (3:1)' },
+  buildings:  { min: 1.10, label: 'Buildings vs land',  why: 'Urban blocks are distinguishable from the canvas' },
+  text:       { min: 4.50, aaa: 7.0, label: 'Labels vs land', why: 'WCAG 2.1 SC 1.4.3 text contrast (AA 4.5:1, AAA 7:1)' }
+};
+
+function scorePalette(tokens) {
+  const lines = {};
+  let passed = 0;
+  Object.keys(CONTRAST_RULES).forEach(k => {
+    const rule = CONTRAST_RULES[k];
+    const ratio = getContrastRatio(tokens.canvas, tokens[k]);
+    const pass = ratio >= rule.min;
+    if (pass) passed++;
+    lines[k] = { ratio, pass, aaa: rule.aaa ? ratio >= rule.aaa : false, min: rule.min };
+  });
+  const total = Object.keys(CONTRAST_RULES).length;
+  const allPass = passed === total;
+  const allAaa = allPass && lines.text.aaa;
+  return { lines, passed, total, allPass, allAaa, jackpot: allAaa };
+}
+
 // --- Algorithmic Theme Synthesizer ---
 
 /**
@@ -605,12 +715,16 @@ function generateHarmoniousPalette(options = {}) {
     activeHarmony = pool[Math.floor(Math.random() * pool.length)];
   }
 
-  // Identify anchor seed hue. If tokens are held, extract the seed from the highest-priority held token.
+  // Identify anchor seed hue. If tokens are held, extract the seed from the base/anchor token or highest-priority held token.
   let baseHue = null;
+  const anchorToken = options.anchorToken;
   const heldKeys = Object.keys(held).filter(k => held[k] && currentTokens[k]);
 
-  if (heldKeys.length > 0) {
-    const priority = ['roads', 'water', 'canvas', 'greenspace', 'buildings', 'text'];
+  if (anchorToken && held[anchorToken] && currentTokens[anchorToken]) {
+    const rgb = hexToRgb(currentTokens[anchorToken]);
+    baseHue = rgbToHsl(rgb.r, rgb.g, rgb.b).h;
+  } else if (heldKeys.length > 0) {
+    const priority = [anchorToken, 'roads', 'water', 'canvas', 'greenspace', 'buildings', 'text'].filter(Boolean);
     const anchorKey = priority.find(k => held[k] && currentTokens[k]) || heldKeys[0];
     const rgb = hexToRgb(currentTokens[anchorKey]);
     const hsl = rgbToHsl(rgb.r, rgb.g, rgb.b);
@@ -733,25 +847,32 @@ function generateHarmoniousPalette(options = {}) {
     }
   }
 
-  // Light vs Dark photometric budgets
+  // Light vs Dark photometric budgets.
+  // The canvas is set in HSL; every other token is *solved* for a target contrast ratio
+  // against the canvas, so a yellow road and a blue road carry the same visual weight.
+  // A little jitter on each target keeps successive spins from feeling identical.
+  const jitter = (r) => 1 + (r - 1) * (0.88 + Math.random() * 0.24);
+  const heldCanvas = held.canvas && currentTokens.canvas;
   let candidate = {};
   if (isDark) {
+    const canvas = heldCanvas ? currentTokens.canvas : rgbToHex(hslToRgb(canvasHue, 25, 6).r, hslToRgb(canvasHue, 25, 6).g, hslToRgb(canvasHue, 25, 6).b);
     candidate = {
-      canvas: rgbToHex(hslToRgb(canvasHue, 25, 6).r, hslToRgb(canvasHue, 25, 6).g, hslToRgb(canvasHue, 25, 6).b),
-      water: rgbToHex(hslToRgb(waterHue, 45, 14).r, hslToRgb(waterHue, 45, 14).g, hslToRgb(waterHue, 45, 14).b),
-      greenspace: rgbToHex(hslToRgb(greenHue, 28, 11).r, hslToRgb(greenHue, 28, 11).g, hslToRgb(greenHue, 28, 11).b),
-      roads: rgbToHex(hslToRgb(roadHue, 92, 70).r, hslToRgb(roadHue, 92, 70).g, hslToRgb(roadHue, 92, 70).b),
-      buildings: rgbToHex(hslToRgb(bldgHue, 22, 16).r, hslToRgb(bldgHue, 22, 16).g, hslToRgb(bldgHue, 22, 16).b),
-      text: '#ffffff'
+      canvas,
+      water: colorAtContrast(waterHue, 45, canvas, jitter(1.30), 'lighter'),
+      greenspace: colorAtContrast(greenHue, 30, canvas, jitter(1.16), 'lighter'),
+      roads: colorAtContrast(roadHue, 90, canvas, jitter(8.5), 'lighter'),
+      buildings: colorAtContrast(bldgHue, 22, canvas, jitter(1.35), 'lighter'),
+      text: colorAtContrast(textHue, 25, canvas, 16.5, 'lighter')
     };
   } else {
+    const canvas = heldCanvas ? currentTokens.canvas : rgbToHex(hslToRgb(canvasHue, 16, 97).r, hslToRgb(canvasHue, 16, 97).g, hslToRgb(canvasHue, 16, 97).b);
     candidate = {
-      canvas: rgbToHex(hslToRgb(canvasHue, 16, 97).r, hslToRgb(canvasHue, 16, 97).g, hslToRgb(canvasHue, 16, 97).b),
-      water: rgbToHex(hslToRgb(waterHue, 42, 78).r, hslToRgb(waterHue, 42, 78).g, hslToRgb(waterHue, 42, 78).b),
-      greenspace: rgbToHex(hslToRgb(greenHue, 30, 88).r, hslToRgb(greenHue, 30, 88).g, hslToRgb(greenHue, 30, 88).b),
-      roads: rgbToHex(hslToRgb(roadHue, 82, 38).r, hslToRgb(roadHue, 82, 38).g, hslToRgb(roadHue, 82, 38).b),
-      buildings: rgbToHex(hslToRgb(bldgHue, 18, 86).r, hslToRgb(bldgHue, 18, 86).g, hslToRgb(bldgHue, 18, 86).b),
-      text: rgbToHex(hslToRgb(textHue, 40, 11).r, hslToRgb(textHue, 40, 11).g, hslToRgb(textHue, 40, 11).b)
+      canvas,
+      water: colorAtContrast(waterHue, 45, canvas, jitter(1.55), 'darker'),
+      greenspace: colorAtContrast(greenHue, 32, canvas, jitter(1.18), 'darker'),
+      roads: colorAtContrast(roadHue, 80, canvas, jitter(5.5), 'darker'),
+      buildings: colorAtContrast(bldgHue, 18, canvas, jitter(1.28), 'darker'),
+      text: colorAtContrast(textHue, 40, canvas, 15, 'darker')
     };
   }
 
@@ -877,31 +998,9 @@ function invertPaletteMode(tokens, targetIsDark) {
 
 function autoBalanceContrast(tokens) {
   const balanced = { ...tokens };
-  const canvasLum = getRelativeLuminance(balanced.canvas);
-  const isDark = canvasLum < 0.2;
-
-  // 1. Ensure Text achieves WCAG AA (>= 4.5:1 against canvas)
-  let textRatio = getContrastRatio(balanced.canvas, balanced.text);
-  if (textRatio < 4.5) {
-    balanced.text = isDark ? '#ffffff' : '#111827';
-  }
-
-  // 2. Ensure Water separates from Canvas (>= 1.25:1 fill or distinct step)
-  const waterRatio = getContrastRatio(balanced.canvas, balanced.water);
-  if (waterRatio < 1.2) {
-    balanced.water = isDark 
-      ? adjustHsl(balanced.water, { l: +15 }) 
-      : adjustHsl(balanced.water, { l: -18 });
-  }
-
-  // 3. Ensure Roads pop (>= 3.0:1 against canvas)
-  const roadRatio = getContrastRatio(balanced.canvas, balanced.roads);
-  if (roadRatio < 3.0) {
-    balanced.roads = isDark 
-      ? adjustHsl(balanced.roads, { l: +30, s: +20 }) 
-      : adjustHsl(balanced.roads, { l: -35, s: +20 });
-  }
-
+  Object.keys(CONTRAST_RULES).forEach(k => {
+    balanced[k] = ensureContrast(balanced[k], balanced.canvas, CONTRAST_RULES[k].min);
+  });
   return balanced;
 }
 
@@ -922,5 +1021,13 @@ window.StyleEngine = {
   generateHarmoniousPalette,
   HARMONY_MODES,
   invertPaletteMode,
-  autoBalanceContrast
+  autoBalanceContrast,
+  getLstar,
+  lstarToLuminance,
+  colorWithLuminance,
+  stepLightness,
+  colorAtContrast,
+  ensureContrast,
+  CONTRAST_RULES,
+  scorePalette
 };

@@ -57,7 +57,10 @@ const btnMonoLock = document.getElementById('btnMonoLock');
 const btnClearHolds = document.getElementById('btnClearHolds');
 const selectHarmony = document.getElementById('selectHarmony');
 const harmonyBadge = document.getElementById('harmonyBadge');
-const btnHarmonize = document.getElementById('btnHarmonize');
+const btnPrevHarmony = document.getElementById('btnPrevHarmony') || document.getElementById('btnRotateCcw');
+const btnNextHarmony = document.getElementById('btnNextHarmony') || document.getElementById('btnRotateCw');
+const btnWheelRotateCcw = document.getElementById('btnWheelRotateCcw');
+const btnWheelRotateCw = document.getElementById('btnWheelRotateCw');
 const btnModeLight = document.getElementById('btnModeLight');
 const btnModeDark = document.getElementById('btnModeDark');
 const contrastPill = document.getElementById('contrastPill');
@@ -72,49 +75,40 @@ const hudCoords = document.getElementById('hudCoords');
 const hudZoom = document.getElementById('hudZoom');
 const hudLayers = document.getElementById('hudLayers');
 
-// Adobe Color Wheel & View Mode State
-let currentStudioView = 'wheel'; // 'wheel' | 'cards' | 'both'
+// Slot cabinet
+const reelsEl = document.getElementById('reels');
+const slotCabinet = document.getElementById('slotCabinet');
+const leverEl = document.getElementById('lever');
+const leverArm = document.getElementById('leverArm');
+const marqueeStars = document.getElementById('marqueeStars');
+const marqueeText = document.getElementById('marqueeText');
+const marqueeScreen = document.getElementById('marqueeScreen');
+const btnSound = document.getElementById('btnSound');
+
+// Colour wheel state
 let selectedWheelToken = 'roads';
 let anchorToken = 'roads';
 let draggingWheelPin = null;
 
+const TOKEN_ORDER = ['canvas', 'water', 'greenspace', 'roads', 'buildings', 'text'];
+
 // Token Metadata
 const TOKEN_META = {
-  canvas: { name: 'Canvas', icon: '🏞️', desc: 'Base terrain' },
-  water: { name: 'Water', icon: '🌊', desc: 'Oceans & rivers' },
-  greenspace: { name: 'Greenspace', icon: '🌲', desc: 'Parks & nature' },
-  roads: { name: 'Roads', icon: '🚗', desc: 'Highway spine' },
-  buildings: { name: 'Buildings', icon: '🏢', desc: 'Urban blocks' },
-  text: { name: 'Labels', icon: '🔤', desc: 'City text' }
+  canvas: { name: 'Canvas', short: 'Land', icon: '🏞️', desc: 'Base terrain' },
+  water: { name: 'Water', short: 'Water', icon: '🌊', desc: 'Oceans & rivers' },
+  greenspace: { name: 'Greenspace', short: 'Parks', icon: '🌲', desc: 'Parks & nature' },
+  roads: { name: 'Roads', short: 'Roads', icon: '🚗', desc: 'Highway spine' },
+  buildings: { name: 'Buildings', short: 'Blocks', icon: '🏢', desc: 'Urban blocks' },
+  text: { name: 'Labels', short: 'Labels', icon: '🔤', desc: 'City text' }
 };
 
-// Color Wheel DOM References
+// Colour Wheel DOM References
 const colorWheelCanvas = document.getElementById('colorWheelCanvas');
 const colorWheelSvg = document.getElementById('colorWheelSvg');
-const colorWheelSection = document.getElementById('colorWheelSection');
-const tokenGrid = document.getElementById('tokenGrid');
-const tabBtnWheel = document.getElementById('tabBtnWheel');
-const tabBtnCards = document.getElementById('tabBtnCards');
-const tabBtnBoth = document.getElementById('tabBtnBoth');
-const activeTokenIcon = document.getElementById('activeTokenIcon');
-const activeTokenName = document.getElementById('activeTokenName');
-const activeTokenHex = document.getElementById('activeTokenHex');
-const btnSetAnchor = document.getElementById('btnSetAnchor');
-const anchorBtnText = document.getElementById('anchorBtnText');
-const wheelHoldBtn = document.getElementById('wheelHoldBtn');
-const wheelLightnessSlider = document.getElementById('wheelLightnessSlider');
-const wheelLightnessValue = document.getElementById('wheelLightnessValue');
-const wheelSwatchesStrip = document.getElementById('wheelSwatchesStrip');
 
-// Token Element Maps
-const TOKEN_INPUTS = {
-  canvas: { picker: document.getElementById('pickerCanvas'), text: document.getElementById('textCanvas') },
-  water: { picker: document.getElementById('pickerWater'), text: document.getElementById('textWater') },
-  greenspace: { picker: document.getElementById('pickerGreenspace'), text: document.getElementById('textGreenspace') },
-  roads: { picker: document.getElementById('pickerRoads'), text: document.getElementById('textRoads') },
-  buildings: { picker: document.getElementById('pickerBuildings'), text: document.getElementById('textBuildings') },
-  text: { picker: document.getElementById('pickerText'), text: document.getElementById('textText') }
-};
+
+// Populated by buildReels(): { picker, text } per token
+const TOKEN_INPUTS = {};
 
 // Initialize Application
 async function init() {
@@ -152,7 +146,7 @@ async function init() {
 
   // 4. Initialize MapLibre
   const initialLoc = PRESETS.london;
-  if (currentStyle) {
+  if (currentStyle && typeof maplibregl !== 'undefined') {
     map = new maplibregl.Map({
       container: 'map',
       style: currentStyle,
@@ -179,34 +173,32 @@ async function init() {
   }
 
   // 5. Setup UI & Event Listeners (ALWAYS execute so UI remains interactive)
+  buildReels();
+  buildPopoverSwatches();
   setupTokenBindings();
+  setupLever();
   renderPresetPills();
   renderColorWheelCanvas();
   setupColorWheelInteractions();
   setupEventListeners();
-  setStudioView('wheel');
   selectWheelToken('roads');
   updateUiState();
+  updateInspectorJson();
 }
 
-// Setup input listeners for the 6 color pickers
+// Setup input listeners for the 6 colour pickers / hex fields
 function setupTokenBindings() {
   Object.keys(TOKEN_INPUTS).forEach(key => {
     const { picker, text } = TOKEN_INPUTS[key];
-
-    picker.addEventListener('input', (e) => {
-      text.value = e.target.value.toLowerCase();
-      onTokenChanged(key, e.target.value);
-    });
-
     text.addEventListener('input', (e) => {
       let val = e.target.value.trim();
       if (!val.startsWith('#')) val = '#' + val;
       if (/^#[0-9A-Fa-f]{6}$/.test(val)) {
-        picker.value = val;
-        onTokenChanged(key, val);
+        picker.value = val.toLowerCase();
+        onTokenChanged(key, val.toLowerCase());
       }
     });
+    text.addEventListener('focus', () => text.select());
   });
 }
 
@@ -261,128 +253,96 @@ function syncTokenInputs() {
   });
 }
 
-// Update mode toggles, contrast scores, and inspector drawer
+// Synchronize DOM inputs with tokens state
+function syncTokenInputs() {
+  Object.keys(TOKEN_INPUTS).forEach(key => {
+    const { picker, text } = TOKEN_INPUTS[key];
+    picker.value = tokens[key];
+    text.value = tokens[key];
+  });
+}
+
+// Update mode toggles, contrast scores, reels and wheel
 function updateUiState() {
   const canvasLum = StyleEngine.getRelativeLuminance(tokens.canvas);
   const isDark = canvasLum < 0.2;
   currentMode = isDark ? 'dark' : 'light';
 
-  // Synchronize explicit Light / Dark mode toggle buttons
   if (btnModeLight) btnModeLight.classList.toggle('active', !isDark);
   if (btnModeDark) btnModeDark.classList.toggle('active', isDark);
 
-  // Backward compatibility with legacy badge if present
-  const badgeMode = document.getElementById('badgeMode');
-  if (badgeMode) {
-    badgeMode.textContent = isDark ? 'Dark Mode' : 'Light Mode';
-    badgeMode.className = `badge-mode ${isDark ? 'badge-dark' : 'badge-light'}`;
-  }
-
-  // Contrast Calculation (Text vs Canvas)
+  // Header pill: labels vs canvas
   const ratio = StyleEngine.getContrastRatio(tokens.canvas, tokens.text);
   if (contrastValue) {
     contrastValue.textContent = `${ratio.toFixed(1)}:1 (${ratio >= 7.0 ? 'AAA' : (ratio >= 4.5 ? 'AA' : 'Fail')})`;
   }
-
   if (contrastPill) {
     contrastPill.className = 'contrast-pill';
-    if (ratio >= 7.0) {
-      contrastPill.classList.add('pass-aaa');
-    } else if (ratio >= 4.5) {
-      contrastPill.classList.add('pass-aa');
-    } else {
-      contrastPill.classList.add('fail');
-    }
+    contrastPill.classList.add(ratio >= 7.0 ? 'pass-aaa' : (ratio >= 4.5 ? 'pass-aa' : 'fail'));
   }
 
-  // Update active pill highlight
+  // Active preset highlight
   document.querySelectorAll('.preset-pill').forEach(pill => {
-    const pId = pill.dataset.preset;
-    const p = StyleEngine.PRESET_PALETTES[pId];
+    const p = StyleEngine.PRESET_PALETTES[pill.dataset.preset];
     if (p) {
-      const match = Object.keys(tokens).every(k => tokens[k] && p[k] && tokens[k].toLowerCase() === p[k].toLowerCase());
+      const match = TOKEN_ORDER.every(k => tokens[k] && p[k] && tokens[k].toLowerCase() === p[k].toLowerCase());
       pill.classList.toggle('active', match);
     }
   });
 
-  // Re-render tonal ladders for all 6 tokens
-  renderTonalLadders();
-
-  // Synchronize slot machine HOLD states and active harmony badge
   updateHoldUi();
   updateHarmonyBadge();
-
-  // Synchronize Adobe Color Wheel & mini swatches
-  if (currentStudioView !== 'cards') {
-    updateColorWheelSvg();
-    renderWheelSwatchesStrip();
-    updateActiveTokenBar();
+  updateReelsUi();
+  updateColorWheelSvg();
+  if (reelPopover && reelPopover.style.display !== 'none' && activePopoverToken) {
+    updatePopoverContrast();
+    updatePopoverActiveSwatch();
   }
 }
 
-// Toggle slot-machine HOLD for a token
+// Toggle HOLD for a token
 function toggleHold(tokenKey) {
   if (heldTokens[tokenKey] === undefined) return;
   heldTokens[tokenKey] = !heldTokens[tokenKey];
   updateHoldUi();
+  updateReelsUi();
   updateColorWheelSvg();
-  updateActiveTokenBar();
-  renderWheelSwatchesStrip();
-  const isHeld = heldTokens[tokenKey];
-  showToast(isHeld ? `🔒 Held ${tokenKey} (locked from shuffle)` : `Released hold on ${tokenKey}`);
+  playSound('tick');
 }
 
-// Synchronize HOLD button visuals and card indicators
+// Synchronize HOLD button visuals
 function updateHoldUi() {
   const count = Object.values(heldTokens).filter(Boolean).length;
 
-  // Update hold buttons on all cards
   document.querySelectorAll('.btn-hold').forEach(btn => {
-    const key = btn.dataset.token;
+    const key = btn.dataset.token || selectedWheelToken;
     const isHeld = !!heldTokens[key];
     btn.classList.toggle('is-held', isHeld);
     const textSpan = btn.querySelector('.hold-text');
     if (textSpan) textSpan.textContent = isHeld ? 'HELD' : 'HOLD';
-    btn.title = isHeld ? 'Locked: Color is preserved during shuffle (Click to release)' : 'Hold: Lock color during shuffle';
-
-    // Highlight parent card
-    const card = document.getElementById(`card${key ? key.charAt(0).toUpperCase() + key.slice(1) : ''}`);
-    if (card) card.classList.toggle('token-held', isHeld);
   });
 
-  // Update Shuffle button label
   if (shuffleLabel) {
-    if (count === 6) {
-      shuffleLabel.textContent = 'All Held 🔒';
-    } else if (count > 0) {
-      shuffleLabel.textContent = `Shuffle 🎰 (${count} Held)`;
-    } else {
-      shuffleLabel.textContent = 'Shuffle 🎰';
-    }
+    shuffleLabel.textContent = count === 6 ? 'ALL HELD' : 'SPIN';
   }
+  if (btnShuffle) btnShuffle.disabled = count === 6;
 
-  // Update Release Holds button
   if (btnClearHolds) {
     btnClearHolds.style.display = count > 0 ? 'flex' : 'none';
     const span = btnClearHolds.querySelector('span');
-    if (span) span.textContent = `Release Holds (${count})`;
+    if (span) span.textContent = `Release holds (${count})`;
   }
 }
 
-// Release all active holds with one click
 function clearAllHolds() {
   Object.keys(heldTokens).forEach(k => { heldTokens[k] = false; });
-  updateHoldUi();
-  updateColorWheelSvg();
-  updateActiveTokenBar();
-  renderWheelSwatchesStrip();
-  showToast('All color holds released');
+  updateUiState();
+  showToast('All holds released');
 }
 
-// Update the harmony pill display
 function updateHarmonyBadge() {
   if (!harmonyBadge) return;
-  const map = {
+  const labels = {
     triadic: 'Triadic 120°',
     complementary: 'Contrast 180°',
     'split-complementary': 'Split 150°/210°',
@@ -390,62 +350,757 @@ function updateHarmonyBadge() {
     tetradic: 'Tetradic Dual',
     square: 'Square 90°',
     monochrome: 'Single Hue',
-    custom: 'Custom Free',
+    custom: 'Keep hues',
     random: 'Surprise'
   };
-  harmonyBadge.textContent = map[activeHarmony] || activeHarmony;
+  harmonyBadge.textContent = labels[activeHarmony] || activeHarmony;
 }
 
-// Trigger reel spin animation on unheld cards
-function triggerSlotSpinAnimation() {
-  Object.keys(TOKEN_INPUTS).forEach(key => {
-    if (!heldTokens[key]) {
-      const card = document.getElementById(`card${key.charAt(0).toUpperCase() + key.slice(1)}`);
-      if (card) {
-        card.classList.remove('slot-spinning');
-        void card.offsetWidth; // Force CSS reflow
-        card.classList.add('slot-spinning');
-        setTimeout(() => card.classList.remove('slot-spinning'), 360);
-      }
-    }
-  });
-}
-
-// Execute harmonious shuffle honoring held colors
+// Spin: compute the landing palette, then let the reels animate onto it
 function executeHarmoniousShuffle(harmonyChoice) {
+  if (isSpinning) return;
   const heldCount = Object.values(heldTokens).filter(Boolean).length;
   if (heldCount === 6) {
-    showToast('All 6 colors are held! Release at least one hold to shuffle.');
+    showToast('All 6 reels are held — release one to spin');
     return;
   }
 
   const isDark = (currentMode === 'dark');
   const chosenHarmony = harmonyChoice || activeHarmony;
-
-  triggerSlotSpinAnimation();
+  let next;
 
   if (isMonochromeLocked || chosenHarmony === 'monochrome') {
-    tokens = StyleEngine.generateMonochromeTokens(tokens.roads || tokens.canvas, isDark);
+    // Seed from a held reel if there is one, otherwise the anchor token
+    const seedKey = [anchorToken, 'roads', 'water', 'canvas', 'greenspace', 'buildings', 'text'].find(k => k && heldTokens[k]) || anchorToken;
+    const seed = (seedKey && tokens[seedKey]) ? tokens[seedKey] : StyleEngine.rgbToHex(...Object.values(StyleEngine.hslToRgb(Math.random() * 360, 60, 45)));
+    const mono = StyleEngine.generateMonochromeTokens(seed, isDark);
+    next = {};
+    TOKEN_ORDER.forEach(k => { next[k] = heldTokens[k] ? tokens[k] : mono[k]; });
   } else {
-    tokens = StyleEngine.generateHarmoniousPalette({
+    next = StyleEngine.generateHarmoniousPalette({
       isDark,
       harmony: chosenHarmony,
       currentTokens: tokens,
-      held: heldTokens
+      held: heldTokens,
+      anchorToken: anchorToken
     });
   }
+  TOKEN_ORDER.forEach(k => { next[k] = next[k].toLowerCase(); });
+
+  playSound('clunk');
+  animateSpin(next, () => {
+    tokens = { ...next };
+    syncTokenInputs();
+    updateUiState();
+    applyCompiledStyle();
+    const score = StyleEngine.scorePalette(tokens);
+    if (score.passed === score.total) {
+      playSound('win');
+    } else if (score.passed < score.total) {
+      showToast(`${score.total - score.passed} line${score.total - score.passed > 1 ? 's' : ''} below contrast — nudge a reel or hit Fix`);
+    }
+  });
+}
+
+// Step through the Colour Harmony dropdown choices and automatically spin to the new harmony
+function stepHarmony(delta) {
+  if (isSpinning || !selectHarmony) return;
+  const options = Array.from(selectHarmony.options);
+  if (!options.length) return;
+
+  let currIdx = selectHarmony.selectedIndex;
+  if (currIdx === -1) {
+    currIdx = options.findIndex(opt => opt.value === activeHarmony);
+    if (currIdx === -1) currIdx = 0;
+  }
+
+  const nextIdx = (currIdx + delta + options.length) % options.length;
+  selectHarmony.selectedIndex = nextIdx;
+  activeHarmony = options[nextIdx].value;
+  updateHarmonyBadge();
+
+  pullLever();
+}
+
+// Rotate the active harmony across the 360° color wheel by deltaDeg (e.g. +15° or -15°)
+function rotateHarmony(deltaDeg) {
+  if (isSpinning || !deltaDeg) return;
+
+  const unheldKeys = TOKEN_ORDER.filter(k => !heldTokens[k]);
+  if (unheldKeys.length === 0) {
+    showToast('All reels are held — release one to rotate harmony');
+    return;
+  }
+
+  unheldKeys.forEach(k => {
+    const rgb = StyleEngine.hexToRgb(tokens[k]);
+    const hsl = StyleEngine.rgbToHsl(rgb.r, rgb.g, rgb.b);
+    const rotatedH = (hsl.h + deltaDeg + 360) % 360;
+    const newColor = StyleEngine.rgbToHex(
+      StyleEngine.hslToRgb(rotatedH, hsl.s, hsl.l).r,
+      StyleEngine.hslToRgb(rotatedH, hsl.s, hsl.l).g,
+      StyleEngine.hslToRgb(rotatedH, hsl.s, hsl.l).b
+    ).toLowerCase();
+    tokens[k] = newColor;
+  });
 
   syncTokenInputs();
   updateUiState();
   applyCompiledStyle();
+  playSound('tick');
 
-  const msg = heldCount > 0 
-    ? `Shuffled (${heldCount} held, ${chosenHarmony})` 
-    : `Generated ${chosenHarmony} harmony (${isDark ? 'Dark' : 'Light'})`;
-  showToast(msg);
+  const baseH = Math.round(StyleEngine.rgbToHsl(
+    StyleEngine.hexToRgb(tokens[anchorToken]).r,
+    StyleEngine.hexToRgb(tokens[anchorToken]).g,
+    StyleEngine.hexToRgb(tokens[anchorToken]).b
+  ).h);
+  showToast(`Rotated harmony ${deltaDeg > 0 ? '+' : ''}${deltaDeg}° (Base: ${baseH}°)`, 900);
 }
 
-// --- Adobe-Style Color Wheel Implementation ---
+// Select a token to inspect and control in the wheel toolbar
+function selectWheelToken(tokenKey) {
+  selectedWheelToken = tokenKey;
+  updateColorWheelSvg();
+  updateReelsUi();
+  updateHoldUi();
+  if (reelPopover && reelPopover.style.display !== 'none' && activePopoverToken) {
+    updatePopoverContrast();
+    updatePopoverActiveSwatch();
+  }
+}
+
+// =====================================================================
+//  SLOT MACHINE REELS
+//  Each token is a 12-faced 3D drum. The front face is the live colour;
+//  faces above are lighter and faces below darker, each one notch of
+//  CIE L* apart, so every click is the same *perceived* change.
+// =====================================================================
+
+const FACE_COUNT = 12;
+const FACE_ANGLE = 360 / FACE_COUNT;              // 30°
+const FACE_HEIGHT = 30;                           // px
+const REEL_RADIUS = (FACE_HEIGHT / 2) / Math.tan(Math.PI / FACE_COUNT); // ≈ 56px
+const LSTAR_STEP = 5;                             // one notch = 5 L*
+const reelState = {};
+let isSpinning = false;
+
+const mod = (n, m) => ((n % m) + m) % m;
+
+function buildReels() {
+  if (!reelsEl) return;
+  reelsEl.innerHTML = '';
+
+  TOKEN_ORDER.forEach((key, idx) => {
+    const meta = TOKEN_META[key];
+    const cap = key.charAt(0).toUpperCase() + key.slice(1);
+    const col = document.createElement('div');
+    col.className = 'reel-col';
+    col.dataset.token = key;
+    col.innerHTML = `
+      <button type="button" class="btn-reel-base ${key === anchorToken ? 'is-base' : ''}" data-token="${key}" title="${key === anchorToken ? `Current Base Colour (${meta.name})` : `Set ${meta.name} as Base Colour`}">
+        <span class="base-icon">🎯</span><span class="base-text">BASE</span>
+      </button>
+      <div class="reel-label" title="${meta.name}: ${meta.desc}"><span class="reel-icon">${meta.icon}</span><span>${meta.short}</span></div>
+      <button type="button" class="reel-nudge" data-dir="1" title="Nudge lighter (+${LSTAR_STEP} L*)" aria-label="${meta.name} lighter">▲</button>
+      <div class="reel-window" tabindex="0" role="slider" aria-label="${meta.name} lightness" title="Drag or scroll to change lightness · click to select">
+        <div class="reel-drum"></div>
+        <div class="reel-payline" aria-hidden="true"></div>
+      </div>
+      <button type="button" class="reel-nudge" data-dir="-1" title="Nudge darker (−${LSTAR_STEP} L*)" aria-label="${meta.name} darker">▼</button>
+      <div class="reel-lamp" title=""><span class="lamp-dot"></span><span class="lamp-value">--</span></div>
+      <div class="reel-hex-wrap">
+        <button type="button" class="reel-chip" style="background:${tokens[key]}" title="Pick distinct colour for ${meta.name}"></button>
+        <input type="text" id="text${cap}" class="reel-hex" value="${tokens[key]}" maxlength="7" spellcheck="false" aria-label="${meta.name} hex">
+      </div>
+      <button type="button" class="btn-hold reel-hold" data-token="${key}" title="Hold (${idx + 1})">
+        <span class="hold-indicator"></span><span class="hold-text">HOLD</span>
+      </button>
+    `;
+    reelsEl.appendChild(col);
+
+    const baseBtn = col.querySelector('.btn-reel-base');
+    if (baseBtn) {
+      baseBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        setAnchorToken(key);
+      });
+    }
+
+    const drum = col.querySelector('.reel-drum');
+    const faces = [];
+    for (let i = 0; i < FACE_COUNT; i++) {
+      const face = document.createElement('div');
+      face.className = 'reel-face';
+      face.style.transform = `rotateX(${i * FACE_ANGLE}deg) translateZ(${REEL_RADIUS}px)`;
+      drum.appendChild(face);
+      faces.push(face);
+    }
+
+    reelState[key] = { col, drum, faces, k: 0, phi: 0, dragging: false, spinning: false };
+    const chipEl = col.querySelector('.reel-chip');
+    TOKEN_INPUTS[key] = {
+      // swatch chip stands in for the old native <input type=color>
+      picker: { el: chipEl, set value(v) { chipEl.style.background = v; }, get value() { return chipEl.style.background; } },
+      text: col.querySelector('.reel-hex')
+    };
+    chipEl.addEventListener('click', (e) => {
+      e.preventDefault();
+      openReelPopover(key);
+    });
+    const hexInput = col.querySelector('.reel-hex');
+    if (hexInput) {
+      hexInput.addEventListener('click', () => openReelPopover(key));
+    }
+
+    setupReelInteractions(key);
+    paintReel(key);
+  });
+}
+
+// Colour each face relative to the current token colour
+function paintReel(key, baseHex = tokens[key]) {
+  const st = reelState[key];
+  if (!st) return;
+  const front = mod(st.k, FACE_COUNT);
+  const baseL = StyleEngine.getLstar(baseHex);
+  st.faces.forEach((face, i) => {
+    let d = mod(i - front, FACE_COUNT);
+    if (d > FACE_COUNT / 2) d -= FACE_COUNT;
+    const targetL = baseL + d * LSTAR_STEP;
+    const color = d === 0 ? baseHex : StyleEngine.stepLightness(baseHex, d, LSTAR_STEP);
+    face.style.background = color;
+    face.classList.toggle('is-front', d === 0);
+    face.classList.toggle('at-limit', d !== 0 && (targetL < 2 || targetL > 99));
+    face.dataset.offset = d;
+    face.textContent = d === 0 ? '' : `${Math.round(Math.min(99, Math.max(2, targetL)))}`;
+    face.style.color = StyleEngine.getRelativeLuminance(color) > 0.3 ? 'rgba(0,0,0,.55)' : 'rgba(255,255,255,.6)';
+  });
+}
+
+function setDrum(key, phi, { duration = 0, easing = 'ease-out' } = {}) {
+  const st = reelState[key];
+  st.phi = phi;
+  st.drum.style.transition = duration ? `transform ${duration}ms ${easing}` : 'none';
+  st.drum.style.transform = `translateZ(-${REEL_RADIUS}px) rotateX(${phi}deg)`;
+}
+
+// Commit a reel step: move the drum by `steps` notches and update the token
+function nudgeReel(key, steps) {
+  if (isSpinning || !steps) return;
+  const st = reelState[key];
+  const newHex = StyleEngine.stepLightness(tokens[key], steps, LSTAR_STEP);
+  st.k += steps;
+  setDrum(key, -st.k * FACE_ANGLE, { duration: 220, easing: 'cubic-bezier(.2,.9,.3,1.2)' });
+  setTokenValue(key, newHex);
+  paintReel(key);
+  playSound('tick');
+  bumpLamp(key);
+}
+
+function setupReelInteractions(key) {
+  const st = reelState[key];
+  const win = st.col.querySelector('.reel-window');
+
+  // Drag to rotate
+  let startY = 0, startPhi = 0, lastK = 0, moved = false;
+  win.addEventListener('pointerdown', (e) => {
+    if (isSpinning) return;
+    win.setPointerCapture(e.pointerId);
+    st.dragging = true;
+    moved = false;
+    startY = e.clientY;
+    startPhi = st.phi;
+    lastK = st.k;
+    st.col.classList.add('is-dragging');
+  });
+  win.addEventListener('pointermove', (e) => {
+    if (!st.dragging) return;
+    const dy = e.clientY - startY;
+    if (Math.abs(dy) > 3) moved = true;
+    // dragging down brings the upper (lighter) faces down to the payline
+    const phi = startPhi - dy * (FACE_ANGLE / FACE_HEIGHT);
+    setDrum(key, phi);
+    const k = Math.round(-phi / FACE_ANGLE);
+    if (k !== lastK) {
+      const newHex = StyleEngine.stepLightness(tokens[key], k - lastK, LSTAR_STEP);
+      st.k = k;
+      lastK = k;
+      setTokenValue(key, newHex);
+      paintReel(key);
+      playSound('tick');
+    }
+  });
+  const endDrag = () => {
+    if (!st.dragging) return;
+    st.dragging = false;
+    st.col.classList.remove('is-dragging');
+    setDrum(key, -st.k * FACE_ANGLE, { duration: 180, easing: 'cubic-bezier(.2,.9,.3,1.25)' });
+    if (!moved) selectWheelToken(key);
+    else bumpLamp(key);
+  };
+  win.addEventListener('pointerup', endDrag);
+  win.addEventListener('pointercancel', endDrag);
+
+  // Scroll wheel / trackpad
+  let wheelAcc = 0;
+  win.addEventListener('wheel', (e) => {
+    e.preventDefault();
+    wheelAcc += e.deltaY;
+    if (Math.abs(wheelAcc) >= 40) {
+      nudgeReel(key, wheelAcc > 0 ? -1 : 1);
+      wheelAcc = 0;
+    }
+  }, { passive: false });
+
+  // Keyboard on the reel itself
+  win.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowUp') { e.preventDefault(); nudgeReel(key, 1); }
+    if (e.key === 'ArrowDown') { e.preventDefault(); nudgeReel(key, -1); }
+    if (e.key === 'Enter') selectWheelToken(key);
+  });
+
+  // Swatch drag-and-drop removed in favor of direct 1-click distinct color picker popover
+
+  st.col.querySelectorAll('.reel-nudge').forEach(btn => {
+    btn.addEventListener('click', () => nudgeReel(key, parseInt(btn.dataset.dir, 10)));
+  });
+}
+
+// Set a token from any control, keep inputs in sync, recompile (debounced)
+function setTokenValue(key, hex) {
+  if (TOKEN_INPUTS[key]) {
+    TOKEN_INPUTS[key].picker.value = hex;
+    TOKEN_INPUTS[key].text.value = hex;
+  }
+  onTokenChanged(key, hex);
+}
+
+// Brief flash of a reel's lamp after it changes
+function bumpLamp(key) {
+  const lamp = reelState[key] && reelState[key].col.querySelector('.reel-lamp');
+  if (!lamp) return;
+  lamp.classList.remove('bump');
+  void lamp.offsetWidth;
+  lamp.classList.add('bump');
+}
+
+// Set a token as the base colour (harmony anchor)
+function setAnchorToken(tokenKey) {
+  if (!tokens[tokenKey]) return;
+  anchorToken = tokenKey;
+  updateReelsUi();
+  updateColorWheelSvg();
+  showToast(`Set ${TOKEN_META[anchorToken].name} as Base Colour 🎯`);
+}
+
+// Repaint all idle reels and the contrast lamps / marquee
+function updateReelsUi() {
+  TOKEN_ORDER.forEach(key => {
+    const st = reelState[key];
+    if (!st) return;
+    if (!st.dragging && !st.spinning) paintReel(key);
+    st.col.classList.toggle('is-held', !!heldTokens[key]);
+    st.col.classList.toggle('is-selected', key === selectedWheelToken);
+    st.col.classList.toggle('is-base-token', key === anchorToken);
+    st.col.classList.toggle('is-popover-open', key === activePopoverToken);
+    const baseBtn = st.col.querySelector('.btn-reel-base');
+    if (baseBtn) {
+      const isBase = (key === anchorToken);
+      baseBtn.classList.toggle('is-base', isBase);
+      baseBtn.title = isBase ? `Current Base Colour (${TOKEN_META[key].name})` : `Set ${TOKEN_META[key].name} as Base Colour`;
+    }
+  });
+  const selBase = document.getElementById('selectBaseToken');
+  if (selBase && selBase.value !== anchorToken) {
+    selBase.value = anchorToken;
+  }
+  updateScoreUi();
+}
+
+function updateScoreUi() {
+  const score = StyleEngine.scorePalette(tokens);
+  TOKEN_ORDER.forEach(key => {
+    const st = reelState[key];
+    if (!st) return;
+    const lamp = st.col.querySelector('.reel-lamp');
+    const val = lamp.querySelector('.lamp-value');
+    lamp.classList.remove('pass', 'fail', 'aaa', 'base');
+    if (key === 'canvas') {
+      lamp.classList.add('base');
+      val.textContent = `L*${Math.round(StyleEngine.getLstar(tokens.canvas))}`;
+      lamp.title = 'Canvas is the reference: every other reel is scored against it';
+      return;
+    }
+    const line = score.lines[key];
+    const rule = StyleEngine.CONTRAST_RULES[key];
+    lamp.classList.add(line.pass ? 'pass' : 'fail');
+    if (line.aaa) lamp.classList.add('aaa');
+    val.textContent = line.ratio >= 10 ? line.ratio.toFixed(0) : line.ratio.toFixed(line.ratio >= 2 ? 1 : 2);
+    lamp.title = `${rule.label}: ${line.ratio.toFixed(2)}:1 (needs ≥ ${rule.min}${rule.aaa ? `, AAA ≥ ${rule.aaa}` : ''})\n${rule.why}`;
+  });
+
+  if (marqueeStars) {
+    marqueeStars.textContent = '★'.repeat(score.passed) + '☆'.repeat(score.total - score.passed);
+  }
+  if (marqueeText) {
+    marqueeText.textContent = score.passed === score.total
+      ? (score.lines.text.aaa ? 'ALL LINES (AAA)' : 'ALL LINES')
+      : `${score.passed}/${score.total} LINES`;
+  }
+  if (slotCabinet) {
+    slotCabinet.classList.toggle('is-all-pass', score.passed === score.total);
+    slotCabinet.classList.toggle('is-jackpot', score.jackpot);
+    slotCabinet.classList.toggle('has-fail', score.passed < score.total);
+  }
+  return score;
+}
+
+// ---- The Spin ----------------------------------------------------------
+
+function pullLever() {
+  if (!leverEl || isSpinning) return;
+  leverEl.classList.remove('pulled');
+  void leverEl.offsetWidth;
+  leverEl.classList.add('pulled');
+  setTimeout(() => leverEl.classList.remove('pulled'), 450);
+  executeHarmoniousShuffle(activeHarmony);
+}
+
+function randomSymbolLike(hex) {
+  // Same perceived lightness, random hue: plausible "symbols" flying past
+  const rgb = StyleEngine.hexToRgb(hex);
+  const hsl = StyleEngine.rgbToHsl(rgb.r, rgb.g, rgb.b);
+  const h = Math.floor(Math.random() * 360);
+  const c = StyleEngine.hslToRgb(h, Math.max(35, hsl.s), hsl.l);
+  return StyleEngine.rgbToHex(c.r, c.g, c.b);
+}
+
+function animateSpin(finalTokens, onDone) {
+  isSpinning = true;
+  if (slotCabinet) slotCabinet.classList.add('is-spinning');
+  const spinKeys = TOKEN_ORDER.filter(k => !heldTokens[k]);
+  let remaining = spinKeys.length;
+  if (!remaining) { isSpinning = false; onDone(); return; }
+
+  spinKeys.forEach((key, j) => {
+    const st = reelState[key];
+    st.spinning = true;
+    st.col.classList.add('is-spinning');
+
+    const steps = FACE_COUNT * (2 + j) + Math.floor(Math.random() * FACE_COUNT);
+    const targetK = st.k + steps;
+    const landing = mod(targetK, FACE_COUNT);
+    st.faces.forEach((face, i) => {
+      face.textContent = '';
+      face.classList.remove('is-front', 'at-limit');
+      face.style.background = i === landing ? finalTokens[key] : randomSymbolLike(finalTokens[key]);
+    });
+
+    const duration = 900 + j * 260;
+    setDrum(key, -targetK * FACE_ANGLE, { duration, easing: 'cubic-bezier(.12,.62,.22,1.04)' });
+
+    // Tick sound while spinning, slowing down
+    if (soundOn) {
+      let t = 0;
+      const tickLoop = () => {
+        if (t > duration * 0.85) return;
+        playSound('tick');
+        const gap = 40 + (t / duration) * 160;
+        t += gap;
+        setTimeout(tickLoop, gap);
+      };
+      tickLoop();
+    }
+
+    setTimeout(() => st.col.classList.remove('is-spinning'), duration * 0.55);
+    setTimeout(() => {
+      st.k = targetK;
+      st.spinning = false;
+      tokens[key] = finalTokens[key];
+      if (TOKEN_INPUTS[key]) {
+        TOKEN_INPUTS[key].picker.value = finalTokens[key];
+        TOKEN_INPUTS[key].text.value = finalTokens[key];
+      }
+      st.col.classList.add('landed');
+      setTimeout(() => st.col.classList.remove('landed'), 300);
+      playSound('clunk');
+      paintReel(key);
+      updateScoreUi();
+      remaining--;
+      if (remaining === 0) {
+        isSpinning = false;
+        if (slotCabinet) slotCabinet.classList.remove('is-spinning');
+        onDone();
+      }
+    }, duration + 30);
+  });
+}
+
+// ---- Sound (off by default) ---------------------------------------------
+
+let soundOn = false;
+let audioCtx = null;
+
+function playSound(kind) {
+  if (!soundOn) return;
+  try {
+    audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
+    const now = audioCtx.currentTime;
+    const blip = (freq, start, len, type = 'square', vol = 0.035) => {
+      const o = audioCtx.createOscillator();
+      const g = audioCtx.createGain();
+      o.type = type;
+      o.frequency.value = freq;
+      g.gain.setValueAtTime(vol, now + start);
+      g.gain.exponentialRampToValueAtTime(0.0001, now + start + len);
+      o.connect(g).connect(audioCtx.destination);
+      o.start(now + start);
+      o.stop(now + start + len + 0.02);
+    };
+    if (kind === 'tick') blip(1400, 0, 0.018);
+    if (kind === 'clunk') blip(160, 0, 0.09, 'triangle', 0.12);
+    if (kind === 'win') [523, 659, 784, 1046].forEach((f, i) => blip(f, i * 0.09, 0.16, 'square', 0.05));
+  } catch (err) { /* audio unavailable */ }
+}
+
+function setupLever() {
+  if (!leverEl) return;
+  let startY = null;
+  let pulledEnough = false;
+  leverEl.addEventListener('pointerdown', (e) => {
+    if (isSpinning) return;
+    leverEl.setPointerCapture(e.pointerId);
+    startY = e.clientY;
+    pulledEnough = false;
+    leverEl.classList.add('grabbing');
+  });
+  leverEl.addEventListener('pointermove', (e) => {
+    if (startY === null) return;
+    const dy = Math.max(0, Math.min(70, e.clientY - startY));
+    leverArm.style.transform = `translateY(${dy}px)`;
+    pulledEnough = dy > 40;
+  });
+  const release = () => {
+    if (startY === null) return;
+    const wasDrag = pulledEnough;
+    startY = null;
+    leverEl.classList.remove('grabbing');
+    leverArm.style.transform = '';
+    // A drag past the threshold or a simple click both pull the lever
+    if (wasDrag) executeHarmoniousShuffle(activeHarmony);
+    else pullLever();
+  };
+  leverEl.addEventListener('pointerup', release);
+  leverEl.addEventListener('pointercancel', () => { startY = null; leverArm.style.transform = ''; leverEl.classList.remove('grabbing'); });
+  leverEl.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); pullLever(); }
+  });
+
+  if (btnSound) {
+    btnSound.addEventListener('click', () => {
+      soundOn = !soundOn;
+      btnSound.textContent = soundOn ? '🔊' : '🔇';
+      btnSound.title = `Sound effects (${soundOn ? 'on' : 'off'})`;
+      btnSound.setAttribute('aria-pressed', String(soundOn));
+      if (soundOn) playSound('tick');
+    });
+  }
+}
+
+
+// =====================================================================
+//  DISTINCT COLOURS POPOVER
+//  Replaces continuous wheel dragging and messy swatch bars with curated,
+//  distinct cartographic swatches organized into 3 clear categories.
+// =====================================================================
+
+const DISTINCT_PALETTES = {
+  accents: [
+    { name: 'Crimson', hex: '#e11d48' },
+    { name: 'Rose', hex: '#f43f5e' },
+    { name: 'Rust', hex: '#c2410c' },
+    { name: 'Flame', hex: '#ea580c' },
+    { name: 'Amber', hex: '#d97706' },
+    { name: 'Sunflower', hex: '#eab308' },
+    { name: 'Lime', hex: '#65a30d' },
+    { name: 'Emerald', hex: '#059669' },
+    { name: 'Mint', hex: '#10b981' },
+    { name: 'Teal', hex: '#0d9488' },
+    { name: 'Cyan', hex: '#0284c7' },
+    { name: 'Sky', hex: '#38bdf8' },
+    { name: 'Royal Blue', hex: '#2563eb' },
+    { name: 'Indigo', hex: '#4f46e5' },
+    { name: 'Violet', hex: '#7c3aed' },
+    { name: 'Magenta', hex: '#c026d3' }
+  ],
+  softs: [
+    { name: 'Soft Blue', hex: '#bfdbfe' },
+    { name: 'Pale Ice', hex: '#e0f2fe' },
+    { name: 'Glacier', hex: '#cffafe' },
+    { name: 'Deep Sea', hex: '#1e3a5f' },
+    { name: 'Navy Basin', hex: '#1e293b' },
+    { name: 'Spring Park', hex: '#bbf7d0' },
+    { name: 'Mint Wash', hex: '#dcfce7' },
+    { name: 'Forest Green', hex: '#15803d' },
+    { name: 'Dark Pine', hex: '#14532d' },
+    { name: 'Olive Sage', hex: '#d9f99d' },
+    { name: 'Warm Parchment', hex: '#fef9c3' },
+    { name: 'Sandstone', hex: '#fef3c7' },
+    { name: 'Desert Buff', hex: '#fed7aa' },
+    { name: 'Terracotta', hex: '#fb923c' },
+    { name: 'Warm Blush', hex: '#ffe4e6' },
+    { name: 'Lavender Wash', hex: '#ede9fe' }
+  ],
+  neutrals: [
+    { name: 'Pure White', hex: '#ffffff' },
+    { name: 'Warm White', hex: '#fafaf9' },
+    { name: 'Porcelain', hex: '#f8fafc' },
+    { name: 'Platinum', hex: '#f1f5f9' },
+    { name: 'Light Slate', hex: '#e2e8f0' },
+    { name: 'Ash Grey', hex: '#cbd5e1' },
+    { name: 'Medium Grey', hex: '#94a3b8' },
+    { name: 'Muted Slate', hex: '#64748b' },
+    { name: 'Steel', hex: '#475569' },
+    { name: 'Dark Charcoal', hex: '#334155' },
+    { name: 'Dark Navy', hex: '#1e293b' },
+    { name: 'Deep Slate', hex: '#0f172a' },
+    { name: 'Pitch Black', hex: '#020617' },
+    { name: 'Jet Black', hex: '#000000' },
+    { name: 'Warm Stone', hex: '#d6d3d1' },
+    { name: 'Dark Bronze', hex: '#292524' }
+  ]
+};
+
+// Popover DOM References
+const reelPopover = document.getElementById('reelPopover');
+const popoverTokenIcon = document.getElementById('popoverTokenIcon');
+const popoverTokenName = document.getElementById('popoverTokenName');
+const popoverCurrentChip = document.getElementById('popoverCurrentChip');
+const btnPopoverClose = document.getElementById('btnPopoverClose');
+const popoverAccentGrid = document.getElementById('popoverAccentGrid');
+const popoverSoftGrid = document.getElementById('popoverSoftGrid');
+const popoverNeutralGrid = document.getElementById('popoverNeutralGrid');
+const popoverHexInput = document.getElementById('popoverHexInput');
+const popoverContrastBadge = document.getElementById('popoverContrastBadge');
+
+let activePopoverToken = null;
+
+function makePopoverSwatchButton(item) {
+  const btn = document.createElement('button');
+  btn.type = 'button';
+  btn.className = 'btn-popover-swatch';
+  btn.style.background = item.hex;
+  btn.dataset.hex = item.hex;
+  btn.title = `${item.name} (${item.hex.toUpperCase()})`;
+  btn.setAttribute('aria-label', `${item.name} ${item.hex}`);
+  btn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    selectPopoverSwatch(item.hex);
+  });
+  return btn;
+}
+
+function buildPopoverSwatches() {
+  if (popoverAccentGrid) {
+    popoverAccentGrid.innerHTML = '';
+    DISTINCT_PALETTES.accents.forEach(item => popoverAccentGrid.appendChild(makePopoverSwatchButton(item)));
+  }
+  if (popoverSoftGrid) {
+    popoverSoftGrid.innerHTML = '';
+    DISTINCT_PALETTES.softs.forEach(item => popoverSoftGrid.appendChild(makePopoverSwatchButton(item)));
+  }
+  if (popoverNeutralGrid) {
+    popoverNeutralGrid.innerHTML = '';
+    DISTINCT_PALETTES.neutrals.forEach(item => popoverNeutralGrid.appendChild(makePopoverSwatchButton(item)));
+  }
+}
+
+function openReelPopover(tokenKey) {
+  if (!tokenKey || !tokens[tokenKey] || isSpinning) return;
+  activePopoverToken = tokenKey;
+  selectedWheelToken = tokenKey;
+
+  const meta = TOKEN_META[tokenKey];
+  if (popoverTokenIcon) popoverTokenIcon.textContent = meta.icon;
+  if (popoverTokenName) popoverTokenName.textContent = `${meta.name} (${meta.desc})`;
+  if (popoverCurrentChip) popoverCurrentChip.style.background = tokens[tokenKey];
+  if (popoverHexInput) popoverHexInput.value = tokens[tokenKey];
+
+  updatePopoverContrast();
+  updatePopoverActiveSwatch();
+  updateReelsUi();
+
+  if (reelPopover) {
+    reelPopover.style.display = 'flex';
+  }
+}
+
+function closeReelPopover() {
+  if (!reelPopover || reelPopover.style.display === 'none') return;
+  reelPopover.style.display = 'none';
+  activePopoverToken = null;
+  updateReelsUi();
+}
+
+function selectPopoverSwatch(hex) {
+  if (!activePopoverToken || isSpinning || !hex) return;
+  const normHex = hex.toLowerCase();
+  tokens[activePopoverToken] = normHex;
+
+  if (TOKEN_INPUTS[activePopoverToken]) {
+    TOKEN_INPUTS[activePopoverToken].picker.value = normHex;
+    TOKEN_INPUTS[activePopoverToken].text.value = normHex;
+  }
+
+  paintReel(activePopoverToken);
+  if (popoverCurrentChip) popoverCurrentChip.style.background = normHex;
+  if (popoverHexInput) popoverHexInput.value = normHex;
+
+  bumpLamp(activePopoverToken);
+  playSound('tick');
+  updateUiState();
+
+  clearTimeout(compileTimeout);
+  compileTimeout = setTimeout(() => {
+    applyCompiledStyle();
+  }, 80);
+}
+
+function updatePopoverContrast() {
+  if (!activePopoverToken || !popoverContrastBadge) return;
+  const currentHex = tokens[activePopoverToken];
+  if (activePopoverToken === 'canvas') {
+    const score = StyleEngine.scorePalette(tokens);
+    popoverContrastBadge.textContent = `${score.passed}/${score.total} Lines (${score.passed === score.total ? 'All Pass' : 'Review'})`;
+    popoverContrastBadge.className = 'popover-contrast-badge ' + (score.passed === score.total ? 'pass' : 'fail');
+  } else {
+    const ratio = StyleEngine.getContrastRatio(tokens.canvas, currentHex);
+    const rule = StyleEngine.CONTRAST_RULES[activePopoverToken];
+    const isAaa = ratio >= (rule.aaa || 7.0);
+    const isPass = ratio >= (rule.min || 3.0);
+    popoverContrastBadge.textContent = `${ratio.toFixed(1)}:1 (${isAaa ? 'AAA' : (isPass ? 'Pass' : 'Fail')})`;
+    popoverContrastBadge.className = 'popover-contrast-badge ' + (isAaa ? 'aaa' : (isPass ? 'pass' : 'fail'));
+  }
+}
+
+function updatePopoverActiveSwatch() {
+  if (!activePopoverToken || !reelPopover) return;
+  const currentHex = (tokens[activePopoverToken] || '').toLowerCase();
+  reelPopover.querySelectorAll('.btn-popover-swatch').forEach(btn => {
+    const isMatch = (btn.dataset.hex || '').toLowerCase() === currentHex;
+    btn.classList.toggle('is-active', isMatch);
+  });
+}
+
+function paintToken(key, hex) {
+  if (isSpinning || !key) return;
+  if (tokens[key] && tokens[key].toLowerCase() === hex.toLowerCase()) return;
+  setTokenValue(key, hex.toLowerCase());
+  bumpLamp(key);
+  playSound('tick');
+}
+
+// --- Adobe-Style Color Wheel ---
 
 // Render high-DPI chromatic saturation disc onto HTML5 canvas
 function renderColorWheelCanvas() {
@@ -454,23 +1109,24 @@ function renderColorWheelCanvas() {
   if (!ctx) return;
 
   const dpr = window.devicePixelRatio || 1;
-  const size = 260;
-  colorWheelCanvas.width = size * dpr;
-  colorWheelCanvas.height = size * dpr;
-  colorWheelCanvas.style.width = `${size}px`;
-  colorWheelCanvas.style.height = `${size}px`;
+  const cssSize = 260;
+  const width = Math.round(cssSize * dpr);
+  const height = Math.round(cssSize * dpr);
 
-  ctx.scale(dpr, dpr);
+  colorWheelCanvas.width = width;
+  colorWheelCanvas.height = height;
+  colorWheelCanvas.style.width = `${cssSize}px`;
+  colorWheelCanvas.style.height = `${cssSize}px`;
 
-  const centerX = size / 2;
-  const centerY = size / 2;
-  const radius = 120; // wheel radius
+  const centerX = width / 2;
+  const centerY = height / 2;
+  const radius = width / 2; // fill the full 260px diameter circle
 
-  const imgData = ctx.createImageData(size, size);
+  const imgData = ctx.createImageData(width, height);
   const data = imgData.data;
 
-  for (let y = 0; y < size; y++) {
-    for (let x = 0; x < size; x++) {
+  for (let y = 0; y < height; y++) {
+    for (let x = 0; x < width; x++) {
       const dx = x - centerX;
       const dy = y - centerY;
       const dist = Math.sqrt(dx * dx + dy * dy);
@@ -483,14 +1139,14 @@ function renderColorWheelCanvas() {
         // Render at L=50 for pure vivid chroma wheel
         const rgb = StyleEngine.hslToRgb(angle, sat, 50);
 
-        const idx = (y * size + x) * 4;
+        const idx = (y * width + x) * 4;
         data[idx] = rgb.r;
         data[idx + 1] = rgb.g;
         data[idx + 2] = rgb.b;
 
-        // Antialiased edge
+        // Smooth antialiased edge
         const edge = radius - dist;
-        const alpha = edge < 1.5 ? Math.max(0, Math.min(255, Math.round(edge * 170))) : 255;
+        const alpha = edge < (1.2 * dpr) ? Math.max(0, Math.min(255, Math.round((edge / (1.2 * dpr)) * 255))) : 255;
         data[idx + 3] = alpha;
       }
     }
@@ -615,281 +1271,22 @@ function updateColorWheelSvg() {
       group.appendChild(lockBadge);
     }
 
-    // Event listener for dragging and selection
+    // Event listener for selecting token and opening distinct colour picker popover
     group.addEventListener('pointerdown', (e) => {
       e.stopPropagation();
       e.preventDefault();
-      group.setPointerCapture(e.pointerId);
-      draggingWheelPin = k;
       selectWheelToken(k);
+      openReelPopover(k);
     });
 
     colorWheelSvg.appendChild(group);
   });
 }
 
-// Setup pointer drag listeners for the color wheel
+// Setup interactions for the color wheel
 function setupColorWheelInteractions() {
-  if (!colorWheelSvg) return;
-
-  const centerX = 130;
-  const centerY = 130;
-  const maxRadius = 118;
-
-  colorWheelSvg.addEventListener('pointermove', (e) => {
-    if (!draggingWheelPin) return;
-    const rect = colorWheelSvg.getBoundingClientRect();
-    const mouseX = e.clientX - rect.left;
-    const mouseY = e.clientY - rect.top;
-
-    const dx = mouseX - centerX;
-    const dy = mouseY - centerY;
-    const dist = Math.sqrt(dx * dx + dy * dy);
-
-    // Clamp saturation between 12% and 100%
-    const sat = Math.min(100, Math.max(12, Math.round((dist / maxRadius) * 100)));
-
-    let angle = Math.atan2(dy, dx) * (180 / Math.PI);
-    if (angle < 0) angle += 360;
-    const newHue = Math.round(angle);
-
-    const targetKey = draggingWheelPin;
-    const currentHex = tokens[targetKey];
-    const currentHsl = StyleEngine.rgbToHsl(StyleEngine.hexToRgb(currentHex).r, StyleEngine.hexToRgb(currentHex).g, StyleEngine.hexToRgb(currentHex).b);
-
-    // If dragging the Anchor token and harmony is NOT custom, rotate the whole harmony!
-    if (targetKey === anchorToken && activeHarmony !== 'custom' && activeHarmony !== 'monochrome') {
-      const deltaHue = (newHue - currentHsl.h + 360) % 360;
-
-      // Rotate all UNHELD tokens by deltaHue
-      Object.keys(tokens).forEach(k => {
-        if (!heldTokens[k]) {
-          const kHsl = StyleEngine.rgbToHsl(StyleEngine.hexToRgb(tokens[k]).r, StyleEngine.hexToRgb(tokens[k]).g, StyleEngine.hexToRgb(tokens[k]).b);
-          const rotatedHue = (kHsl.h + deltaHue + 360) % 360;
-          const newColor = StyleEngine.rgbToHex(
-            StyleEngine.hslToRgb(rotatedHue, k === targetKey ? sat : kHsl.s, kHsl.l).r,
-            StyleEngine.hslToRgb(rotatedHue, k === targetKey ? sat : kHsl.s, kHsl.l).g,
-            StyleEngine.hslToRgb(rotatedHue, k === targetKey ? sat : kHsl.s, kHsl.l).b
-          );
-          tokens[k] = newColor;
-          if (TOKEN_INPUTS[k]) {
-            TOKEN_INPUTS[k].picker.value = newColor;
-            TOKEN_INPUTS[k].text.value = newColor;
-          }
-        }
-      });
-    } else {
-      // Individual pin manipulation
-      const updatedHex = StyleEngine.rgbToHex(
-        StyleEngine.hslToRgb(newHue, sat, currentHsl.l).r,
-        StyleEngine.hslToRgb(newHue, sat, currentHsl.l).g,
-        StyleEngine.hslToRgb(newHue, sat, currentHsl.l).b
-      );
-      tokens[targetKey] = updatedHex;
-      if (TOKEN_INPUTS[targetKey]) {
-        TOKEN_INPUTS[targetKey].picker.value = updatedHex;
-        TOKEN_INPUTS[targetKey].text.value = updatedHex;
-      }
-    }
-
-    updateUiState();
-
-    clearTimeout(compileTimeout);
-    compileTimeout = setTimeout(() => {
-      applyCompiledStyle();
-    }, 60);
-  });
-
-  const stopDrag = () => {
-    if (draggingWheelPin) {
-      draggingWheelPin = null;
-      updateColorWheelSvg();
-    }
-  };
-
-  colorWheelSvg.addEventListener('pointerup', stopDrag);
-  colorWheelSvg.addEventListener('pointercancel', stopDrag);
-
-  // Set as Base Color Anchor button
-  if (btnSetAnchor) {
-    btnSetAnchor.addEventListener('click', () => {
-      anchorToken = selectedWheelToken;
-      updateActiveTokenBar();
-      updateColorWheelSvg();
-      showToast(`Set ${TOKEN_META[anchorToken].name} as Harmony Anchor 🎯`);
-    });
-  }
-
-  // Wheel Active Bar Hold Button
-  if (wheelHoldBtn) {
-    wheelHoldBtn.addEventListener('click', () => {
-      toggleHold(selectedWheelToken);
-      updateActiveTokenBar();
-      updateColorWheelSvg();
-    });
-  }
-
-  // Wheel Lightness Slider
-  if (wheelLightnessSlider) {
-    wheelLightnessSlider.addEventListener('input', (e) => {
-      const val = parseInt(e.target.value, 10);
-      if (wheelLightnessValue) wheelLightnessValue.textContent = `${val}%`;
-
-      const hex = tokens[selectedWheelToken];
-      const rgb = StyleEngine.hexToRgb(hex);
-      const hsl = StyleEngine.rgbToHsl(rgb.r, rgb.g, rgb.b);
-      const newHex = StyleEngine.rgbToHex(
-        StyleEngine.hslToRgb(hsl.h, hsl.s, val).r,
-        StyleEngine.hslToRgb(hsl.h, hsl.s, val).g,
-        StyleEngine.hslToRgb(hsl.h, hsl.s, val).b
-      );
-
-      onTokenChanged(selectedWheelToken, newHex);
-      if (TOKEN_INPUTS[selectedWheelToken]) {
-        TOKEN_INPUTS[selectedWheelToken].picker.value = newHex;
-        TOKEN_INPUTS[selectedWheelToken].text.value = newHex;
-      }
-      updateActiveTokenBar();
-    });
-  }
-
-  // View Switcher Tabs
-  if (tabBtnWheel) tabBtnWheel.addEventListener('click', () => setStudioView('wheel'));
-  if (tabBtnCards) tabBtnCards.addEventListener('click', () => setStudioView('cards'));
-  if (tabBtnBoth) tabBtnBoth.addEventListener('click', () => setStudioView('both'));
-}
-
-// Select a token to inspect and control in the wheel toolbar
-function selectWheelToken(tokenKey) {
-  selectedWheelToken = tokenKey;
-  updateActiveTokenBar();
-  updateColorWheelSvg();
-  renderWheelSwatchesStrip();
-}
-
-// Update the Inspector strip below the wheel
-function updateActiveTokenBar() {
-  const meta = TOKEN_META[selectedWheelToken] || { name: selectedWheelToken, icon: '🎨' };
-  const hex = tokens[selectedWheelToken] || '#ffffff';
-  const rgb = StyleEngine.hexToRgb(hex);
-  const hsl = StyleEngine.rgbToHsl(rgb.r, rgb.g, rgb.b);
-
-  if (activeTokenIcon) activeTokenIcon.textContent = meta.icon;
-  if (activeTokenName) activeTokenName.textContent = meta.name;
-  if (activeTokenHex) activeTokenHex.textContent = hex.toLowerCase();
-
-  // Anchor button state
-  const isAnchor = (selectedWheelToken === anchorToken);
-  if (btnSetAnchor) {
-    btnSetAnchor.classList.toggle('is-anchor', isAnchor);
-    if (anchorBtnText) anchorBtnText.textContent = isAnchor ? '🎯 Base Active' : 'Set as Base';
-  }
-
-  // Hold button state
-  const isHeld = !!heldTokens[selectedWheelToken];
-  if (wheelHoldBtn) {
-    wheelHoldBtn.classList.toggle('is-held', isHeld);
-    const holdText = wheelHoldBtn.querySelector('.hold-text');
-    if (holdText) holdText.textContent = isHeld ? 'HELD' : 'HOLD';
-  }
-
-  // Lightness Slider state & gradient
-  if (wheelLightnessSlider) {
-    wheelLightnessSlider.value = hsl.l;
-    const pureColor = StyleEngine.rgbToHex(
-      StyleEngine.hslToRgb(hsl.h, hsl.s, 50).r,
-      StyleEngine.hslToRgb(hsl.h, hsl.s, 50).g,
-      StyleEngine.hslToRgb(hsl.h, hsl.s, 50).b
-    );
-    wheelLightnessSlider.style.background = `linear-gradient(to right, #000000 0%, ${pureColor} 50%, #ffffff 100%)`;
-  }
-  if (wheelLightnessValue) {
-    wheelLightnessValue.textContent = `${hsl.l}%`;
-  }
-}
-
-// Render the 6 mini-swatches below the wheel
-function renderWheelSwatchesStrip() {
-  if (!wheelSwatchesStrip) return;
-  wheelSwatchesStrip.innerHTML = '';
-
-  const keys = ['canvas', 'water', 'greenspace', 'roads', 'buildings', 'text'];
-  keys.forEach(k => {
-    const meta = TOKEN_META[k];
-    const hex = tokens[k];
-    const isSelected = (k === selectedWheelToken);
-    const isAnchor = (k === anchorToken);
-    const isHeld = !!heldTokens[k];
-
-    const swatch = document.createElement('div');
-    swatch.className = `mini-swatch ${isSelected ? 'active' : ''} ${isHeld ? 'is-held' : ''}`;
-    swatch.title = `${meta.name}: ${hex}${isAnchor ? ' (🎯 Base)' : ''}${isHeld ? ' (🔒 Held)' : ''}`;
-
-    swatch.innerHTML = `
-      <div class="mini-swatch-chip" style="background: ${hex};"></div>
-      <span class="mini-swatch-label">${meta.icon}</span>
-    `;
-
-    swatch.addEventListener('click', () => {
-      selectWheelToken(k);
-    });
-
-    wheelSwatchesStrip.appendChild(swatch);
-  });
-}
-
-// Toggle between Color Wheel, Cards, and Both views
-function setStudioView(viewMode) {
-  currentStudioView = viewMode;
-
-  if (tabBtnWheel) tabBtnWheel.classList.toggle('active', viewMode === 'wheel');
-  if (tabBtnCards) tabBtnCards.classList.toggle('active', viewMode === 'cards');
-  if (tabBtnBoth) tabBtnBoth.classList.toggle('active', viewMode === 'both');
-
-  if (colorWheelSection) {
-    colorWheelSection.classList.toggle('is-hidden', viewMode === 'cards');
-  }
-  if (tokenGrid) {
-    tokenGrid.classList.toggle('is-hidden', viewMode === 'wheel');
-  }
-
-  if (viewMode !== 'cards') {
-    updateColorWheelSvg();
-    renderWheelSwatchesStrip();
-    updateActiveTokenBar();
-  }
-}
-
-// Render interactive 5-chip tonal ladder for each token
-function renderTonalLadders() {
-  const deltas = [-16, -8, 0, 8, 16];
-  Object.keys(TOKEN_INPUTS).forEach(key => {
-    const id = `ladder${key.charAt(0).toUpperCase() + key.slice(1)}`;
-    const ladder = document.getElementById(id);
-    if (!ladder) return;
-
-    ladder.innerHTML = '';
-    const baseColor = tokens[key];
-
-    deltas.forEach(delta => {
-      const chipColor = StyleEngine.adjustHsl(baseColor, { l: delta });
-      const chip = document.createElement('button');
-      chip.type = 'button';
-      chip.className = `tonal-chip ${delta === 0 ? 'active' : ''}`;
-      chip.style.backgroundColor = chipColor;
-      chip.title = `${delta === 0 ? 'Current' : (delta > 0 ? `+${delta}% Lighter` : `${delta}% Darker`)} (${chipColor})`;
-
-      chip.addEventListener('click', () => {
-        onTokenChanged(key, chipColor);
-        if (TOKEN_INPUTS[key]) {
-          TOKEN_INPUTS[key].picker.value = chipColor;
-          TOKEN_INPUTS[key].text.value = chipColor;
-        }
-      });
-
-      ladder.appendChild(chip);
-    });
-  });
+  // Pin dragging removed: clicking any pin selects it and opens the distinct color popover.
+  // Harmony rotation is handled cleanly via the ◀ / ▶ buttons.
 }
 
 // Render the curated preset pills
@@ -910,7 +1307,8 @@ function renderPresetPills() {
     `;
 
     pill.addEventListener('click', () => {
-      tokens = { ...p };
+      if (isSpinning) return;
+      TOKEN_ORDER.forEach(k => { tokens[k] = p[k]; });
       syncTokenInputs();
       updateUiState();
       applyCompiledStyle();
@@ -956,110 +1354,105 @@ function setThemeMode(targetMode) {
 
 // Event Listeners
 function setupEventListeners() {
-  // Theme Mode toggles (Light / Dark)
   btnModeLight.addEventListener('click', () => {
-    if (currentMode === 'light') return;
+    if (currentMode === 'light' || isSpinning) return;
     setThemeMode('light');
   });
-
   btnModeDark.addEventListener('click', () => {
-    if (currentMode === 'dark') return;
+    if (currentMode === 'dark' || isSpinning) return;
     setThemeMode('dark');
   });
 
-  // Lightness nudge steppers (Darker / Lighter buttons)
-  document.querySelectorAll('.btn-tone-step').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const tokenKey = btn.dataset.token;
-      const delta = parseInt(btn.dataset.delta, 10) || 0;
-      if (!tokens[tokenKey]) return;
-
-      const newColor = StyleEngine.adjustHsl(tokens[tokenKey], { l: delta });
-      onTokenChanged(tokenKey, newColor);
-      if (TOKEN_INPUTS[tokenKey]) {
-        TOKEN_INPUTS[tokenKey].picker.value = newColor;
-        TOKEN_INPUTS[tokenKey].text.value = newColor;
-      }
-    });
-  });
-
-  // Location select
   locationSelect.addEventListener('change', (e) => {
     const p = PRESETS[e.target.value];
-    if (p) {
-      map.flyTo({
-        center: p.center,
-        zoom: p.zoom,
-        pitch: p.pitch,
-        bearing: p.bearing,
-        essential: true,
-        duration: 1800
-      });
+    if (p && map) {
+      map.flyTo({ center: p.center, zoom: p.zoom, pitch: p.pitch, bearing: p.bearing, essential: true, duration: 1800 });
     }
   });
 
-  // Projection toggles
   btnProjMercator.addEventListener('click', () => {
     currentProjection = 'mercator';
     btnProjMercator.classList.add('active');
     btnProjGlobe.classList.remove('active');
-    map.setProjection({ type: 'mercator' });
+    if (map) map.setProjection({ type: 'mercator' });
   });
-
   btnProjGlobe.addEventListener('click', () => {
     currentProjection = 'globe';
     btnProjGlobe.classList.add('active');
     btnProjMercator.classList.remove('active');
-    map.setProjection({ type: 'globe' });
+    if (map) map.setProjection({ type: 'globe' });
   });
 
-  // Slot-Machine HOLD Buttons (Clicking toggles hold on that color reel)
-  document.querySelectorAll('.btn-hold').forEach(btn => {
+  // Reel HOLD buttons
+  document.querySelectorAll('.reel-hold').forEach(btn => {
     btn.addEventListener('click', (e) => {
       e.stopPropagation();
-      const tokenKey = btn.dataset.token;
-      toggleHold(tokenKey);
+      toggleHold(btn.dataset.token);
     });
   });
 
-  // Color Theory Harmony Selector
+  // Base colour selector
+  const selectBaseToken = document.getElementById('selectBaseToken');
+  if (selectBaseToken) {
+    selectBaseToken.value = anchorToken;
+    selectBaseToken.addEventListener('change', (e) => {
+      setAnchorToken(e.target.value);
+    });
+  }
+
+  // Harmony ("game") selector: changing selection triggers spin
   if (selectHarmony) {
     selectHarmony.addEventListener('change', (e) => {
       activeHarmony = e.target.value;
       updateHarmonyBadge();
-      showToast(`Selected ${activeHarmony.replace('-', ' ')} harmony`);
+      pullLever();
     });
   }
 
-  // Harmonize Button (Applies active harmony without randomizing seed)
-  if (btnHarmonize) {
-    btnHarmonize.addEventListener('click', () => {
-      executeHarmoniousShuffle(activeHarmony);
+  // Left/Right buttons next to Colour harmony cycle choices and auto-spin
+  if (btnPrevHarmony) btnPrevHarmony.addEventListener('click', () => stepHarmony(-1));
+  if (btnNextHarmony) btnNextHarmony.addEventListener('click', () => stepHarmony(1));
+
+  if (btnWheelRotateCcw) btnWheelRotateCcw.addEventListener('click', () => rotateHarmony(-15));
+  if (btnWheelRotateCw) btnWheelRotateCw.addEventListener('click', () => rotateHarmony(15));
+  if (btnClearHolds) btnClearHolds.addEventListener('click', clearAllHolds);
+  btnShuffle.addEventListener('click', pullLever);
+
+  if (btnPopoverClose) {
+    btnPopoverClose.addEventListener('click', closeReelPopover);
+  }
+  if (popoverHexInput) {
+    popoverHexInput.addEventListener('input', (e) => {
+      let val = e.target.value.trim();
+      if (!val.startsWith('#')) val = '#' + val;
+      if (/^#[0-9A-Fa-f]{6}$/.test(val)) {
+        selectPopoverSwatch(val);
+      }
     });
   }
 
-  // Release All Holds Button
-  if (btnClearHolds) {
-    btnClearHolds.addEventListener('click', () => {
-      clearAllHolds();
-    });
-  }
-
-  // Shuffle button (Honors active Light/Dark mode, color harmony, and HOLD locks)
-  btnShuffle.addEventListener('click', () => {
-    executeHarmoniousShuffle(activeHarmony);
+  // Close popover when clicking outside
+  document.addEventListener('pointerdown', (e) => {
+    if (!reelPopover || reelPopover.style.display === 'none') return;
+    if (reelPopover.contains(e.target)) return;
+    if (e.target.closest && (e.target.closest('.reel-chip') || e.target.closest('.reel-hex') || e.target.closest('.wheel-pin-group'))) return;
+    closeReelPopover();
   });
 
-  // Auto-Contrast button
   btnAutoContrast.addEventListener('click', () => {
+    if (isSpinning) return;
+    const before = { ...tokens };
     tokens = StyleEngine.autoBalanceContrast(tokens);
+    const changed = TOKEN_ORDER.filter(k => before[k].toLowerCase() !== tokens[k].toLowerCase());
     syncTokenInputs();
     updateUiState();
     applyCompiledStyle();
-    showToast('Auto-tuned for WCAG AA compliance');
+    changed.forEach(bumpLamp);
+    showToast(changed.length
+      ? `Fixed ${changed.map(k => TOKEN_META[k].short.toLowerCase()).join(', ')} with the smallest lightness change`
+      : 'Every line already passes ✓');
   });
 
-  // Monochrome Lock
   btnMonoLock.addEventListener('click', () => {
     isMonochromeLocked = !isMonochromeLocked;
     btnMonoLock.classList.toggle('active', isMonochromeLocked);
@@ -1069,13 +1462,12 @@ function setupEventListeners() {
       syncTokenInputs();
       updateUiState();
       applyCompiledStyle();
-      showToast('Monochrome lock enabled');
+      showToast('Monochrome lock on — roads & canvas drive every reel');
     } else {
-      showToast('Monochrome lock disabled');
+      showToast('Monochrome lock off');
     }
   });
 
-  // Share button
   btnShare.addEventListener('click', () => {
     saveTokensToUrl();
     navigator.clipboard.writeText(window.location.href).then(() => {
@@ -1085,17 +1477,12 @@ function setupEventListeners() {
     });
   });
 
-  // Inspector Drawer
   btnInspect.addEventListener('click', () => {
     inspectorDrawer.classList.toggle('open');
     updateInspectorJson();
   });
+  btnCloseInspector.addEventListener('click', () => inspectorDrawer.classList.remove('open'));
 
-  btnCloseInspector.addEventListener('click', () => {
-    inspectorDrawer.classList.remove('open');
-  });
-
-  // Copy JSON
   btnCopyJson.addEventListener('click', () => {
     if (!currentStyle) return;
     navigator.clipboard.writeText(JSON.stringify(currentStyle, null, 2)).then(() => {
@@ -1103,7 +1490,6 @@ function setupEventListeners() {
     });
   });
 
-  // Download Style JSON
   btnDownload.addEventListener('click', () => {
     if (!currentStyle) return;
     const blob = new Blob([JSON.stringify(currentStyle, null, 2)], { type: 'application/json' });
@@ -1116,6 +1502,39 @@ function setupEventListeners() {
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
     showToast('Downloaded custom-map-style.json');
+  });
+
+  // Keyboard: Space = spin, 1–6 = hold reel
+  document.addEventListener('keydown', (e) => {
+    const t = e.target;
+    if (t && (t.tagName === 'INPUT' || t.tagName === 'SELECT' || t.tagName === 'TEXTAREA' || t.isContentEditable)) return;
+    if (e.metaKey || e.ctrlKey || e.altKey) return;
+    if (e.code === 'Space' && !(t && t.classList && t.classList.contains('reel-window'))) {
+      if (t && t.tagName === 'BUTTON') return; // let buttons handle their own Space
+      e.preventDefault();
+      pullLever();
+    }
+    const n = parseInt(e.key, 10);
+    if (n >= 1 && n <= 6) toggleHold(TOKEN_ORDER[n - 1]);
+
+    // Keyboard rotation: [ or Shift+Left = counter-clockwise, ] or Shift+Right = clockwise
+    if (e.key === '[' || (e.shiftKey && e.key === 'ArrowLeft')) {
+      e.preventDefault();
+      rotateHarmony(-15);
+    }
+    if (e.key === ']' || (e.shiftKey && e.key === 'ArrowRight')) {
+      e.preventDefault();
+      rotateHarmony(15);
+    }
+
+    // Keyboard: Escape closes popover
+    if (e.key === 'Escape') {
+      closeReelPopover();
+    }
+  });
+
+  window.addEventListener('resize', () => {
+    renderColorWheelCanvas();
   });
 }
 

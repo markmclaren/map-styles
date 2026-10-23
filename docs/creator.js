@@ -57,6 +57,10 @@ const btnMonoLock = document.getElementById('btnMonoLock');
 const btnClearHolds = document.getElementById('btnClearHolds');
 const selectHarmony = document.getElementById('selectHarmony');
 const harmonyBadge = document.getElementById('harmonyBadge');
+const btnRotateCcw = document.getElementById('btnRotateCcw');
+const btnRotateCw = document.getElementById('btnRotateCw');
+const btnWheelRotateCcw = document.getElementById('btnWheelRotateCcw');
+const btnWheelRotateCw = document.getElementById('btnWheelRotateCw');
 const btnModeLight = document.getElementById('btnModeLight');
 const btnModeDark = document.getElementById('btnModeDark');
 const contrastPill = document.getElementById('contrastPill');
@@ -170,7 +174,7 @@ async function init() {
 
   // 5. Setup UI & Event Listeners (ALWAYS execute so UI remains interactive)
   buildReels();
-  buildPaletteBar();
+  buildPopoverSwatches();
   setupTokenBindings();
   setupLever();
   renderPresetPills();
@@ -290,7 +294,10 @@ function updateUiState() {
   updateHarmonyBadge();
   updateReelsUi();
   updateColorWheelSvg();
-  updatePaletteUi();
+  if (reelPopover && reelPopover.style.display !== 'none' && activePopoverToken) {
+    updatePopoverContrast();
+    updatePopoverActiveSwatch();
+  }
 }
 
 // Toggle HOLD for a token
@@ -395,13 +402,51 @@ function executeHarmoniousShuffle(harmonyChoice) {
   });
 }
 
+// Rotate the active harmony across the 360° color wheel by deltaDeg (e.g. +15° or -15°)
+function rotateHarmony(deltaDeg) {
+  if (isSpinning || !deltaDeg) return;
+
+  const unheldKeys = TOKEN_ORDER.filter(k => !heldTokens[k]);
+  if (unheldKeys.length === 0) {
+    showToast('All reels are held — release one to rotate harmony');
+    return;
+  }
+
+  unheldKeys.forEach(k => {
+    const rgb = StyleEngine.hexToRgb(tokens[k]);
+    const hsl = StyleEngine.rgbToHsl(rgb.r, rgb.g, rgb.b);
+    const rotatedH = (hsl.h + deltaDeg + 360) % 360;
+    const newColor = StyleEngine.rgbToHex(
+      StyleEngine.hslToRgb(rotatedH, hsl.s, hsl.l).r,
+      StyleEngine.hslToRgb(rotatedH, hsl.s, hsl.l).g,
+      StyleEngine.hslToRgb(rotatedH, hsl.s, hsl.l).b
+    ).toLowerCase();
+    tokens[k] = newColor;
+  });
+
+  syncTokenInputs();
+  updateUiState();
+  applyCompiledStyle();
+  playSound('tick');
+
+  const baseH = Math.round(StyleEngine.rgbToHsl(
+    StyleEngine.hexToRgb(tokens[anchorToken]).r,
+    StyleEngine.hexToRgb(tokens[anchorToken]).g,
+    StyleEngine.hexToRgb(tokens[anchorToken]).b
+  ).h);
+  showToast(`Rotated harmony ${deltaDeg > 0 ? '+' : ''}${deltaDeg}° (Base: ${baseH}°)`, 900);
+}
+
 // Select a token to inspect and control in the wheel toolbar
 function selectWheelToken(tokenKey) {
   selectedWheelToken = tokenKey;
   updateColorWheelSvg();
   updateReelsUi();
   updateHoldUi();
-  updatePaletteUi();
+  if (reelPopover && reelPopover.style.display !== 'none' && activePopoverToken) {
+    updatePopoverContrast();
+    updatePopoverActiveSwatch();
+  }
 }
 
 // =====================================================================
@@ -444,7 +489,7 @@ function buildReels() {
       <button type="button" class="reel-nudge" data-dir="-1" title="Nudge darker (−${LSTAR_STEP} L*)" aria-label="${meta.name} darker">▼</button>
       <div class="reel-lamp" title=""><span class="lamp-dot"></span><span class="lamp-value">--</span></div>
       <div class="reel-hex-wrap">
-        <button type="button" class="reel-chip" style="background:${tokens[key]}" title="Select ${meta.name} — then click a swatch in the palette bar"></button>
+        <button type="button" class="reel-chip" style="background:${tokens[key]}" title="Pick distinct colour for ${meta.name}"></button>
         <input type="text" id="text${cap}" class="reel-hex" value="${tokens[key]}" maxlength="7" spellcheck="false" aria-label="${meta.name} hex">
       </div>
       <button type="button" class="btn-hold reel-hold" data-token="${key}" title="Hold (${idx + 1})">
@@ -480,9 +525,12 @@ function buildReels() {
     };
     chipEl.addEventListener('click', (e) => {
       e.preventDefault();
-      selectWheelToken(key);
-      pulsePaletteBar();
+      openReelPopover(key);
     });
+    const hexInput = col.querySelector('.reel-hex');
+    if (hexInput) {
+      hexInput.addEventListener('click', () => openReelPopover(key));
+    }
 
     setupReelInteractions(key);
     paintReel(key);
@@ -591,24 +639,7 @@ function setupReelInteractions(key) {
     if (e.key === 'Enter') selectWheelToken(key);
   });
 
-  // Accept swatches dragged from the palette bar
-  st.col.addEventListener('dragover', (e) => {
-    if (isSpinning || !e.dataTransfer.types.includes('text/x-swatch')) return;
-    e.preventDefault();
-    e.dataTransfer.dropEffect = 'copy';
-    st.col.classList.add('drop-target');
-  });
-  st.col.addEventListener('dragleave', (e) => {
-    if (!st.col.contains(e.relatedTarget)) st.col.classList.remove('drop-target');
-  });
-  st.col.addEventListener('drop', (e) => {
-    st.col.classList.remove('drop-target');
-    const hex = e.dataTransfer.getData('text/x-swatch');
-    if (!/^#[0-9a-f]{6}$/i.test(hex)) return;
-    e.preventDefault();
-    paintToken(key, hex.toLowerCase());
-    selectWheelToken(key);
-  });
+  // Swatch drag-and-drop removed in favor of direct 1-click distinct color picker popover
 
   st.col.querySelectorAll('.reel-nudge').forEach(btn => {
     btn.addEventListener('click', () => nudgeReel(key, parseInt(btn.dataset.dir, 10)));
@@ -651,6 +682,7 @@ function updateReelsUi() {
     st.col.classList.toggle('is-held', !!heldTokens[key]);
     st.col.classList.toggle('is-selected', key === selectedWheelToken);
     st.col.classList.toggle('is-base-token', key === anchorToken);
+    st.col.classList.toggle('is-popover-open', key === activePopoverToken);
     const baseBtn = st.col.querySelector('.btn-reel-base');
     if (baseBtn) {
       const isBase = (key === anchorToken);
@@ -857,124 +889,187 @@ function setupLever() {
 
 
 // =====================================================================
-//  SWATCH PALETTE BAR (Inkscape-style)
-//  Fixed, distinct swatches. Rows are equal steps of CIE L*, so a row
-//  tells you roughly how much contrast a swatch will give against the
-//  canvas. Swatches that would break a contrast line for the selected
-//  reel are marked.
+//  DISTINCT COLOURS POPOVER
+//  Replaces continuous wheel dragging and messy swatch bars with curated,
+//  distinct cartographic swatches organized into 3 clear categories.
 // =====================================================================
 
-const PALETTE_ROWS_LSTAR = [97, 88, 76, 62, 46, 30, 14];
-const PALETTE_COLUMNS = [
-  { name: 'Grey', h: 0, s: 0, extremes: true },
-  { name: 'Slate', h: 215, s: 20 },
-  { name: 'Stone', h: 35, s: 16 },
-  { name: 'Red', h: 0, s: 72 },
-  { name: 'Orange', h: 24, s: 85 },
-  { name: 'Amber', h: 40, s: 90 },
-  { name: 'Yellow', h: 54, s: 90 },
-  { name: 'Lime', h: 84, s: 65 },
-  { name: 'Green', h: 130, s: 50 },
-  { name: 'Teal', h: 170, s: 60 },
-  { name: 'Cyan', h: 188, s: 70 },
-  { name: 'Sky', h: 202, s: 78 },
-  { name: 'Blue', h: 220, s: 72 },
-  { name: 'Indigo', h: 242, s: 60 },
-  { name: 'Violet', h: 265, s: 60 },
-  { name: 'Purple', h: 285, s: 55 },
-  { name: 'Magenta', h: 312, s: 60 },
-  { name: 'Rose', h: 340, s: 70 }
-];
+const DISTINCT_PALETTES = {
+  accents: [
+    { name: 'Crimson', hex: '#e11d48' },
+    { name: 'Rose', hex: '#f43f5e' },
+    { name: 'Rust', hex: '#c2410c' },
+    { name: 'Flame', hex: '#ea580c' },
+    { name: 'Amber', hex: '#d97706' },
+    { name: 'Sunflower', hex: '#eab308' },
+    { name: 'Lime', hex: '#65a30d' },
+    { name: 'Emerald', hex: '#059669' },
+    { name: 'Mint', hex: '#10b981' },
+    { name: 'Teal', hex: '#0d9488' },
+    { name: 'Cyan', hex: '#0284c7' },
+    { name: 'Sky', hex: '#38bdf8' },
+    { name: 'Royal Blue', hex: '#2563eb' },
+    { name: 'Indigo', hex: '#4f46e5' },
+    { name: 'Violet', hex: '#7c3aed' },
+    { name: 'Magenta', hex: '#c026d3' }
+  ],
+  softs: [
+    { name: 'Soft Blue', hex: '#bfdbfe' },
+    { name: 'Pale Ice', hex: '#e0f2fe' },
+    { name: 'Glacier', hex: '#cffafe' },
+    { name: 'Deep Sea', hex: '#1e3a5f' },
+    { name: 'Navy Basin', hex: '#1e293b' },
+    { name: 'Spring Park', hex: '#bbf7d0' },
+    { name: 'Mint Wash', hex: '#dcfce7' },
+    { name: 'Forest Green', hex: '#15803d' },
+    { name: 'Dark Pine', hex: '#14532d' },
+    { name: 'Olive Sage', hex: '#d9f99d' },
+    { name: 'Warm Parchment', hex: '#fef9c3' },
+    { name: 'Sandstone', hex: '#fef3c7' },
+    { name: 'Desert Buff', hex: '#fed7aa' },
+    { name: 'Terracotta', hex: '#fb923c' },
+    { name: 'Warm Blush', hex: '#ffe4e6' },
+    { name: 'Lavender Wash', hex: '#ede9fe' }
+  ],
+  neutrals: [
+    { name: 'Pure White', hex: '#ffffff' },
+    { name: 'Warm White', hex: '#fafaf9' },
+    { name: 'Porcelain', hex: '#f8fafc' },
+    { name: 'Platinum', hex: '#f1f5f9' },
+    { name: 'Light Slate', hex: '#e2e8f0' },
+    { name: 'Ash Grey', hex: '#cbd5e1' },
+    { name: 'Medium Grey', hex: '#94a3b8' },
+    { name: 'Muted Slate', hex: '#64748b' },
+    { name: 'Steel', hex: '#475569' },
+    { name: 'Dark Charcoal', hex: '#334155' },
+    { name: 'Dark Navy', hex: '#1e293b' },
+    { name: 'Deep Slate', hex: '#0f172a' },
+    { name: 'Pitch Black', hex: '#020617' },
+    { name: 'Jet Black', hex: '#000000' },
+    { name: 'Warm Stone', hex: '#d6d3d1' },
+    { name: 'Dark Bronze', hex: '#292524' }
+  ]
+};
 
-const paletteGrid = document.getElementById('paletteGrid');
-const paletteCurrent = document.getElementById('paletteCurrent');
-const paletteBar = document.getElementById('paletteBar');
-const paletteTargetChip = document.getElementById('paletteTargetChip');
-const paletteTargetName = document.getElementById('paletteTargetName');
-let paletteSwatches = [];
+// Popover DOM References
+const reelPopover = document.getElementById('reelPopover');
+const popoverTokenIcon = document.getElementById('popoverTokenIcon');
+const popoverTokenName = document.getElementById('popoverTokenName');
+const popoverCurrentChip = document.getElementById('popoverCurrentChip');
+const btnPopoverClose = document.getElementById('btnPopoverClose');
+const popoverAccentGrid = document.getElementById('popoverAccentGrid');
+const popoverSoftGrid = document.getElementById('popoverSoftGrid');
+const popoverNeutralGrid = document.getElementById('popoverNeutralGrid');
+const popoverHexInput = document.getElementById('popoverHexInput');
+const popoverContrastBadge = document.getElementById('popoverContrastBadge');
 
-function makeSwatch(hex, title) {
-  const sw = document.createElement('button');
-  sw.type = 'button';
-  sw.className = 'swatch';
-  sw.style.background = hex;
-  sw.dataset.hex = hex;
-  sw.draggable = true;
-  sw.setAttribute('aria-label', title);
-  sw.addEventListener('click', () => paintToken(selectedWheelToken, sw.dataset.hex));
-  sw.addEventListener('dragstart', (e) => {
-    e.dataTransfer.setData('text/x-swatch', sw.dataset.hex);
-    e.dataTransfer.setData('text/plain', sw.dataset.hex);
-    e.dataTransfer.effectAllowed = 'copy';
+let activePopoverToken = null;
+
+function makePopoverSwatchButton(item) {
+  const btn = document.createElement('button');
+  btn.type = 'button';
+  btn.className = 'btn-popover-swatch';
+  btn.style.background = item.hex;
+  btn.dataset.hex = item.hex;
+  btn.title = `${item.name} (${item.hex.toUpperCase()})`;
+  btn.setAttribute('aria-label', `${item.name} ${item.hex}`);
+  btn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    selectPopoverSwatch(item.hex);
   });
-  sw.addEventListener('mouseenter', () => { sw.title = swatchTooltip(sw.dataset.hex, title); });
-  return sw;
+  return btn;
 }
 
-function buildPaletteBar() {
-  if (!paletteGrid) return;
-  paletteGrid.innerHTML = '';
-  paletteSwatches = [];
-  PALETTE_COLUMNS.forEach(col => {
-    PALETTE_ROWS_LSTAR.forEach((L, row) => {
-      let hex;
-      if (col.extremes && row === 0) hex = '#ffffff';
-      else if (col.extremes && row === PALETTE_ROWS_LSTAR.length - 1) hex = '#000000';
-      else hex = StyleEngine.colorWithLuminance(col.h, col.s, StyleEngine.lstarToLuminance(L));
-      const sw = makeSwatch(hex, `${col.name} ${Math.round(StyleEngine.getLstar(hex))}`);
-      paletteGrid.appendChild(sw);
-      paletteSwatches.push(sw);
-    });
-  });
-
-  // Current-palette group: the six live token colours
-  paletteCurrent.innerHTML = '';
-  TOKEN_ORDER.forEach(k => {
-    const sw = makeSwatch(tokens[k], TOKEN_META[k].name);
-    sw.classList.add('swatch-current');
-    sw.dataset.token = k;
-    sw.textContent = TOKEN_META[k].icon;
-    paletteCurrent.appendChild(sw);
-  });
-}
-
-function swatchTooltip(hex, name) {
-  const key = selectedWheelToken;
-  const lstar = Math.round(StyleEngine.getLstar(hex));
-  let line = '';
-  if (key === 'canvas') {
-    const score = StyleEngine.scorePalette({ ...tokens, canvas: hex });
-    line = `as land: ${score.passed}/${score.total} lines pass`;
-  } else {
-    const ratio = StyleEngine.getContrastRatio(tokens.canvas, hex);
-    const rule = StyleEngine.CONTRAST_RULES[key];
-    line = `${ratio.toFixed(2)}:1 vs land${rule ? (ratio >= rule.min ? ' ✓' : ` ✗ needs ${rule.min}`) : ''}`;
+function buildPopoverSwatches() {
+  if (popoverAccentGrid) {
+    popoverAccentGrid.innerHTML = '';
+    DISTINCT_PALETTES.accents.forEach(item => popoverAccentGrid.appendChild(makePopoverSwatchButton(item)));
   }
-  return `${name} · ${hex} · L*${lstar}\n${line}\nClick: paint ${TOKEN_META[key].name} · drag onto any reel`;
+  if (popoverSoftGrid) {
+    popoverSoftGrid.innerHTML = '';
+    DISTINCT_PALETTES.softs.forEach(item => popoverSoftGrid.appendChild(makePopoverSwatchButton(item)));
+  }
+  if (popoverNeutralGrid) {
+    popoverNeutralGrid.innerHTML = '';
+    DISTINCT_PALETTES.neutrals.forEach(item => popoverNeutralGrid.appendChild(makePopoverSwatchButton(item)));
+  }
 }
 
-// Mark swatches that would lower the number of passing lines for the selected reel
-function updatePaletteUi() {
-  if (!paletteGrid) return;
-  const key = selectedWheelToken;
-  const current = (tokens[key] || '').toLowerCase();
-  const all = [...paletteSwatches, ...paletteCurrent.querySelectorAll('.swatch')];
-  all.forEach(sw => {
-    if (sw.dataset.token) {
-      sw.dataset.hex = tokens[sw.dataset.token];
-      sw.style.background = sw.dataset.hex;
-      sw.style.color = StyleEngine.getRelativeLuminance(sw.dataset.hex) > 0.35 ? '#000' : '#fff';
-    }
-    // Mark a swatch if, painted onto the selected reel, it would leave a broken contrast line:
-    // for most reels that is their own line; the canvas affects every line.
-    const trial = StyleEngine.scorePalette({ ...tokens, [key]: sw.dataset.hex });
-    const fails = key === 'canvas' ? trial.passed < trial.total : !trial.lines[key].pass;
-    sw.classList.toggle('would-fail', fails && !sw.dataset.token);
-    sw.classList.toggle('is-current', sw.dataset.hex.toLowerCase() === current && !sw.dataset.token);
-    sw.classList.toggle('is-target', sw.dataset.token === key);
+function openReelPopover(tokenKey) {
+  if (!tokenKey || !tokens[tokenKey] || isSpinning) return;
+  activePopoverToken = tokenKey;
+  selectedWheelToken = tokenKey;
+
+  const meta = TOKEN_META[tokenKey];
+  if (popoverTokenIcon) popoverTokenIcon.textContent = meta.icon;
+  if (popoverTokenName) popoverTokenName.textContent = `${meta.name} (${meta.desc})`;
+  if (popoverCurrentChip) popoverCurrentChip.style.background = tokens[tokenKey];
+  if (popoverHexInput) popoverHexInput.value = tokens[tokenKey];
+
+  updatePopoverContrast();
+  updatePopoverActiveSwatch();
+  updateReelsUi();
+
+  if (reelPopover) {
+    reelPopover.style.display = 'flex';
+  }
+}
+
+function closeReelPopover() {
+  if (!reelPopover || reelPopover.style.display === 'none') return;
+  reelPopover.style.display = 'none';
+  activePopoverToken = null;
+  updateReelsUi();
+}
+
+function selectPopoverSwatch(hex) {
+  if (!activePopoverToken || isSpinning || !hex) return;
+  const normHex = hex.toLowerCase();
+  tokens[activePopoverToken] = normHex;
+
+  if (TOKEN_INPUTS[activePopoverToken]) {
+    TOKEN_INPUTS[activePopoverToken].picker.value = normHex;
+    TOKEN_INPUTS[activePopoverToken].text.value = normHex;
+  }
+
+  paintReel(activePopoverToken);
+  if (popoverCurrentChip) popoverCurrentChip.style.background = normHex;
+  if (popoverHexInput) popoverHexInput.value = normHex;
+
+  bumpLamp(activePopoverToken);
+  playSound('tick');
+  updateUiState();
+
+  clearTimeout(compileTimeout);
+  compileTimeout = setTimeout(() => {
+    applyCompiledStyle();
+  }, 80);
+}
+
+function updatePopoverContrast() {
+  if (!activePopoverToken || !popoverContrastBadge) return;
+  const currentHex = tokens[activePopoverToken];
+  if (activePopoverToken === 'canvas') {
+    const score = StyleEngine.scorePalette(tokens);
+    popoverContrastBadge.textContent = `${score.passed}/${score.total} Lines (${score.passed === score.total ? 'All Pass' : 'Review'})`;
+    popoverContrastBadge.className = 'popover-contrast-badge ' + (score.passed === score.total ? 'pass' : 'fail');
+  } else {
+    const ratio = StyleEngine.getContrastRatio(tokens.canvas, currentHex);
+    const rule = StyleEngine.CONTRAST_RULES[activePopoverToken];
+    const isAaa = ratio >= (rule.aaa || 7.0);
+    const isPass = ratio >= (rule.min || 3.0);
+    popoverContrastBadge.textContent = `${ratio.toFixed(1)}:1 (${isAaa ? 'AAA' : (isPass ? 'Pass' : 'Fail')})`;
+    popoverContrastBadge.className = 'popover-contrast-badge ' + (isAaa ? 'aaa' : (isPass ? 'pass' : 'fail'));
+  }
+}
+
+function updatePopoverActiveSwatch() {
+  if (!activePopoverToken || !reelPopover) return;
+  const currentHex = (tokens[activePopoverToken] || '').toLowerCase();
+  reelPopover.querySelectorAll('.btn-popover-swatch').forEach(btn => {
+    const isMatch = (btn.dataset.hex || '').toLowerCase() === currentHex;
+    btn.classList.toggle('is-active', isMatch);
   });
-  if (paletteTargetChip) paletteTargetChip.style.background = tokens[key];
-  if (paletteTargetName) paletteTargetName.textContent = `${TOKEN_META[key].icon} ${TOKEN_META[key].name}`;
 }
 
 function paintToken(key, hex) {
@@ -983,13 +1078,6 @@ function paintToken(key, hex) {
   setTokenValue(key, hex.toLowerCase());
   bumpLamp(key);
   playSound('tick');
-}
-
-function pulsePaletteBar() {
-  if (!paletteBar) return;
-  paletteBar.classList.remove('pulse');
-  void paletteBar.offsetWidth;
-  paletteBar.classList.add('pulse');
 }
 
 // --- Adobe-Style Color Wheel ---
@@ -1163,100 +1251,22 @@ function updateColorWheelSvg() {
       group.appendChild(lockBadge);
     }
 
-    // Event listener for dragging and selection
+    // Event listener for selecting token and opening distinct colour picker popover
     group.addEventListener('pointerdown', (e) => {
       e.stopPropagation();
       e.preventDefault();
-      group.setPointerCapture(e.pointerId);
-      draggingWheelPin = k;
       selectWheelToken(k);
+      openReelPopover(k);
     });
 
     colorWheelSvg.appendChild(group);
   });
 }
 
-// Setup pointer drag listeners for the color wheel
+// Setup interactions for the color wheel
 function setupColorWheelInteractions() {
-  if (!colorWheelSvg) return;
-
-  const centerX = 130;
-  const centerY = 130;
-  const maxRadius = 118;
-
-  colorWheelSvg.addEventListener('pointermove', (e) => {
-    if (!draggingWheelPin) return;
-    const rect = colorWheelSvg.getBoundingClientRect();
-    const mouseX = e.clientX - rect.left;
-    const mouseY = e.clientY - rect.top;
-
-    const dx = mouseX - centerX;
-    const dy = mouseY - centerY;
-    const dist = Math.sqrt(dx * dx + dy * dy);
-
-    // Clamp saturation between 12% and 100%
-    const sat = Math.min(100, Math.max(12, Math.round((dist / maxRadius) * 100)));
-
-    let angle = Math.atan2(dy, dx) * (180 / Math.PI);
-    if (angle < 0) angle += 360;
-    const newHue = Math.round(angle);
-
-    const targetKey = draggingWheelPin;
-    const currentHex = tokens[targetKey];
-    const currentHsl = StyleEngine.rgbToHsl(StyleEngine.hexToRgb(currentHex).r, StyleEngine.hexToRgb(currentHex).g, StyleEngine.hexToRgb(currentHex).b);
-
-    // If dragging the Anchor token and harmony is NOT custom, rotate the whole harmony!
-    if (targetKey === anchorToken && activeHarmony !== 'custom' && activeHarmony !== 'monochrome') {
-      const deltaHue = (newHue - currentHsl.h + 360) % 360;
-
-      // Rotate all UNHELD tokens by deltaHue
-      Object.keys(tokens).forEach(k => {
-        if (!heldTokens[k]) {
-          const kHsl = StyleEngine.rgbToHsl(StyleEngine.hexToRgb(tokens[k]).r, StyleEngine.hexToRgb(tokens[k]).g, StyleEngine.hexToRgb(tokens[k]).b);
-          const rotatedHue = (kHsl.h + deltaHue + 360) % 360;
-          const newColor = StyleEngine.rgbToHex(
-            StyleEngine.hslToRgb(rotatedHue, k === targetKey ? sat : kHsl.s, kHsl.l).r,
-            StyleEngine.hslToRgb(rotatedHue, k === targetKey ? sat : kHsl.s, kHsl.l).g,
-            StyleEngine.hslToRgb(rotatedHue, k === targetKey ? sat : kHsl.s, kHsl.l).b
-          );
-          tokens[k] = newColor;
-          if (TOKEN_INPUTS[k]) {
-            TOKEN_INPUTS[k].picker.value = newColor;
-            TOKEN_INPUTS[k].text.value = newColor;
-          }
-        }
-      });
-    } else {
-      // Individual pin manipulation
-      const updatedHex = StyleEngine.rgbToHex(
-        StyleEngine.hslToRgb(newHue, sat, currentHsl.l).r,
-        StyleEngine.hslToRgb(newHue, sat, currentHsl.l).g,
-        StyleEngine.hslToRgb(newHue, sat, currentHsl.l).b
-      );
-      tokens[targetKey] = updatedHex;
-      if (TOKEN_INPUTS[targetKey]) {
-        TOKEN_INPUTS[targetKey].picker.value = updatedHex;
-        TOKEN_INPUTS[targetKey].text.value = updatedHex;
-      }
-    }
-
-    updateUiState();
-
-    clearTimeout(compileTimeout);
-    compileTimeout = setTimeout(() => {
-      applyCompiledStyle();
-    }, 60);
-  });
-
-  const stopDrag = () => {
-    if (draggingWheelPin) {
-      draggingWheelPin = null;
-      updateColorWheelSvg();
-    }
-  };
-
-  colorWheelSvg.addEventListener('pointerup', stopDrag);
-  colorWheelSvg.addEventListener('pointercancel', stopDrag);
+  // Pin dragging removed: clicking any pin selects it and opens the distinct color popover.
+  // Harmony rotation is handled cleanly via the ◀ / ▶ buttons.
 }
 
 // Render the curated preset pills
@@ -1381,6 +1391,32 @@ function setupEventListeners() {
   if (btnClearHolds) btnClearHolds.addEventListener('click', clearAllHolds);
   btnShuffle.addEventListener('click', pullLever);
 
+  if (btnPopoverClose) {
+    btnPopoverClose.addEventListener('click', closeReelPopover);
+  }
+  if (popoverHexInput) {
+    popoverHexInput.addEventListener('input', (e) => {
+      let val = e.target.value.trim();
+      if (!val.startsWith('#')) val = '#' + val;
+      if (/^#[0-9A-Fa-f]{6}$/.test(val)) {
+        selectPopoverSwatch(val);
+      }
+    });
+  }
+
+  // Close popover when clicking outside
+  document.addEventListener('pointerdown', (e) => {
+    if (!reelPopover || reelPopover.style.display === 'none') return;
+    if (reelPopover.contains(e.target)) return;
+    if (e.target.closest && (e.target.closest('.reel-chip') || e.target.closest('.reel-hex') || e.target.closest('.wheel-pin-group'))) return;
+    closeReelPopover();
+  });
+
+  if (btnRotateCcw) btnRotateCcw.addEventListener('click', () => rotateHarmony(-15));
+  if (btnRotateCw) btnRotateCw.addEventListener('click', () => rotateHarmony(15));
+  if (btnWheelRotateCcw) btnWheelRotateCcw.addEventListener('click', () => rotateHarmony(-15));
+  if (btnWheelRotateCw) btnWheelRotateCw.addEventListener('click', () => rotateHarmony(15));
+
   btnAutoContrast.addEventListener('click', () => {
     if (isSpinning) return;
     const before = { ...tokens };
@@ -1458,6 +1494,21 @@ function setupEventListeners() {
     }
     const n = parseInt(e.key, 10);
     if (n >= 1 && n <= 6) toggleHold(TOKEN_ORDER[n - 1]);
+
+    // Keyboard rotation: [ or Shift+Left = counter-clockwise, ] or Shift+Right = clockwise
+    if (e.key === '[' || (e.shiftKey && e.key === 'ArrowLeft')) {
+      e.preventDefault();
+      rotateHarmony(-15);
+    }
+    if (e.key === ']' || (e.shiftKey && e.key === 'ArrowRight')) {
+      e.preventDefault();
+      rotateHarmony(15);
+    }
+
+    // Keyboard: Escape closes popover
+    if (e.key === 'Escape') {
+      closeReelPopover();
+    }
   });
 
   window.addEventListener('resize', () => {

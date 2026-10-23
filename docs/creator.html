@@ -160,19 +160,29 @@
               <option value="text">Base: 🏷️ Labels</option>
             </select>
           </div>
-          <div class="select-wrapper game-select-wrapper">
-            <label for="selectHarmony" class="sr-only">Colour harmony</label>
-            <select id="selectHarmony" class="select-input select-harmony" title="Colour-theory rule the reels land on">
-              <option value="triadic" selected>Triadic · 120°</option>
-              <option value="complementary">Complementary · 180°</option>
-              <option value="split-complementary">Split comp. · 150°/210°</option>
-              <option value="analogous">Analogous · ±30°</option>
-              <option value="tetradic">Tetradic · dual pair</option>
-              <option value="square">Square · 90°</option>
-              <option value="monochrome">Monochrome · one hue</option>
-              <option value="custom">Keep hues · re-weight only</option>
-              <option value="random">🎲 Any harmony</option>
-            </select>
+          <div class="harmony-select-row">
+            <div class="select-wrapper game-select-wrapper">
+              <label for="selectHarmony" class="sr-only">Colour harmony</label>
+              <select id="selectHarmony" class="select-input select-harmony" title="Colour-theory rule the reels land on">
+                <option value="triadic" selected>Triadic · 120°</option>
+                <option value="complementary">Complementary · 180°</option>
+                <option value="split-complementary">Split comp. · 150°/210°</option>
+                <option value="analogous">Analogous · ±30°</option>
+                <option value="tetradic">Tetradic · dual pair</option>
+                <option value="square">Square · 90°</option>
+                <option value="monochrome">Monochrome · one hue</option>
+                <option value="custom">Keep hues · re-weight only</option>
+                <option value="random">🎲 Any harmony</option>
+              </select>
+            </div>
+            <div class="rotate-btn-group" role="group" aria-label="Rotate harmony">
+              <button type="button" id="btnRotateCcw" class="btn-rotate-step" title="Rotate harmony counter-clockwise -15° (◀ / [)" aria-label="Rotate harmony counter-clockwise 15 degrees">
+                <svg viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" stroke-width="2.5" fill="none"><polyline points="15 18 9 12 15 6"></polyline></svg>
+              </button>
+              <button type="button" id="btnRotateCw" class="btn-rotate-step" title="Rotate harmony clockwise +15° (▶ / ])" aria-label="Rotate harmony clockwise 15 degrees">
+                <svg viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" stroke-width="2.5" fill="none"><polyline points="9 18 15 12 9 6"></polyline></svg>
+              </button>
+            </div>
           </div>
         </div>
         <button id="btnShuffle" class="btn-spin" title="Spin unheld reels (Space)">
@@ -195,7 +205,44 @@
         </button>
       </div>
 
-      <div class="cabinet-help">▲▼ nudge lightness · 🎯 BASE sets harmony root · HOLD locks a reel · keys 1–6 hold</div>
+      <!-- Distinct Colours Popover (anchored to active cog) -->
+      <div class="reel-popover" id="reelPopover" style="display:none;" role="dialog" aria-modal="true" aria-label="Distinct Colour Picker">
+        <div class="popover-header">
+          <div class="popover-title">
+            <span class="popover-token-icon" id="popoverTokenIcon">🚗</span>
+            <span class="popover-token-name" id="popoverTokenName">Roads Colour</span>
+            <span class="popover-token-chip" id="popoverCurrentChip"></span>
+          </div>
+          <button type="button" class="btn-popover-close" id="btnPopoverClose" title="Close picker (Esc)" aria-label="Close">✕</button>
+        </div>
+
+        <div class="popover-body">
+          <div class="popover-grid-section">
+            <div class="popover-section-label">Accents &amp; Primaries</div>
+            <div class="popover-grid" id="popoverAccentGrid"></div>
+          </div>
+
+          <div class="popover-grid-section">
+            <div class="popover-section-label">Soft Fills &amp; Naturals</div>
+            <div class="popover-grid" id="popoverSoftGrid"></div>
+          </div>
+
+          <div class="popover-grid-section">
+            <div class="popover-section-label">Neutrals &amp; Monochromes</div>
+            <div class="popover-grid" id="popoverNeutralGrid"></div>
+          </div>
+        </div>
+
+        <div class="popover-footer">
+          <div class="popover-hex-group">
+            <span class="popover-hex-label">HEX</span>
+            <input type="text" id="popoverHexInput" class="popover-hex-input" maxlength="7" spellcheck="false" placeholder="#000000">
+          </div>
+          <div class="popover-contrast-badge" id="popoverContrastBadge">14.2:1 (AAA)</div>
+        </div>
+      </div>
+
+      <div class="cabinet-help">▲▼ nudge lightness · 🎯 BASE sets harmony root · click swatch for distinct colours · ◀▶ rotate · keys 1–6 hold</div>
     </section>
 
     <!-- Harmony Wheel (hue & saturation) -->
@@ -210,7 +257,19 @@
             <canvas id="colorWheelCanvas" width="260" height="260"></canvas>
             <svg id="colorWheelSvg" viewBox="0 0 260 260"></svg>
           </div>
-          <div class="wheel-hint">Drag pins for hue &amp; saturation. Drag the 🎯 base pin to rotate the whole harmony.</div>
+          <!-- Wheel Rotation Buttons -->
+          <div class="wheel-rotate-row">
+            <button type="button" id="btnWheelRotateCcw" class="btn-wheel-rotate" title="Rotate harmony counter-clockwise -15° (◀)">
+              <svg viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" stroke-width="2.5" fill="none"><polyline points="15 18 9 12 15 6"></polyline></svg>
+              <span>-15°</span>
+            </button>
+            <span class="wheel-rotate-label">Rotate harmony</span>
+            <button type="button" id="btnWheelRotateCw" class="btn-wheel-rotate" title="Rotate harmony clockwise +15° (▶)">
+              <span>+15°</span>
+              <svg viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" stroke-width="2.5" fill="none"><polyline points="9 18 15 12 9 6"></polyline></svg>
+            </button>
+          </div>
+          <div class="wheel-hint">Click a pin to select · use ◀ ▶ buttons to rotate harmony.</div>
         </div>
       </div>
     </details>
@@ -224,22 +283,7 @@
     </div>
   </aside>
 
-  <!-- Inkscape-style swatch palette (docked along the bottom of the map) -->
-  <div class="palette-bar" id="paletteBar" aria-label="Colour palette">
-    <div class="palette-target" id="paletteTarget" title="The selected reel. Click a reel to change which one swatches paint.">
-      <span class="palette-target-chip" id="paletteTargetChip"></span>
-      <span class="palette-target-text">
-        <span class="palette-target-label">Painting</span>
-        <strong id="paletteTargetName">Roads</strong>
-      </span>
-    </div>
-    <div class="palette-scroll">
-      <div class="palette-current" id="paletteCurrent" title="Current palette — drag between reels to copy"></div>
-      <div class="palette-divider"></div>
-      <div class="palette-grid" id="paletteGrid"></div>
-    </div>
-    <div class="palette-legend">Click to paint · drag onto any reel<br><span class="legend-fail"></span> breaks a contrast line</div>
-  </div>
+
 
   <!-- HUD Coordinates Overlay -->
   <div class="map-hud" id="mapHud">

@@ -249,19 +249,22 @@ Inspired by **[Adobe Color](https://color.adobe.com/create/color-wheel)**, the S
      $$\theta = H \quad (\text{Angle from } 0^\circ \text{ to } 360^\circ)$$
      $$r = \frac{S}{100} \cdot R \quad (\text{Radial distance from center } r=0 \text{ to edge } r=R)$$
    - The canvas renders a high-DPI anti-aliased saturation disc at $L=50\%$ pure chroma.
-2. **Interactive Draggable Nodes & Harmony Spokes**:
-   - Each of the 6 tokens is rendered as an interactive draggable handle with its semantic icon (🏞️, 🌊, 🌲, 🚗, 🏢, 🔤) and color fill.
+2. **Interactive Semantic Nodes & Harmony Spokes**:
+   - Each of the 6 tokens is rendered as an interactive node with its semantic icon (🏞️, 🌊, 🌲, 🚗, 🏢, 🔤) and color fill.
+   - Clicking any pin immediately selects that token and opens the **Distinct Colour Popover** picker.
    - White dashed spokes connect each pin to the wheel center, and a semi-transparent geometric polygon connects the active harmony vertices.
-3. **Base Color Anchor (🎯 Base)**:
-   - Any token can be designated as the **Base Color Anchor**.
-   - When dragging the Anchor token, all other **unheld** pins rotate synchronously around the wheel, preserving their exact geometric harmony angles (e.g. $180^\circ$ for Complementary, $120^\circ$ for Triad, $\pm 30^\circ$ for Analogous).
+3. **Base Color Anchor (🎯 Base) & Discrete Harmony Rotation**:
+   - Any token can be designated as the **Base Color Anchor** (via the `🎯 BASE` button atop each cog or the cabinet dropdown).
+   - Rotating the harmony is executed cleanly without fussy dragging using dedicated side-to-side buttons (`◀` / `▶` or keyboard shortcuts `[` / `]`), stepping all unheld tokens in calibrated $15^\circ$ increments around the circle while strictly preserving their harmonic intervals (e.g. $180^\circ$ for Complementary, $120^\circ$ for Triad, $\pm 30^\circ$ for Analogous).
 4. **Integration with Slot-Machine "HOLD" 🔒**:
    - Any token marked with **HOLD** shows an illuminated lock badge directly on its wheel pin.
-   - When the Anchor rotates or harmonies are changed, held pins remain locked in place.
-5. **Integrated Slot Machine Cabinet & Cog Controls**:
+   - When harmonies are rotated or randomized, held pins remain locked in place.
+5. **Integrated Slot Machine Cabinet, Cog Controls & Distinct Colour Popover**:
    - The Theme Mode toggle (**Light** / **Dark**) and sound mute are positioned directly at the top of the slot machine cabinet.
    - Lightness is tuned directly per-feature on each reel cog using perceptual $L^*$ stepping buttons (`▲` / `▼`).
    - The Base Color Anchor is selectable directly above each cog with `🎯 BASE` or via the cabinet base dropdown.
+   - **Distinct Colour Popover (No Drag and Drop)**: Clicking any cog reel's color chip or hex input opens an anchored modal overlay featuring 48 curated, distinct cartographic colors categorized into **Accents & Primaries**, **Soft Fills & Naturals**, and **Neutrals & Monochromes**, with real-time WCAG contrast scoring and custom hex input.
+   - Side-to-side rotation buttons (`◀` / `▶`, keys `[` / `]`) rotate the active harmony across the $360^\circ$ circle in $15^\circ$ increments directly beside the harmony selector and beneath the color wheel.
    - Smart automation actions (**Fix contrast**, **Mono lock**, and **Release holds**) are integrated directly into the slot machine cabinet deck.
 
 

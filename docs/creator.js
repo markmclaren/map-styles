@@ -57,7 +57,6 @@ const btnMonoLock = document.getElementById('btnMonoLock');
 const btnClearHolds = document.getElementById('btnClearHolds');
 const selectHarmony = document.getElementById('selectHarmony');
 const harmonyBadge = document.getElementById('harmonyBadge');
-const btnHarmonize = document.getElementById('btnHarmonize');
 const btnModeLight = document.getElementById('btnModeLight');
 const btnModeDark = document.getElementById('btnModeDark');
 const contrastPill = document.getElementById('contrastPill');
@@ -72,30 +71,36 @@ const hudCoords = document.getElementById('hudCoords');
 const hudZoom = document.getElementById('hudZoom');
 const hudLayers = document.getElementById('hudLayers');
 
-// Adobe Color Wheel & View Mode State
-let currentStudioView = 'wheel'; // 'wheel' | 'cards' | 'both'
+// Slot cabinet
+const reelsEl = document.getElementById('reels');
+const slotCabinet = document.getElementById('slotCabinet');
+const leverEl = document.getElementById('lever');
+const leverArm = document.getElementById('leverArm');
+const marqueeStars = document.getElementById('marqueeStars');
+const marqueeText = document.getElementById('marqueeText');
+const marqueeScreen = document.getElementById('marqueeScreen');
+const btnSound = document.getElementById('btnSound');
+
+// Colour wheel state
 let selectedWheelToken = 'roads';
 let anchorToken = 'roads';
 let draggingWheelPin = null;
 
+const TOKEN_ORDER = ['canvas', 'water', 'greenspace', 'roads', 'buildings', 'text'];
+
 // Token Metadata
 const TOKEN_META = {
-  canvas: { name: 'Canvas', icon: '🏞️', desc: 'Base terrain' },
-  water: { name: 'Water', icon: '🌊', desc: 'Oceans & rivers' },
-  greenspace: { name: 'Greenspace', icon: '🌲', desc: 'Parks & nature' },
-  roads: { name: 'Roads', icon: '🚗', desc: 'Highway spine' },
-  buildings: { name: 'Buildings', icon: '🏢', desc: 'Urban blocks' },
-  text: { name: 'Labels', icon: '🔤', desc: 'City text' }
+  canvas: { name: 'Canvas', short: 'Land', icon: '🏞️', desc: 'Base terrain' },
+  water: { name: 'Water', short: 'Water', icon: '🌊', desc: 'Oceans & rivers' },
+  greenspace: { name: 'Greenspace', short: 'Parks', icon: '🌲', desc: 'Parks & nature' },
+  roads: { name: 'Roads', short: 'Roads', icon: '🚗', desc: 'Highway spine' },
+  buildings: { name: 'Buildings', short: 'Blocks', icon: '🏢', desc: 'Urban blocks' },
+  text: { name: 'Labels', short: 'Labels', icon: '🔤', desc: 'City text' }
 };
 
-// Color Wheel DOM References
+// Colour Wheel DOM References
 const colorWheelCanvas = document.getElementById('colorWheelCanvas');
 const colorWheelSvg = document.getElementById('colorWheelSvg');
-const colorWheelSection = document.getElementById('colorWheelSection');
-const tokenGrid = document.getElementById('tokenGrid');
-const tabBtnWheel = document.getElementById('tabBtnWheel');
-const tabBtnCards = document.getElementById('tabBtnCards');
-const tabBtnBoth = document.getElementById('tabBtnBoth');
 const activeTokenIcon = document.getElementById('activeTokenIcon');
 const activeTokenName = document.getElementById('activeTokenName');
 const activeTokenHex = document.getElementById('activeTokenHex');
@@ -104,17 +109,9 @@ const anchorBtnText = document.getElementById('anchorBtnText');
 const wheelHoldBtn = document.getElementById('wheelHoldBtn');
 const wheelLightnessSlider = document.getElementById('wheelLightnessSlider');
 const wheelLightnessValue = document.getElementById('wheelLightnessValue');
-const wheelSwatchesStrip = document.getElementById('wheelSwatchesStrip');
 
-// Token Element Maps
-const TOKEN_INPUTS = {
-  canvas: { picker: document.getElementById('pickerCanvas'), text: document.getElementById('textCanvas') },
-  water: { picker: document.getElementById('pickerWater'), text: document.getElementById('textWater') },
-  greenspace: { picker: document.getElementById('pickerGreenspace'), text: document.getElementById('textGreenspace') },
-  roads: { picker: document.getElementById('pickerRoads'), text: document.getElementById('textRoads') },
-  buildings: { picker: document.getElementById('pickerBuildings'), text: document.getElementById('textBuildings') },
-  text: { picker: document.getElementById('pickerText'), text: document.getElementById('textText') }
-};
+// Populated by buildReels(): { picker, text } per token
+const TOKEN_INPUTS = {};
 
 // Initialize Application
 async function init() {
@@ -152,7 +149,7 @@ async function init() {
 
   // 4. Initialize MapLibre
   const initialLoc = PRESETS.london;
-  if (currentStyle) {
+  if (currentStyle && typeof maplibregl !== 'undefined') {
     map = new maplibregl.Map({
       container: 'map',
       style: currentStyle,
@@ -179,34 +176,37 @@ async function init() {
   }
 
   // 5. Setup UI & Event Listeners (ALWAYS execute so UI remains interactive)
+  buildReels();
   setupTokenBindings();
+  setupLever();
   renderPresetPills();
   renderColorWheelCanvas();
   setupColorWheelInteractions();
   setupEventListeners();
-  setStudioView('wheel');
   selectWheelToken('roads');
   updateUiState();
+  updateInspectorJson();
 }
 
-// Setup input listeners for the 6 color pickers
+// Setup input listeners for the 6 colour pickers / hex fields
 function setupTokenBindings() {
   Object.keys(TOKEN_INPUTS).forEach(key => {
     const { picker, text } = TOKEN_INPUTS[key];
 
     picker.addEventListener('input', (e) => {
       text.value = e.target.value.toLowerCase();
-      onTokenChanged(key, e.target.value);
+      onTokenChanged(key, e.target.value.toLowerCase());
     });
 
     text.addEventListener('input', (e) => {
       let val = e.target.value.trim();
       if (!val.startsWith('#')) val = '#' + val;
       if (/^#[0-9A-Fa-f]{6}$/.test(val)) {
-        picker.value = val;
-        onTokenChanged(key, val);
+        picker.value = val.toLowerCase();
+        onTokenChanged(key, val.toLowerCase());
       }
     });
+    text.addEventListener('focus', () => text.select());
   });
 }
 
@@ -261,128 +261,94 @@ function syncTokenInputs() {
   });
 }
 
-// Update mode toggles, contrast scores, and inspector drawer
+// Synchronize DOM inputs with tokens state
+function syncTokenInputs() {
+  Object.keys(TOKEN_INPUTS).forEach(key => {
+    const { picker, text } = TOKEN_INPUTS[key];
+    picker.value = tokens[key];
+    text.value = tokens[key];
+  });
+}
+
+// Update mode toggles, contrast scores, reels and wheel
 function updateUiState() {
   const canvasLum = StyleEngine.getRelativeLuminance(tokens.canvas);
   const isDark = canvasLum < 0.2;
   currentMode = isDark ? 'dark' : 'light';
 
-  // Synchronize explicit Light / Dark mode toggle buttons
   if (btnModeLight) btnModeLight.classList.toggle('active', !isDark);
   if (btnModeDark) btnModeDark.classList.toggle('active', isDark);
 
-  // Backward compatibility with legacy badge if present
-  const badgeMode = document.getElementById('badgeMode');
-  if (badgeMode) {
-    badgeMode.textContent = isDark ? 'Dark Mode' : 'Light Mode';
-    badgeMode.className = `badge-mode ${isDark ? 'badge-dark' : 'badge-light'}`;
-  }
-
-  // Contrast Calculation (Text vs Canvas)
+  // Header pill: labels vs canvas
   const ratio = StyleEngine.getContrastRatio(tokens.canvas, tokens.text);
   if (contrastValue) {
     contrastValue.textContent = `${ratio.toFixed(1)}:1 (${ratio >= 7.0 ? 'AAA' : (ratio >= 4.5 ? 'AA' : 'Fail')})`;
   }
-
   if (contrastPill) {
     contrastPill.className = 'contrast-pill';
-    if (ratio >= 7.0) {
-      contrastPill.classList.add('pass-aaa');
-    } else if (ratio >= 4.5) {
-      contrastPill.classList.add('pass-aa');
-    } else {
-      contrastPill.classList.add('fail');
-    }
+    contrastPill.classList.add(ratio >= 7.0 ? 'pass-aaa' : (ratio >= 4.5 ? 'pass-aa' : 'fail'));
   }
 
-  // Update active pill highlight
+  // Active preset highlight
   document.querySelectorAll('.preset-pill').forEach(pill => {
-    const pId = pill.dataset.preset;
-    const p = StyleEngine.PRESET_PALETTES[pId];
+    const p = StyleEngine.PRESET_PALETTES[pill.dataset.preset];
     if (p) {
-      const match = Object.keys(tokens).every(k => tokens[k] && p[k] && tokens[k].toLowerCase() === p[k].toLowerCase());
+      const match = TOKEN_ORDER.every(k => tokens[k] && p[k] && tokens[k].toLowerCase() === p[k].toLowerCase());
       pill.classList.toggle('active', match);
     }
   });
 
-  // Re-render tonal ladders for all 6 tokens
-  renderTonalLadders();
-
-  // Synchronize slot machine HOLD states and active harmony badge
   updateHoldUi();
   updateHarmonyBadge();
-
-  // Synchronize Adobe Color Wheel & mini swatches
-  if (currentStudioView !== 'cards') {
-    updateColorWheelSvg();
-    renderWheelSwatchesStrip();
-    updateActiveTokenBar();
-  }
+  updateReelsUi();
+  updateColorWheelSvg();
+  updateActiveTokenBar();
 }
 
-// Toggle slot-machine HOLD for a token
+// Toggle HOLD for a token
 function toggleHold(tokenKey) {
   if (heldTokens[tokenKey] === undefined) return;
   heldTokens[tokenKey] = !heldTokens[tokenKey];
   updateHoldUi();
+  updateReelsUi();
   updateColorWheelSvg();
   updateActiveTokenBar();
-  renderWheelSwatchesStrip();
-  const isHeld = heldTokens[tokenKey];
-  showToast(isHeld ? `🔒 Held ${tokenKey} (locked from shuffle)` : `Released hold on ${tokenKey}`);
+  playSound('tick');
 }
 
-// Synchronize HOLD button visuals and card indicators
+// Synchronize HOLD button visuals
 function updateHoldUi() {
   const count = Object.values(heldTokens).filter(Boolean).length;
 
-  // Update hold buttons on all cards
   document.querySelectorAll('.btn-hold').forEach(btn => {
-    const key = btn.dataset.token;
+    const key = btn.dataset.token || selectedWheelToken;
     const isHeld = !!heldTokens[key];
     btn.classList.toggle('is-held', isHeld);
     const textSpan = btn.querySelector('.hold-text');
     if (textSpan) textSpan.textContent = isHeld ? 'HELD' : 'HOLD';
-    btn.title = isHeld ? 'Locked: Color is preserved during shuffle (Click to release)' : 'Hold: Lock color during shuffle';
-
-    // Highlight parent card
-    const card = document.getElementById(`card${key ? key.charAt(0).toUpperCase() + key.slice(1) : ''}`);
-    if (card) card.classList.toggle('token-held', isHeld);
   });
 
-  // Update Shuffle button label
   if (shuffleLabel) {
-    if (count === 6) {
-      shuffleLabel.textContent = 'All Held 🔒';
-    } else if (count > 0) {
-      shuffleLabel.textContent = `Shuffle 🎰 (${count} Held)`;
-    } else {
-      shuffleLabel.textContent = 'Shuffle 🎰';
-    }
+    shuffleLabel.textContent = count === 6 ? 'ALL HELD' : 'SPIN';
   }
+  if (btnShuffle) btnShuffle.disabled = count === 6;
 
-  // Update Release Holds button
   if (btnClearHolds) {
     btnClearHolds.style.display = count > 0 ? 'flex' : 'none';
     const span = btnClearHolds.querySelector('span');
-    if (span) span.textContent = `Release Holds (${count})`;
+    if (span) span.textContent = `Release holds (${count})`;
   }
 }
 
-// Release all active holds with one click
 function clearAllHolds() {
   Object.keys(heldTokens).forEach(k => { heldTokens[k] = false; });
-  updateHoldUi();
-  updateColorWheelSvg();
-  updateActiveTokenBar();
-  renderWheelSwatchesStrip();
-  showToast('All color holds released');
+  updateUiState();
+  showToast('All holds released');
 }
 
-// Update the harmony pill display
 function updateHarmonyBadge() {
   if (!harmonyBadge) return;
-  const map = {
+  const labels = {
     triadic: 'Triadic 120°',
     complementary: 'Contrast 180°',
     'split-complementary': 'Split 150°/210°',
@@ -390,62 +356,465 @@ function updateHarmonyBadge() {
     tetradic: 'Tetradic Dual',
     square: 'Square 90°',
     monochrome: 'Single Hue',
-    custom: 'Custom Free',
+    custom: 'Keep hues',
     random: 'Surprise'
   };
-  harmonyBadge.textContent = map[activeHarmony] || activeHarmony;
+  harmonyBadge.textContent = labels[activeHarmony] || activeHarmony;
 }
 
-// Trigger reel spin animation on unheld cards
-function triggerSlotSpinAnimation() {
-  Object.keys(TOKEN_INPUTS).forEach(key => {
-    if (!heldTokens[key]) {
-      const card = document.getElementById(`card${key.charAt(0).toUpperCase() + key.slice(1)}`);
-      if (card) {
-        card.classList.remove('slot-spinning');
-        void card.offsetWidth; // Force CSS reflow
-        card.classList.add('slot-spinning');
-        setTimeout(() => card.classList.remove('slot-spinning'), 360);
-      }
-    }
-  });
-}
-
-// Execute harmonious shuffle honoring held colors
+// Spin: compute the landing palette, then let the reels animate onto it
 function executeHarmoniousShuffle(harmonyChoice) {
+  if (isSpinning) return;
   const heldCount = Object.values(heldTokens).filter(Boolean).length;
   if (heldCount === 6) {
-    showToast('All 6 colors are held! Release at least one hold to shuffle.');
+    showToast('All 6 reels are held — release one to spin');
     return;
   }
 
   const isDark = (currentMode === 'dark');
   const chosenHarmony = harmonyChoice || activeHarmony;
-
-  triggerSlotSpinAnimation();
+  let next;
 
   if (isMonochromeLocked || chosenHarmony === 'monochrome') {
-    tokens = StyleEngine.generateMonochromeTokens(tokens.roads || tokens.canvas, isDark);
+    // Seed from a held reel if there is one, otherwise a random hue
+    const seedKey = ['roads', 'water', 'canvas', 'greenspace', 'buildings', 'text'].find(k => heldTokens[k]);
+    const seed = seedKey ? tokens[seedKey] : StyleEngine.rgbToHex(...Object.values(StyleEngine.hslToRgb(Math.random() * 360, 60, 45)));
+    const mono = StyleEngine.generateMonochromeTokens(seed, isDark);
+    next = {};
+    TOKEN_ORDER.forEach(k => { next[k] = heldTokens[k] ? tokens[k] : mono[k]; });
   } else {
-    tokens = StyleEngine.generateHarmoniousPalette({
+    next = StyleEngine.generateHarmoniousPalette({
       isDark,
       harmony: chosenHarmony,
       currentTokens: tokens,
       held: heldTokens
     });
   }
+  TOKEN_ORDER.forEach(k => { next[k] = next[k].toLowerCase(); });
 
-  syncTokenInputs();
-  updateUiState();
-  applyCompiledStyle();
-
-  const msg = heldCount > 0 
-    ? `Shuffled (${heldCount} held, ${chosenHarmony})` 
-    : `Generated ${chosenHarmony} harmony (${isDark ? 'Dark' : 'Light'})`;
-  showToast(msg);
+  playSound('clunk');
+  animateSpin(next, () => {
+    tokens = { ...next };
+    syncTokenInputs();
+    updateUiState();
+    applyCompiledStyle();
+    const score = StyleEngine.scorePalette(tokens);
+    if (score.jackpot) {
+      playSound('win');
+      if (slotCabinet) {
+        slotCabinet.classList.remove('celebrate');
+        void slotCabinet.offsetWidth;
+        slotCabinet.classList.add('celebrate');
+      }
+    } else if (score.passed < score.total) {
+      showToast(`${score.total - score.passed} line${score.total - score.passed > 1 ? 's' : ''} below contrast — nudge a reel or hit Fix`);
+    }
+  });
 }
 
-// --- Adobe-Style Color Wheel Implementation ---
+// Select a token to inspect and control in the wheel toolbar
+function selectWheelToken(tokenKey) {
+  selectedWheelToken = tokenKey;
+  if (wheelHoldBtn) wheelHoldBtn.dataset.token = tokenKey;
+  updateActiveTokenBar();
+  updateColorWheelSvg();
+  updateReelsUi();
+  updateHoldUi();
+}
+
+// =====================================================================
+//  SLOT MACHINE REELS
+//  Each token is a 12-faced 3D drum. The front face is the live colour;
+//  faces above are lighter and faces below darker, each one notch of
+//  CIE L* apart, so every click is the same *perceived* change.
+// =====================================================================
+
+const FACE_COUNT = 12;
+const FACE_ANGLE = 360 / FACE_COUNT;              // 30°
+const FACE_HEIGHT = 30;                           // px
+const REEL_RADIUS = (FACE_HEIGHT / 2) / Math.tan(Math.PI / FACE_COUNT); // ≈ 56px
+const LSTAR_STEP = 5;                             // one notch = 5 L*
+const reelState = {};
+let isSpinning = false;
+
+const mod = (n, m) => ((n % m) + m) % m;
+
+function buildReels() {
+  if (!reelsEl) return;
+  reelsEl.innerHTML = '';
+
+  TOKEN_ORDER.forEach((key, idx) => {
+    const meta = TOKEN_META[key];
+    const cap = key.charAt(0).toUpperCase() + key.slice(1);
+    const col = document.createElement('div');
+    col.className = 'reel-col';
+    col.dataset.token = key;
+    col.innerHTML = `
+      <div class="reel-label" title="${meta.name}: ${meta.desc}"><span class="reel-icon">${meta.icon}</span><span>${meta.short}</span></div>
+      <button type="button" class="reel-nudge" data-dir="1" title="Nudge lighter (+${LSTAR_STEP} L*)" aria-label="${meta.name} lighter">▲</button>
+      <div class="reel-window" tabindex="0" role="slider" aria-label="${meta.name} lightness" title="Drag or scroll to change lightness · click to select">
+        <div class="reel-drum"></div>
+        <div class="reel-payline" aria-hidden="true"></div>
+      </div>
+      <button type="button" class="reel-nudge" data-dir="-1" title="Nudge darker (−${LSTAR_STEP} L*)" aria-label="${meta.name} darker">▼</button>
+      <div class="reel-lamp" title=""><span class="lamp-dot"></span><span class="lamp-value">--</span></div>
+      <label class="reel-hex-wrap" title="Pick a colour">
+        <input type="color" id="picker${cap}" class="reel-picker" value="${tokens[key]}">
+        <input type="text" id="text${cap}" class="reel-hex" value="${tokens[key]}" maxlength="7" spellcheck="false" aria-label="${meta.name} hex">
+      </label>
+      <button type="button" class="btn-hold reel-hold" data-token="${key}" title="Hold (${idx + 1})">
+        <span class="hold-indicator"></span><span class="hold-text">HOLD</span>
+      </button>
+    `;
+    reelsEl.appendChild(col);
+
+    const drum = col.querySelector('.reel-drum');
+    const faces = [];
+    for (let i = 0; i < FACE_COUNT; i++) {
+      const face = document.createElement('div');
+      face.className = 'reel-face';
+      face.style.transform = `rotateX(${i * FACE_ANGLE}deg) translateZ(${REEL_RADIUS}px)`;
+      drum.appendChild(face);
+      faces.push(face);
+    }
+
+    reelState[key] = { col, drum, faces, k: 0, phi: 0, dragging: false, spinning: false };
+    TOKEN_INPUTS[key] = { picker: col.querySelector('.reel-picker'), text: col.querySelector('.reel-hex') };
+
+    setupReelInteractions(key);
+    paintReel(key);
+  });
+}
+
+// Colour each face relative to the current token colour
+function paintReel(key, baseHex = tokens[key]) {
+  const st = reelState[key];
+  if (!st) return;
+  const front = mod(st.k, FACE_COUNT);
+  const baseL = StyleEngine.getLstar(baseHex);
+  st.faces.forEach((face, i) => {
+    let d = mod(i - front, FACE_COUNT);
+    if (d > FACE_COUNT / 2) d -= FACE_COUNT;
+    const targetL = baseL + d * LSTAR_STEP;
+    const color = d === 0 ? baseHex : StyleEngine.stepLightness(baseHex, d, LSTAR_STEP);
+    face.style.background = color;
+    face.classList.toggle('is-front', d === 0);
+    face.classList.toggle('at-limit', d !== 0 && (targetL < 2 || targetL > 99));
+    face.dataset.offset = d;
+    face.textContent = d === 0 ? '' : `${Math.round(Math.min(99, Math.max(2, targetL)))}`;
+    face.style.color = StyleEngine.getRelativeLuminance(color) > 0.3 ? 'rgba(0,0,0,.55)' : 'rgba(255,255,255,.6)';
+  });
+}
+
+function setDrum(key, phi, { duration = 0, easing = 'ease-out' } = {}) {
+  const st = reelState[key];
+  st.phi = phi;
+  st.drum.style.transition = duration ? `transform ${duration}ms ${easing}` : 'none';
+  st.drum.style.transform = `translateZ(-${REEL_RADIUS}px) rotateX(${phi}deg)`;
+}
+
+// Commit a reel step: move the drum by `steps` notches and update the token
+function nudgeReel(key, steps) {
+  if (isSpinning || !steps) return;
+  const st = reelState[key];
+  const newHex = StyleEngine.stepLightness(tokens[key], steps, LSTAR_STEP);
+  st.k += steps;
+  setDrum(key, -st.k * FACE_ANGLE, { duration: 220, easing: 'cubic-bezier(.2,.9,.3,1.2)' });
+  setTokenValue(key, newHex);
+  paintReel(key);
+  playSound('tick');
+  bumpLamp(key);
+}
+
+function setupReelInteractions(key) {
+  const st = reelState[key];
+  const win = st.col.querySelector('.reel-window');
+
+  // Drag to rotate
+  let startY = 0, startPhi = 0, lastK = 0, moved = false;
+  win.addEventListener('pointerdown', (e) => {
+    if (isSpinning) return;
+    win.setPointerCapture(e.pointerId);
+    st.dragging = true;
+    moved = false;
+    startY = e.clientY;
+    startPhi = st.phi;
+    lastK = st.k;
+    st.col.classList.add('is-dragging');
+  });
+  win.addEventListener('pointermove', (e) => {
+    if (!st.dragging) return;
+    const dy = e.clientY - startY;
+    if (Math.abs(dy) > 3) moved = true;
+    // dragging down brings the upper (lighter) faces down to the payline
+    const phi = startPhi - dy * (FACE_ANGLE / FACE_HEIGHT);
+    setDrum(key, phi);
+    const k = Math.round(-phi / FACE_ANGLE);
+    if (k !== lastK) {
+      const newHex = StyleEngine.stepLightness(tokens[key], k - lastK, LSTAR_STEP);
+      st.k = k;
+      lastK = k;
+      setTokenValue(key, newHex);
+      paintReel(key);
+      playSound('tick');
+    }
+  });
+  const endDrag = () => {
+    if (!st.dragging) return;
+    st.dragging = false;
+    st.col.classList.remove('is-dragging');
+    setDrum(key, -st.k * FACE_ANGLE, { duration: 180, easing: 'cubic-bezier(.2,.9,.3,1.25)' });
+    if (!moved) selectWheelToken(key);
+    else bumpLamp(key);
+  };
+  win.addEventListener('pointerup', endDrag);
+  win.addEventListener('pointercancel', endDrag);
+
+  // Scroll wheel / trackpad
+  let wheelAcc = 0;
+  win.addEventListener('wheel', (e) => {
+    e.preventDefault();
+    wheelAcc += e.deltaY;
+    if (Math.abs(wheelAcc) >= 40) {
+      nudgeReel(key, wheelAcc > 0 ? -1 : 1);
+      wheelAcc = 0;
+    }
+  }, { passive: false });
+
+  // Keyboard on the reel itself
+  win.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowUp') { e.preventDefault(); nudgeReel(key, 1); }
+    if (e.key === 'ArrowDown') { e.preventDefault(); nudgeReel(key, -1); }
+    if (e.key === 'Enter') selectWheelToken(key);
+  });
+
+  st.col.querySelectorAll('.reel-nudge').forEach(btn => {
+    btn.addEventListener('click', () => nudgeReel(key, parseInt(btn.dataset.dir, 10)));
+  });
+}
+
+// Set a token from any control, keep inputs in sync, recompile (debounced)
+function setTokenValue(key, hex) {
+  if (TOKEN_INPUTS[key]) {
+    TOKEN_INPUTS[key].picker.value = hex;
+    TOKEN_INPUTS[key].text.value = hex;
+  }
+  onTokenChanged(key, hex);
+}
+
+// Brief flash of a reel's lamp after it changes
+function bumpLamp(key) {
+  const lamp = reelState[key] && reelState[key].col.querySelector('.reel-lamp');
+  if (!lamp) return;
+  lamp.classList.remove('bump');
+  void lamp.offsetWidth;
+  lamp.classList.add('bump');
+}
+
+// Repaint all idle reels and the contrast lamps / marquee
+function updateReelsUi() {
+  TOKEN_ORDER.forEach(key => {
+    const st = reelState[key];
+    if (!st) return;
+    if (!st.dragging && !st.spinning) paintReel(key);
+    st.col.classList.toggle('is-held', !!heldTokens[key]);
+    st.col.classList.toggle('is-selected', key === selectedWheelToken);
+  });
+  updateScoreUi();
+}
+
+function updateScoreUi() {
+  const score = StyleEngine.scorePalette(tokens);
+  TOKEN_ORDER.forEach(key => {
+    const st = reelState[key];
+    if (!st) return;
+    const lamp = st.col.querySelector('.reel-lamp');
+    const val = lamp.querySelector('.lamp-value');
+    lamp.classList.remove('pass', 'fail', 'aaa', 'base');
+    if (key === 'canvas') {
+      lamp.classList.add('base');
+      val.textContent = `L*${Math.round(StyleEngine.getLstar(tokens.canvas))}`;
+      lamp.title = 'Canvas is the reference: every other reel is scored against it';
+      return;
+    }
+    const line = score.lines[key];
+    const rule = StyleEngine.CONTRAST_RULES[key];
+    lamp.classList.add(line.pass ? 'pass' : 'fail');
+    if (line.aaa) lamp.classList.add('aaa');
+    val.textContent = line.ratio >= 10 ? line.ratio.toFixed(0) : line.ratio.toFixed(line.ratio >= 2 ? 1 : 2);
+    lamp.title = `${rule.label}: ${line.ratio.toFixed(2)}:1 (needs ≥ ${rule.min}${rule.aaa ? `, AAA ≥ ${rule.aaa}` : ''})\n${rule.why}`;
+  });
+
+  if (marqueeStars) {
+    marqueeStars.textContent = '★'.repeat(score.passed) + '☆'.repeat(score.total - score.passed);
+  }
+  if (marqueeText) {
+    marqueeText.textContent = score.jackpot ? 'JACKPOT' : (score.passed === score.total ? 'ALL LINES' : `${score.passed}/${score.total} LINES`);
+  }
+  if (slotCabinet) {
+    slotCabinet.classList.toggle('is-jackpot', score.jackpot);
+    slotCabinet.classList.toggle('has-fail', score.passed < score.total);
+  }
+  return score;
+}
+
+// ---- The Spin ----------------------------------------------------------
+
+function pullLever() {
+  if (!leverEl || isSpinning) return;
+  leverEl.classList.remove('pulled');
+  void leverEl.offsetWidth;
+  leverEl.classList.add('pulled');
+  setTimeout(() => leverEl.classList.remove('pulled'), 450);
+  executeHarmoniousShuffle(activeHarmony);
+}
+
+function randomSymbolLike(hex) {
+  // Same perceived lightness, random hue: plausible "symbols" flying past
+  const rgb = StyleEngine.hexToRgb(hex);
+  const hsl = StyleEngine.rgbToHsl(rgb.r, rgb.g, rgb.b);
+  const h = Math.floor(Math.random() * 360);
+  const c = StyleEngine.hslToRgb(h, Math.max(35, hsl.s), hsl.l);
+  return StyleEngine.rgbToHex(c.r, c.g, c.b);
+}
+
+function animateSpin(finalTokens, onDone) {
+  isSpinning = true;
+  if (slotCabinet) slotCabinet.classList.add('is-spinning');
+  const spinKeys = TOKEN_ORDER.filter(k => !heldTokens[k]);
+  let remaining = spinKeys.length;
+  if (!remaining) { isSpinning = false; onDone(); return; }
+
+  spinKeys.forEach((key, j) => {
+    const st = reelState[key];
+    st.spinning = true;
+    st.col.classList.add('is-spinning');
+
+    const steps = FACE_COUNT * (2 + j) + Math.floor(Math.random() * FACE_COUNT);
+    const targetK = st.k + steps;
+    const landing = mod(targetK, FACE_COUNT);
+    st.faces.forEach((face, i) => {
+      face.textContent = '';
+      face.classList.remove('is-front', 'at-limit');
+      face.style.background = i === landing ? finalTokens[key] : randomSymbolLike(finalTokens[key]);
+    });
+
+    const duration = 900 + j * 260;
+    setDrum(key, -targetK * FACE_ANGLE, { duration, easing: 'cubic-bezier(.12,.62,.22,1.04)' });
+
+    // Tick sound while spinning, slowing down
+    if (soundOn) {
+      let t = 0;
+      const tickLoop = () => {
+        if (t > duration * 0.85) return;
+        playSound('tick');
+        const gap = 40 + (t / duration) * 160;
+        t += gap;
+        setTimeout(tickLoop, gap);
+      };
+      tickLoop();
+    }
+
+    setTimeout(() => st.col.classList.remove('is-spinning'), duration * 0.55);
+    setTimeout(() => {
+      st.k = targetK;
+      st.spinning = false;
+      tokens[key] = finalTokens[key];
+      if (TOKEN_INPUTS[key]) {
+        TOKEN_INPUTS[key].picker.value = finalTokens[key];
+        TOKEN_INPUTS[key].text.value = finalTokens[key];
+      }
+      st.col.classList.add('landed');
+      setTimeout(() => st.col.classList.remove('landed'), 300);
+      playSound('clunk');
+      paintReel(key);
+      updateScoreUi();
+      remaining--;
+      if (remaining === 0) {
+        isSpinning = false;
+        if (slotCabinet) slotCabinet.classList.remove('is-spinning');
+        onDone();
+      }
+    }, duration + 30);
+  });
+}
+
+// ---- Sound (off by default) ---------------------------------------------
+
+let soundOn = false;
+let audioCtx = null;
+
+function playSound(kind) {
+  if (!soundOn) return;
+  try {
+    audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
+    const now = audioCtx.currentTime;
+    const blip = (freq, start, len, type = 'square', vol = 0.035) => {
+      const o = audioCtx.createOscillator();
+      const g = audioCtx.createGain();
+      o.type = type;
+      o.frequency.value = freq;
+      g.gain.setValueAtTime(vol, now + start);
+      g.gain.exponentialRampToValueAtTime(0.0001, now + start + len);
+      o.connect(g).connect(audioCtx.destination);
+      o.start(now + start);
+      o.stop(now + start + len + 0.02);
+    };
+    if (kind === 'tick') blip(1400, 0, 0.018);
+    if (kind === 'clunk') blip(160, 0, 0.09, 'triangle', 0.12);
+    if (kind === 'win') [523, 659, 784, 1046].forEach((f, i) => blip(f, i * 0.09, 0.16, 'square', 0.05));
+  } catch (err) { /* audio unavailable */ }
+}
+
+function setupLever() {
+  if (!leverEl) return;
+  let startY = null;
+  let pulledEnough = false;
+  leverEl.addEventListener('pointerdown', (e) => {
+    if (isSpinning) return;
+    leverEl.setPointerCapture(e.pointerId);
+    startY = e.clientY;
+    pulledEnough = false;
+    leverEl.classList.add('grabbing');
+  });
+  leverEl.addEventListener('pointermove', (e) => {
+    if (startY === null) return;
+    const dy = Math.max(0, Math.min(70, e.clientY - startY));
+    leverArm.style.transform = `translateY(${dy}px)`;
+    pulledEnough = dy > 40;
+  });
+  const release = () => {
+    if (startY === null) return;
+    const wasDrag = pulledEnough;
+    startY = null;
+    leverEl.classList.remove('grabbing');
+    leverArm.style.transform = '';
+    // A drag past the threshold or a simple click both pull the lever
+    if (wasDrag) executeHarmoniousShuffle(activeHarmony);
+    else pullLever();
+  };
+  leverEl.addEventListener('pointerup', release);
+  leverEl.addEventListener('pointercancel', () => { startY = null; leverArm.style.transform = ''; leverEl.classList.remove('grabbing'); });
+  leverEl.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); pullLever(); }
+  });
+
+  if (btnSound) {
+    btnSound.addEventListener('click', () => {
+      soundOn = !soundOn;
+      btnSound.textContent = soundOn ? '🔊' : '🔇';
+      btnSound.title = `Sound effects (${soundOn ? 'on' : 'off'})`;
+      btnSound.setAttribute('aria-pressed', String(soundOn));
+      if (soundOn) playSound('tick');
+    });
+  }
+
+  // Bulbs around the marquee
+  const bulbs = document.querySelector('.marquee-bulbs');
+  if (bulbs) for (let i = 0; i < 18; i++) bulbs.appendChild(document.createElement('i'));
+}
+
+// --- Adobe-Style Color Wheel ---
 
 // Render high-DPI chromatic saturation disc onto HTML5 canvas
 function renderColorWheelCanvas() {
@@ -753,18 +1122,6 @@ function setupColorWheelInteractions() {
     });
   }
 
-  // View Switcher Tabs
-  if (tabBtnWheel) tabBtnWheel.addEventListener('click', () => setStudioView('wheel'));
-  if (tabBtnCards) tabBtnCards.addEventListener('click', () => setStudioView('cards'));
-  if (tabBtnBoth) tabBtnBoth.addEventListener('click', () => setStudioView('both'));
-}
-
-// Select a token to inspect and control in the wheel toolbar
-function selectWheelToken(tokenKey) {
-  selectedWheelToken = tokenKey;
-  updateActiveTokenBar();
-  updateColorWheelSvg();
-  renderWheelSwatchesStrip();
 }
 
 // Update the Inspector strip below the wheel
@@ -808,90 +1165,6 @@ function updateActiveTokenBar() {
   }
 }
 
-// Render the 6 mini-swatches below the wheel
-function renderWheelSwatchesStrip() {
-  if (!wheelSwatchesStrip) return;
-  wheelSwatchesStrip.innerHTML = '';
-
-  const keys = ['canvas', 'water', 'greenspace', 'roads', 'buildings', 'text'];
-  keys.forEach(k => {
-    const meta = TOKEN_META[k];
-    const hex = tokens[k];
-    const isSelected = (k === selectedWheelToken);
-    const isAnchor = (k === anchorToken);
-    const isHeld = !!heldTokens[k];
-
-    const swatch = document.createElement('div');
-    swatch.className = `mini-swatch ${isSelected ? 'active' : ''} ${isHeld ? 'is-held' : ''}`;
-    swatch.title = `${meta.name}: ${hex}${isAnchor ? ' (🎯 Base)' : ''}${isHeld ? ' (🔒 Held)' : ''}`;
-
-    swatch.innerHTML = `
-      <div class="mini-swatch-chip" style="background: ${hex};"></div>
-      <span class="mini-swatch-label">${meta.icon}</span>
-    `;
-
-    swatch.addEventListener('click', () => {
-      selectWheelToken(k);
-    });
-
-    wheelSwatchesStrip.appendChild(swatch);
-  });
-}
-
-// Toggle between Color Wheel, Cards, and Both views
-function setStudioView(viewMode) {
-  currentStudioView = viewMode;
-
-  if (tabBtnWheel) tabBtnWheel.classList.toggle('active', viewMode === 'wheel');
-  if (tabBtnCards) tabBtnCards.classList.toggle('active', viewMode === 'cards');
-  if (tabBtnBoth) tabBtnBoth.classList.toggle('active', viewMode === 'both');
-
-  if (colorWheelSection) {
-    colorWheelSection.classList.toggle('is-hidden', viewMode === 'cards');
-  }
-  if (tokenGrid) {
-    tokenGrid.classList.toggle('is-hidden', viewMode === 'wheel');
-  }
-
-  if (viewMode !== 'cards') {
-    updateColorWheelSvg();
-    renderWheelSwatchesStrip();
-    updateActiveTokenBar();
-  }
-}
-
-// Render interactive 5-chip tonal ladder for each token
-function renderTonalLadders() {
-  const deltas = [-16, -8, 0, 8, 16];
-  Object.keys(TOKEN_INPUTS).forEach(key => {
-    const id = `ladder${key.charAt(0).toUpperCase() + key.slice(1)}`;
-    const ladder = document.getElementById(id);
-    if (!ladder) return;
-
-    ladder.innerHTML = '';
-    const baseColor = tokens[key];
-
-    deltas.forEach(delta => {
-      const chipColor = StyleEngine.adjustHsl(baseColor, { l: delta });
-      const chip = document.createElement('button');
-      chip.type = 'button';
-      chip.className = `tonal-chip ${delta === 0 ? 'active' : ''}`;
-      chip.style.backgroundColor = chipColor;
-      chip.title = `${delta === 0 ? 'Current' : (delta > 0 ? `+${delta}% Lighter` : `${delta}% Darker`)} (${chipColor})`;
-
-      chip.addEventListener('click', () => {
-        onTokenChanged(key, chipColor);
-        if (TOKEN_INPUTS[key]) {
-          TOKEN_INPUTS[key].picker.value = chipColor;
-          TOKEN_INPUTS[key].text.value = chipColor;
-        }
-      });
-
-      ladder.appendChild(chip);
-    });
-  });
-}
-
 // Render the curated preset pills
 function renderPresetPills() {
   presetPillsContainer.innerHTML = '';
@@ -910,7 +1183,8 @@ function renderPresetPills() {
     `;
 
     pill.addEventListener('click', () => {
-      tokens = { ...p };
+      if (isSpinning) return;
+      TOKEN_ORDER.forEach(k => { tokens[k] = p[k]; });
       syncTokenInputs();
       updateUiState();
       applyCompiledStyle();
@@ -956,110 +1230,68 @@ function setThemeMode(targetMode) {
 
 // Event Listeners
 function setupEventListeners() {
-  // Theme Mode toggles (Light / Dark)
   btnModeLight.addEventListener('click', () => {
-    if (currentMode === 'light') return;
+    if (currentMode === 'light' || isSpinning) return;
     setThemeMode('light');
   });
-
   btnModeDark.addEventListener('click', () => {
-    if (currentMode === 'dark') return;
+    if (currentMode === 'dark' || isSpinning) return;
     setThemeMode('dark');
   });
 
-  // Lightness nudge steppers (Darker / Lighter buttons)
-  document.querySelectorAll('.btn-tone-step').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const tokenKey = btn.dataset.token;
-      const delta = parseInt(btn.dataset.delta, 10) || 0;
-      if (!tokens[tokenKey]) return;
-
-      const newColor = StyleEngine.adjustHsl(tokens[tokenKey], { l: delta });
-      onTokenChanged(tokenKey, newColor);
-      if (TOKEN_INPUTS[tokenKey]) {
-        TOKEN_INPUTS[tokenKey].picker.value = newColor;
-        TOKEN_INPUTS[tokenKey].text.value = newColor;
-      }
-    });
-  });
-
-  // Location select
   locationSelect.addEventListener('change', (e) => {
     const p = PRESETS[e.target.value];
-    if (p) {
-      map.flyTo({
-        center: p.center,
-        zoom: p.zoom,
-        pitch: p.pitch,
-        bearing: p.bearing,
-        essential: true,
-        duration: 1800
-      });
+    if (p && map) {
+      map.flyTo({ center: p.center, zoom: p.zoom, pitch: p.pitch, bearing: p.bearing, essential: true, duration: 1800 });
     }
   });
 
-  // Projection toggles
   btnProjMercator.addEventListener('click', () => {
     currentProjection = 'mercator';
     btnProjMercator.classList.add('active');
     btnProjGlobe.classList.remove('active');
-    map.setProjection({ type: 'mercator' });
+    if (map) map.setProjection({ type: 'mercator' });
   });
-
   btnProjGlobe.addEventListener('click', () => {
     currentProjection = 'globe';
     btnProjGlobe.classList.add('active');
     btnProjMercator.classList.remove('active');
-    map.setProjection({ type: 'globe' });
+    if (map) map.setProjection({ type: 'globe' });
   });
 
-  // Slot-Machine HOLD Buttons (Clicking toggles hold on that color reel)
-  document.querySelectorAll('.btn-hold').forEach(btn => {
+  // Reel HOLD buttons
+  document.querySelectorAll('.reel-hold').forEach(btn => {
     btn.addEventListener('click', (e) => {
       e.stopPropagation();
-      const tokenKey = btn.dataset.token;
-      toggleHold(tokenKey);
+      toggleHold(btn.dataset.token);
     });
   });
 
-  // Color Theory Harmony Selector
+  // Harmony ("game") selector
   if (selectHarmony) {
     selectHarmony.addEventListener('change', (e) => {
       activeHarmony = e.target.value;
       updateHarmonyBadge();
-      showToast(`Selected ${activeHarmony.replace('-', ' ')} harmony`);
     });
   }
 
-  // Harmonize Button (Applies active harmony without randomizing seed)
-  if (btnHarmonize) {
-    btnHarmonize.addEventListener('click', () => {
-      executeHarmoniousShuffle(activeHarmony);
-    });
-  }
+  if (btnClearHolds) btnClearHolds.addEventListener('click', clearAllHolds);
+  btnShuffle.addEventListener('click', pullLever);
 
-  // Release All Holds Button
-  if (btnClearHolds) {
-    btnClearHolds.addEventListener('click', () => {
-      clearAllHolds();
-    });
-  }
-
-  // Shuffle button (Honors active Light/Dark mode, color harmony, and HOLD locks)
-  btnShuffle.addEventListener('click', () => {
-    executeHarmoniousShuffle(activeHarmony);
-  });
-
-  // Auto-Contrast button
   btnAutoContrast.addEventListener('click', () => {
+    if (isSpinning) return;
+    const before = { ...tokens };
     tokens = StyleEngine.autoBalanceContrast(tokens);
+    const changed = TOKEN_ORDER.filter(k => before[k].toLowerCase() !== tokens[k].toLowerCase());
     syncTokenInputs();
     updateUiState();
     applyCompiledStyle();
-    showToast('Auto-tuned for WCAG AA compliance');
+    changed.forEach(bumpLamp);
+    showToast(changed.length
+      ? `Fixed ${changed.map(k => TOKEN_META[k].short.toLowerCase()).join(', ')} with the smallest lightness change`
+      : 'Every line already passes ✓');
   });
 
-  // Monochrome Lock
   btnMonoLock.addEventListener('click', () => {
     isMonochromeLocked = !isMonochromeLocked;
     btnMonoLock.classList.toggle('active', isMonochromeLocked);
@@ -1069,13 +1301,12 @@ function setupEventListeners() {
       syncTokenInputs();
       updateUiState();
       applyCompiledStyle();
-      showToast('Monochrome lock enabled');
+      showToast('Monochrome lock on — roads & canvas drive every reel');
     } else {
-      showToast('Monochrome lock disabled');
+      showToast('Monochrome lock off');
     }
   });
 
-  // Share button
   btnShare.addEventListener('click', () => {
     saveTokensToUrl();
     navigator.clipboard.writeText(window.location.href).then(() => {
@@ -1085,17 +1316,12 @@ function setupEventListeners() {
     });
   });
 
-  // Inspector Drawer
   btnInspect.addEventListener('click', () => {
     inspectorDrawer.classList.toggle('open');
     updateInspectorJson();
   });
+  btnCloseInspector.addEventListener('click', () => inspectorDrawer.classList.remove('open'));
 
-  btnCloseInspector.addEventListener('click', () => {
-    inspectorDrawer.classList.remove('open');
-  });
-
-  // Copy JSON
   btnCopyJson.addEventListener('click', () => {
     if (!currentStyle) return;
     navigator.clipboard.writeText(JSON.stringify(currentStyle, null, 2)).then(() => {
@@ -1103,7 +1329,6 @@ function setupEventListeners() {
     });
   });
 
-  // Download Style JSON
   btnDownload.addEventListener('click', () => {
     if (!currentStyle) return;
     const blob = new Blob([JSON.stringify(currentStyle, null, 2)], { type: 'application/json' });
@@ -1116,6 +1341,20 @@ function setupEventListeners() {
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
     showToast('Downloaded custom-map-style.json');
+  });
+
+  // Keyboard: Space = spin, 1–6 = hold reel
+  document.addEventListener('keydown', (e) => {
+    const t = e.target;
+    if (t && (t.tagName === 'INPUT' || t.tagName === 'SELECT' || t.tagName === 'TEXTAREA' || t.isContentEditable)) return;
+    if (e.metaKey || e.ctrlKey || e.altKey) return;
+    if (e.code === 'Space' && !(t && t.classList && t.classList.contains('reel-window'))) {
+      if (t && t.tagName === 'BUTTON') return; // let buttons handle their own Space
+      e.preventDefault();
+      pullLever();
+    }
+    const n = parseInt(e.key, 10);
+    if (n >= 1 && n <= 6) toggleHold(TOKEN_ORDER[n - 1]);
   });
 }
 

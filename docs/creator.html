@@ -100,7 +100,7 @@
   <aside class="studio-panel" id="studioPanel">
     <div class="studio-header">
       <div class="studio-title-group">
-        <h2 class="studio-heading">Tokens</h2>
+        <h2 class="studio-heading">Palette Machine</h2>
         <!-- Explicit Light / Dark Mode Segmented Toggle -->
         <div class="mode-toggle-group" role="group" aria-label="Theme mode toggle">
           <button type="button" id="btnModeLight" class="btn-mode-toggle active" title="Switch to Light Theme">
@@ -121,308 +121,108 @@
       </div>
     </div>
 
-    <!-- Studio View Switcher Tabs -->
-    <div class="studio-view-tabs" role="tablist">
-      <button type="button" class="view-tab-btn active" id="tabBtnWheel" data-view="wheel" title="Adobe Color-style interactive wheel">
-        <svg viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" stroke-width="2" fill="none"><circle cx="12" cy="12" r="10"></circle><path d="M12 2a10 10 0 0 1 0 20z" fill="currentColor"></path></svg>
-        <span>Color Wheel 🎡</span>
-      </button>
-      <button type="button" class="view-tab-btn" id="tabBtnCards" data-view="cards" title="Tonal steppers & hex inputs">
-        <svg viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" stroke-width="2" fill="none"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
-        <span>Cards & Ladders</span>
-      </button>
-      <button type="button" class="view-tab-btn" id="tabBtnBoth" data-view="both" title="View wheel and cards simultaneously">
-        <svg viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" stroke-width="2" fill="none"><line x1="12" y1="3" x2="12" y2="21"></line><path d="M3 9l9-6 9 6"></path><path d="M3 15l9 6 9-6"></path></svg>
-        <span>Both</span>
-      </button>
-    </div>
-
-    <!-- Adobe-Style Interactive Color Wheel Section -->
-    <div class="color-wheel-section" id="colorWheelSection">
-      <!-- Wheel Stage (Canvas chromatic disc + SVG draggable pins overlay) -->
-      <div class="wheel-stage-container">
-        <div class="wheel-stage" id="wheelStage">
-          <canvas id="colorWheelCanvas" width="260" height="260"></canvas>
-          <svg id="colorWheelSvg" viewBox="0 0 260 260"></svg>
+    <!-- ===================== SLOT MACHINE CABINET ===================== -->
+    <section class="slot-cabinet" id="slotCabinet" aria-label="Palette slot machine">
+      <!-- LED marquee: contrast score -->
+      <div class="cabinet-marquee">
+        <div class="marquee-bulbs" aria-hidden="true"></div>
+        <div class="marquee-screen" id="marqueeScreen" title="Each reel is scored against the canvas using WCAG relative-luminance contrast">
+          <span class="marquee-stars" id="marqueeStars">★★★★★</span>
+          <span class="marquee-text" id="marqueeText">JACKPOT</span>
         </div>
-        <div class="wheel-hint">Drag pins to change hue & saturation. Drag 🎯 Base to rotate harmony.</div>
+        <button type="button" class="btn-sound" id="btnSound" title="Sound effects (off)" aria-pressed="false">🔇</button>
       </div>
 
-      <!-- Active Token Inspector & Lightness Slider -->
-      <div class="wheel-active-bar" id="wheelActiveBar">
-        <div class="active-bar-top">
-          <div class="active-token-pill">
-            <span class="active-token-icon" id="activeTokenIcon">🚗</span>
-            <span class="active-token-name" id="activeTokenName">Roads</span>
-            <span class="active-token-hex" id="activeTokenHex">#475569</span>
-          </div>
-          <div class="active-bar-actions">
-            <button type="button" class="btn-set-anchor" id="btnSetAnchor" title="Set this token as the Base Color Anchor for harmony rotation">
-              <span id="anchorBtnText">🎯 Base Color</span>
-            </button>
-            <button type="button" class="btn-hold" id="wheelHoldBtn" title="Hold color during shuffle">
-              <span class="hold-indicator"></span>
-              <span class="hold-text">HOLD</span>
-            </button>
-          </div>
-        </div>
+      <div class="cabinet-body">
+        <!-- 6 rotating colour reels are rendered here by creator.js -->
+        <div class="reels" id="reels"></div>
 
-        <!-- Lightness / Brightness Slider -->
-        <div class="lightness-slider-row">
-          <span class="slider-label">Lightness:</span>
-          <input type="range" id="wheelLightnessSlider" class="wheel-lightness-slider" min="0" max="100" value="40" step="1">
-          <span class="slider-value" id="wheelLightnessValue">40%</span>
+        <!-- Pull lever -->
+        <div class="lever" id="lever" role="button" tabindex="0" title="Pull to spin (Space)" aria-label="Pull lever to spin">
+          <div class="lever-slot"></div>
+          <div class="lever-arm" id="leverArm"><div class="lever-knob"></div></div>
         </div>
       </div>
 
-      <!-- Mini Swatches Bar (like Adobe Color) -->
-      <div class="wheel-swatches-strip" id="wheelSwatchesStrip">
-        <!-- Rendered dynamically -->
-      </div>
-    </div>
-
-    <!-- The 6 Semantic Color Inputs -->
-    <div class="token-grid" id="tokenGrid">
-      <!-- 1. Canvas -->
-      <div class="token-card" data-token="canvas" id="cardCanvas">
-        <div class="token-card-top">
-          <div class="token-info">
-            <span class="token-icon">🏞️</span>
-            <div>
-              <label for="pickerCanvas" class="token-name">Canvas</label>
-              <span class="token-desc">Base terrain</span>
-            </div>
-          </div>
-          <div class="token-inputs">
-            <button type="button" class="btn-hold" data-token="canvas" title="Hold color during shuffle (like a slot machine)">
-              <span class="hold-indicator"></span>
-              <span class="hold-text">HOLD</span>
-            </button>
-            <input type="color" id="pickerCanvas" class="color-picker" value="#f8fafc">
-            <input type="text" id="textCanvas" class="hex-input" value="#f8fafc" maxlength="7">
-          </div>
-        </div>
-        <div class="tonal-control-bar">
-          <button type="button" class="btn-tone-step" data-token="canvas" data-delta="-8" title="Step darker (-8% lightness)">
-            <svg viewBox="0 0 24 24" width="11" height="11" stroke="currentColor" stroke-width="2.2" fill="none"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
-            <span>Darker</span>
-          </button>
-          <div class="tonal-ladder" id="ladderCanvas"></div>
-          <button type="button" class="btn-tone-step" data-token="canvas" data-delta="8" title="Step lighter (+8% lightness)">
-            <span>Lighter</span>
-            <svg viewBox="0 0 24 24" width="11" height="11" stroke="currentColor" stroke-width="2.2" fill="none"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
-          </button>
-        </div>
-      </div>
-
-      <!-- 2. Water -->
-      <div class="token-card" data-token="water" id="cardWater">
-        <div class="token-card-top">
-          <div class="token-info">
-            <span class="token-icon">🌊</span>
-            <div>
-              <label for="pickerWater" class="token-name">Water</label>
-              <span class="token-desc">Oceans & rivers</span>
-            </div>
-          </div>
-          <div class="token-inputs">
-            <button type="button" class="btn-hold" data-token="water" title="Hold color during shuffle (like a slot machine)">
-              <span class="hold-indicator"></span>
-              <span class="hold-text">HOLD</span>
-            </button>
-            <input type="color" id="pickerWater" class="color-picker" value="#cbd5e1">
-            <input type="text" id="textWater" class="hex-input" value="#cbd5e1" maxlength="7">
-          </div>
-        </div>
-        <div class="tonal-control-bar">
-          <button type="button" class="btn-tone-step" data-token="water" data-delta="-8" title="Step darker (-8% lightness)">
-            <svg viewBox="0 0 24 24" width="11" height="11" stroke="currentColor" stroke-width="2.2" fill="none"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
-            <span>Darker</span>
-          </button>
-          <div class="tonal-ladder" id="ladderWater"></div>
-          <button type="button" class="btn-tone-step" data-token="water" data-delta="8" title="Step lighter (+8% lightness)">
-            <span>Lighter</span>
-            <svg viewBox="0 0 24 24" width="11" height="11" stroke="currentColor" stroke-width="2.2" fill="none"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
-          </button>
-        </div>
-      </div>
-
-      <!-- 3. Greenspace -->
-      <div class="token-card" data-token="greenspace" id="cardGreenspace">
-        <div class="token-card-top">
-          <div class="token-info">
-            <span class="token-icon">🌲</span>
-            <div>
-              <label for="pickerGreenspace" class="token-name">Greenspace</label>
-              <span class="token-desc">Parks & nature</span>
-            </div>
-          </div>
-          <div class="token-inputs">
-            <button type="button" class="btn-hold" data-token="greenspace" title="Hold color during shuffle (like a slot machine)">
-              <span class="hold-indicator"></span>
-              <span class="hold-text">HOLD</span>
-            </button>
-            <input type="color" id="pickerGreenspace" class="color-picker" value="#e2e8f0">
-            <input type="text" id="textGreenspace" class="hex-input" value="#e2e8f0" maxlength="7">
-          </div>
-        </div>
-        <div class="tonal-control-bar">
-          <button type="button" class="btn-tone-step" data-token="greenspace" data-delta="-8" title="Step darker (-8% lightness)">
-            <svg viewBox="0 0 24 24" width="11" height="11" stroke="currentColor" stroke-width="2.2" fill="none"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
-            <span>Darker</span>
-          </button>
-          <div class="tonal-ladder" id="ladderGreenspace"></div>
-          <button type="button" class="btn-tone-step" data-token="greenspace" data-delta="8" title="Step lighter (+8% lightness)">
-            <span>Lighter</span>
-            <svg viewBox="0 0 24 24" width="11" height="11" stroke="currentColor" stroke-width="2.2" fill="none"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
-          </button>
-        </div>
-      </div>
-
-      <!-- 4. Roads -->
-      <div class="token-card" data-token="roads" id="cardRoads">
-        <div class="token-card-top">
-          <div class="token-info">
-            <span class="token-icon">🚗</span>
-            <div>
-              <label for="pickerRoads" class="token-name">Roads</label>
-              <span class="token-desc">Highway spine</span>
-            </div>
-          </div>
-          <div class="token-inputs">
-            <button type="button" class="btn-hold" data-token="roads" title="Hold color during shuffle (like a slot machine)">
-              <span class="hold-indicator"></span>
-              <span class="hold-text">HOLD</span>
-            </button>
-            <input type="color" id="pickerRoads" class="color-picker" value="#475569">
-            <input type="text" id="textRoads" class="hex-input" value="#475569" maxlength="7">
-          </div>
-        </div>
-        <div class="tonal-control-bar">
-          <button type="button" class="btn-tone-step" data-token="roads" data-delta="-8" title="Step darker (-8% lightness)">
-            <svg viewBox="0 0 24 24" width="11" height="11" stroke="currentColor" stroke-width="2.2" fill="none"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
-            <span>Darker</span>
-          </button>
-          <div class="tonal-ladder" id="ladderRoads"></div>
-          <button type="button" class="btn-tone-step" data-token="roads" data-delta="8" title="Step lighter (+8% lightness)">
-            <span>Lighter</span>
-            <svg viewBox="0 0 24 24" width="11" height="11" stroke="currentColor" stroke-width="2.2" fill="none"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
-          </button>
-        </div>
-      </div>
-
-      <!-- 5. Buildings -->
-      <div class="token-card" data-token="buildings" id="cardBuildings">
-        <div class="token-card-top">
-          <div class="token-info">
-            <span class="token-icon">🏢</span>
-            <div>
-              <label for="pickerBuildings" class="token-name">Buildings</label>
-              <span class="token-desc">Urban blocks</span>
-            </div>
-          </div>
-          <div class="token-inputs">
-            <button type="button" class="btn-hold" data-token="buildings" title="Hold color during shuffle (like a slot machine)">
-              <span class="hold-indicator"></span>
-              <span class="hold-text">HOLD</span>
-            </button>
-            <input type="color" id="pickerBuildings" class="color-picker" value="#e2e8f0">
-            <input type="text" id="textBuildings" class="hex-input" value="#e2e8f0" maxlength="7">
-          </div>
-        </div>
-        <div class="tonal-control-bar">
-          <button type="button" class="btn-tone-step" data-token="buildings" data-delta="-8" title="Step darker (-8% lightness)">
-            <svg viewBox="0 0 24 24" width="11" height="11" stroke="currentColor" stroke-width="2.2" fill="none"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
-            <span>Darker</span>
-          </button>
-          <div class="tonal-ladder" id="ladderBuildings"></div>
-          <button type="button" class="btn-tone-step" data-token="buildings" data-delta="8" title="Step lighter (+8% lightness)">
-            <span>Lighter</span>
-            <svg viewBox="0 0 24 24" width="11" height="11" stroke="currentColor" stroke-width="2.2" fill="none"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
-          </button>
-        </div>
-      </div>
-
-      <!-- 6. Typography -->
-      <div class="token-card" data-token="text" id="cardText">
-        <div class="token-card-top">
-          <div class="token-info">
-            <span class="token-icon">🔤</span>
-            <div>
-              <label for="pickerText" class="token-name">Labels</label>
-              <span class="token-desc">City text</span>
-            </div>
-          </div>
-          <div class="token-inputs">
-            <button type="button" class="btn-hold" data-token="text" title="Hold color during shuffle (like a slot machine)">
-              <span class="hold-indicator"></span>
-              <span class="hold-text">HOLD</span>
-            </button>
-            <input type="color" id="pickerText" class="color-picker" value="#0f172a">
-            <input type="text" id="textText" class="hex-input" value="#0f172a" maxlength="7">
-          </div>
-        </div>
-        <div class="tonal-control-bar">
-          <button type="button" class="btn-tone-step" data-token="text" data-delta="-8" title="Step darker (-8% lightness)">
-            <svg viewBox="0 0 24 24" width="11" height="11" stroke="currentColor" stroke-width="2.2" fill="none"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
-            <span>Darker</span>
-          </button>
-          <div class="tonal-ladder" id="ladderText"></div>
-          <button type="button" class="btn-tone-step" data-token="text" data-delta="8" title="Step lighter (+8% lightness)">
-            <span>Lighter</span>
-            <svg viewBox="0 0 24 24" width="11" height="11" stroke="currentColor" stroke-width="2.2" fill="none"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
-          </button>
-        </div>
-      </div>
-    </div>
-
-    <!-- Color Theory & Harmonies Bar -->
-    <div class="harmony-control-group">
-      <div class="harmony-header">
-        <span class="control-label">Color Theory Harmony</span>
-        <span class="harmony-badge" id="harmonyBadge">Triadic 120°</span>
-      </div>
-      <div class="harmony-select-row">
-        <div class="select-wrapper harmony-select-wrapper">
-          <select id="selectHarmony" class="select-input select-harmony">
-            <option value="triadic" selected>Triadic (Balanced 120°)</option>
-            <option value="complementary">Complementary (Contrast 180°)</option>
-            <option value="split-complementary">Split-Complementary (150°/210°)</option>
-            <option value="analogous">Analogous (Harmonious 30°)</option>
-            <option value="tetradic">Tetradic (Dual Complement)</option>
-            <option value="square">Square (Balanced 90°)</option>
-            <option value="monochrome">Monochrome (Single Hue)</option>
-            <option value="custom">Custom (Free Dragging)</option>
-            <option value="random">🎲 Surprise / Any Harmony</option>
+      <!-- Game (harmony) + Spin -->
+      <div class="cabinet-deck">
+        <div class="select-wrapper game-select-wrapper">
+          <label for="selectHarmony" class="sr-only">Colour harmony</label>
+          <select id="selectHarmony" class="select-input select-harmony" title="Colour-theory rule the reels land on">
+            <option value="triadic" selected>Triadic · 120°</option>
+            <option value="complementary">Complementary · 180°</option>
+            <option value="split-complementary">Split comp. · 150°/210°</option>
+            <option value="analogous">Analogous · ±30°</option>
+            <option value="tetradic">Tetradic · dual pair</option>
+            <option value="square">Square · 90°</option>
+            <option value="monochrome">Monochrome · one hue</option>
+            <option value="custom">Keep hues · re-weight only</option>
+            <option value="random">🎲 Any harmony</option>
           </select>
         </div>
-        <button type="button" id="btnHarmonize" class="btn btn-studio btn-harmonize" title="Harmonize unheld colors using selected theory">
-          <span>Harmonize</span>
+        <button id="btnShuffle" class="btn-spin" title="Spin unheld reels (Space)">
+          <span id="shuffleLabel">SPIN</span>
         </button>
       </div>
-    </div>
+
+      <div class="cabinet-help">Drag or scroll a reel to change lightness · ▲▼ nudge · HOLD locks a reel · keys 1–6 hold</div>
+    </section>
 
     <!-- Smart Automation Levers -->
     <div class="smart-toolbar">
-      <button id="btnShuffle" class="btn btn-studio btn-shuffle" title="Spin & shuffle unheld colors (respects HOLD locks)">
-        <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"><polyline points="16 3 21 3 21 8"></polyline><line x1="4" y1="20" x2="21" y2="3"></line><polyline points="21 16 21 21 16 21"></polyline><line x1="15" y1="15" x2="21" y2="21"></line><line x1="4" y1="4" x2="9" y2="9"></line></svg>
-        <span id="shuffleLabel">Shuffle 🎰</span>
-      </button>
-
-      <button id="btnAutoContrast" class="btn btn-studio" title="Auto-tune lightness for WCAG AA compliance">
+      <button id="btnAutoContrast" class="btn btn-studio" title="Fix every failing contrast line with the smallest possible lightness change">
         <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"></path></svg>
-        <span>Auto-Contrast</span>
+        <span>Fix contrast</span>
       </button>
-
       <button id="btnMonoLock" class="btn btn-studio" title="Lock palette to single-hue monochrome">
         <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"><circle cx="12" cy="12" r="10"></circle><path d="M12 2a10 10 0 0 1 0 20z" fill="currentColor"></path></svg>
-        <span>Monochrome</span>
+        <span>Mono lock</span>
       </button>
-
-      <button type="button" id="btnClearHolds" class="btn btn-studio btn-clear-holds" title="Release all active color holds" style="display:none;">
-        <span>Release Holds</span>
+      <button type="button" id="btnClearHolds" class="btn btn-studio btn-clear-holds" title="Release all active holds" style="display:none;">
+        <span>Release holds</span>
       </button>
     </div>
+
+    <!-- Harmony Wheel (hue & saturation) -->
+    <details class="wheel-details" id="wheelDetails" open>
+      <summary>
+        <span class="control-label">Harmony wheel</span>
+        <span class="harmony-badge" id="harmonyBadge">Triadic 120°</span>
+      </summary>
+      <div class="color-wheel-section" id="colorWheelSection">
+        <div class="wheel-stage-container">
+          <div class="wheel-stage" id="wheelStage">
+            <canvas id="colorWheelCanvas" width="260" height="260"></canvas>
+            <svg id="colorWheelSvg" viewBox="0 0 260 260"></svg>
+          </div>
+          <div class="wheel-hint">Drag pins for hue &amp; saturation. Drag the 🎯 base pin to rotate the whole harmony.</div>
+        </div>
+
+        <div class="wheel-active-bar" id="wheelActiveBar">
+          <div class="active-bar-top">
+            <div class="active-token-pill">
+              <span class="active-token-icon" id="activeTokenIcon">🚗</span>
+              <span class="active-token-name" id="activeTokenName">Roads</span>
+              <span class="active-token-hex" id="activeTokenHex">#475569</span>
+            </div>
+            <div class="active-bar-actions">
+              <button type="button" class="btn-set-anchor" id="btnSetAnchor" title="Use this colour as the base for harmony rotation">
+                <span id="anchorBtnText">🎯 Base Color</span>
+              </button>
+              <button type="button" class="btn-hold" id="wheelHoldBtn" title="Hold colour during spin">
+                <span class="hold-indicator"></span>
+                <span class="hold-text">HOLD</span>
+              </button>
+            </div>
+          </div>
+          <div class="lightness-slider-row">
+            <span class="slider-label">Lightness:</span>
+            <input type="range" id="wheelLightnessSlider" class="wheel-lightness-slider" min="0" max="100" value="40" step="1">
+            <span class="slider-value" id="wheelLightnessValue">40%</span>
+          </div>
+        </div>
+      </div>
+    </details>
 
     <!-- Curated Palettes Quick-Bar -->
     <div class="presets-section">

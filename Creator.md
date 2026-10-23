@@ -398,3 +398,36 @@ const map = new maplibregl.Map({
 - `StyleEngine.autoBalanceContrast(tokens)`: Tunes tokens to meet WCAG AA standards.
 - `StyleEngine.generateMonochromeTokens(seedHex, isDark)`: Derives a 6-token harmonious monochromatic palette from a single seed color.
 - `StyleEngine.randomBalancedPalette(isDark, harmony, currentTokens, held)`: Generates a balanced harmonious palette strictly adhering to the requested mode.
+
+---
+
+## Palette Machine (slot-machine reels)
+
+The token editor is a fruit machine. Each of the six tokens is a 12-faced 3D reel; the colour on the red payline is the live token.
+
+**Reels step in perceptual lightness.** Faces above the payline are lighter and faces below are darker, each one notch of **5 CIE L\*** apart (the small number on each face is its L\*). Because L\* is perceptually uniform, every notch looks like the same amount of change whether the reel is yellow or navy. HSL lightness is not uniform, which is why the old ±8% ladders felt uneven. Drag a reel, scroll over it, use the ▲▼ nudge buttons, or focus it and use the arrow keys.
+
+**Spins are solved for contrast, not picked in HSL.** A spin chooses hues from the selected harmony, then solves each token's luminance exactly for a target contrast ratio against the canvas:
+
+```
+darker side:  Y_fg = (Y_canvas + 0.05) / ratio − 0.05
+lighter side: Y_fg = ratio × (Y_canvas + 0.05) − 0.05
+```
+
+`colorWithLuminance()` then bisects HSL lightness (luminance is monotonic in it) to hit that Y at the chosen hue and saturation. A yellow road and a blue road therefore land with the same visual weight. Small random jitter on the targets keeps spins varied.
+
+**Contrast paylines.** Each reel has a lamp scoring it against the canvas (`CONTRAST_RULES` in `style-engine.js`):
+
+| Reel | Minimum | Basis |
+|---|---|---|
+| Labels | 4.5:1 (AAA 7:1, gold lamp) | WCAG 2.1 SC 1.4.3 |
+| Roads | 3:1 | WCAG 2.1 SC 1.4.11 non-text |
+| Water | 1.10:1 | distinguishable fill |
+| Buildings | 1.10:1 | distinguishable fill |
+| Parks | 1.05:1 | distinguishable fill |
+
+The marquee shows lines passed; **JACKPOT** means every line passes and labels reach AAA.
+
+**Fix contrast** uses `ensureContrast()`: tokens that already pass are untouched, and failing tokens move to the nearest (in L\*) colour of the same hue that meets the threshold, on whichever side of the canvas is closer.
+
+**Controls:** pull the lever, press SPIN, or hit Space. HOLD (or keys 1–6) locks a reel. The harmony wheel below the cabinet still sets hue and saturation by dragging pins; the 🎯 base pin rotates the whole harmony. Sound effects are off by default (🔇 toggle).

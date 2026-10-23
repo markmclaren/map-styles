@@ -57,8 +57,8 @@ const btnMonoLock = document.getElementById('btnMonoLock');
 const btnClearHolds = document.getElementById('btnClearHolds');
 const selectHarmony = document.getElementById('selectHarmony');
 const harmonyBadge = document.getElementById('harmonyBadge');
-const btnRotateCcw = document.getElementById('btnRotateCcw');
-const btnRotateCw = document.getElementById('btnRotateCw');
+const btnPrevHarmony = document.getElementById('btnPrevHarmony') || document.getElementById('btnRotateCcw');
+const btnNextHarmony = document.getElementById('btnNextHarmony') || document.getElementById('btnRotateCw');
 const btnWheelRotateCcw = document.getElementById('btnWheelRotateCcw');
 const btnWheelRotateCw = document.getElementById('btnWheelRotateCw');
 const btnModeLight = document.getElementById('btnModeLight');
@@ -400,6 +400,26 @@ function executeHarmoniousShuffle(harmonyChoice) {
       showToast(`${score.total - score.passed} line${score.total - score.passed > 1 ? 's' : ''} below contrast — nudge a reel or hit Fix`);
     }
   });
+}
+
+// Step through the Colour Harmony dropdown choices and automatically spin to the new harmony
+function stepHarmony(delta) {
+  if (isSpinning || !selectHarmony) return;
+  const options = Array.from(selectHarmony.options);
+  if (!options.length) return;
+
+  let currIdx = selectHarmony.selectedIndex;
+  if (currIdx === -1) {
+    currIdx = options.findIndex(opt => opt.value === activeHarmony);
+    if (currIdx === -1) currIdx = 0;
+  }
+
+  const nextIdx = (currIdx + delta + options.length) % options.length;
+  selectHarmony.selectedIndex = nextIdx;
+  activeHarmony = options[nextIdx].value;
+  updateHarmonyBadge();
+
+  pullLever();
 }
 
 // Rotate the active harmony across the 360° color wheel by deltaDeg (e.g. +15° or -15°)
@@ -1380,14 +1400,21 @@ function setupEventListeners() {
     });
   }
 
-  // Harmony ("game") selector
+  // Harmony ("game") selector: changing selection triggers spin
   if (selectHarmony) {
     selectHarmony.addEventListener('change', (e) => {
       activeHarmony = e.target.value;
       updateHarmonyBadge();
+      pullLever();
     });
   }
 
+  // Left/Right buttons next to Colour harmony cycle choices and auto-spin
+  if (btnPrevHarmony) btnPrevHarmony.addEventListener('click', () => stepHarmony(-1));
+  if (btnNextHarmony) btnNextHarmony.addEventListener('click', () => stepHarmony(1));
+
+  if (btnWheelRotateCcw) btnWheelRotateCcw.addEventListener('click', () => rotateHarmony(-15));
+  if (btnWheelRotateCw) btnWheelRotateCw.addEventListener('click', () => rotateHarmony(15));
   if (btnClearHolds) btnClearHolds.addEventListener('click', clearAllHolds);
   btnShuffle.addEventListener('click', pullLever);
 
@@ -1411,11 +1438,6 @@ function setupEventListeners() {
     if (e.target.closest && (e.target.closest('.reel-chip') || e.target.closest('.reel-hex') || e.target.closest('.wheel-pin-group'))) return;
     closeReelPopover();
   });
-
-  if (btnRotateCcw) btnRotateCcw.addEventListener('click', () => rotateHarmony(-15));
-  if (btnRotateCw) btnRotateCw.addEventListener('click', () => rotateHarmony(15));
-  if (btnWheelRotateCcw) btnWheelRotateCcw.addEventListener('click', () => rotateHarmony(-15));
-  if (btnWheelRotateCw) btnWheelRotateCw.addEventListener('click', () => rotateHarmony(15));
 
   btnAutoContrast.addEventListener('click', () => {
     if (isSpinning) return;

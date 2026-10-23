@@ -264,7 +264,8 @@ Inspired by **[Adobe Color](https://color.adobe.com/create/color-wheel)**, the S
    - Lightness is tuned directly per-feature on each reel cog using perceptual $L^*$ stepping buttons (`▲` / `▼`).
    - The Base Color Anchor is selectable directly above each cog with `🎯 BASE` or via the cabinet base dropdown.
    - **Distinct Colour Popover (No Drag and Drop)**: Clicking any cog reel's color chip or hex input opens an anchored modal overlay featuring 48 curated, distinct cartographic colors categorized into **Accents & Primaries**, **Soft Fills & Naturals**, and **Neutrals & Monochromes**, with real-time WCAG contrast scoring and custom hex input.
-   - Side-to-side rotation buttons (`◀` / `▶`, keys `[` / `]`) rotate the active harmony across the $360^\circ$ circle in $15^\circ$ increments directly beside the harmony selector and beneath the color wheel.
+   - **Colour Harmony Cycle & Spin Buttons (`◀` / `▶`)**: Positioned directly beside the Colour Harmony dropdown, these step to the previous or next harmony rule and automatically execute a spin to update unheld reels in real time.
+   - **Wheel Rotation Buttons (`-15°` / `+15°`, keys `[` / `]`)**: Positioned beneath the color wheel disc, these rotate the active harmony angles across the $360^\circ$ circle in $15^\circ$ increments.
    - Smart automation actions (**Fix contrast**, **Mono lock**, and **Release holds**) are integrated directly into the slot machine cabinet deck.
 
 

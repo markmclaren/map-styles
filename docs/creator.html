@@ -233,6 +233,23 @@
     </div>
   </aside>
 
+  <!-- Inkscape-style swatch palette (docked along the bottom of the map) -->
+  <div class="palette-bar" id="paletteBar" aria-label="Colour palette">
+    <div class="palette-target" id="paletteTarget" title="The selected reel. Click a reel to change which one swatches paint.">
+      <span class="palette-target-chip" id="paletteTargetChip"></span>
+      <span class="palette-target-text">
+        <span class="palette-target-label">Painting</span>
+        <strong id="paletteTargetName">Roads</strong>
+      </span>
+    </div>
+    <div class="palette-scroll">
+      <div class="palette-current" id="paletteCurrent" title="Current palette — drag between reels to copy"></div>
+      <div class="palette-divider"></div>
+      <div class="palette-grid" id="paletteGrid"></div>
+    </div>
+    <div class="palette-legend">Click to paint · drag onto any reel<br><span class="legend-fail"></span> breaks a contrast line</div>
+  </div>
+
   <!-- HUD Coordinates Overlay -->
   <div class="map-hud" id="mapHud">
     <span class="hud-item"><span class="hud-label">COORDS:</span> <strong id="hudCoords">--</strong></span>

@@ -177,6 +177,7 @@ async function init() {
 
   // 5. Setup UI & Event Listeners (ALWAYS execute so UI remains interactive)
   buildReels();
+  buildPaletteBar();
   setupTokenBindings();
   setupLever();
   renderPresetPills();
@@ -192,12 +193,6 @@ async function init() {
 function setupTokenBindings() {
   Object.keys(TOKEN_INPUTS).forEach(key => {
     const { picker, text } = TOKEN_INPUTS[key];
-
-    picker.addEventListener('input', (e) => {
-      text.value = e.target.value.toLowerCase();
-      onTokenChanged(key, e.target.value.toLowerCase());
-    });
-
     text.addEventListener('input', (e) => {
       let val = e.target.value.trim();
       if (!val.startsWith('#')) val = '#' + val;
@@ -303,6 +298,7 @@ function updateUiState() {
   updateReelsUi();
   updateColorWheelSvg();
   updateActiveTokenBar();
+  updatePaletteUi();
 }
 
 // Toggle HOLD for a token
@@ -420,6 +416,7 @@ function selectWheelToken(tokenKey) {
   updateColorWheelSvg();
   updateReelsUi();
   updateHoldUi();
+  updatePaletteUi();
 }
 
 // =====================================================================
@@ -458,10 +455,10 @@ function buildReels() {
       </div>
       <button type="button" class="reel-nudge" data-dir="-1" title="Nudge darker (−${LSTAR_STEP} L*)" aria-label="${meta.name} darker">▼</button>
       <div class="reel-lamp" title=""><span class="lamp-dot"></span><span class="lamp-value">--</span></div>
-      <label class="reel-hex-wrap" title="Pick a colour">
-        <input type="color" id="picker${cap}" class="reel-picker" value="${tokens[key]}">
+      <div class="reel-hex-wrap">
+        <button type="button" class="reel-chip" style="background:${tokens[key]}" title="Select ${meta.name} — then click a swatch in the palette bar"></button>
         <input type="text" id="text${cap}" class="reel-hex" value="${tokens[key]}" maxlength="7" spellcheck="false" aria-label="${meta.name} hex">
-      </label>
+      </div>
       <button type="button" class="btn-hold reel-hold" data-token="${key}" title="Hold (${idx + 1})">
         <span class="hold-indicator"></span><span class="hold-text">HOLD</span>
       </button>
@@ -479,7 +476,17 @@ function buildReels() {
     }
 
     reelState[key] = { col, drum, faces, k: 0, phi: 0, dragging: false, spinning: false };
-    TOKEN_INPUTS[key] = { picker: col.querySelector('.reel-picker'), text: col.querySelector('.reel-hex') };
+    const chipEl = col.querySelector('.reel-chip');
+    TOKEN_INPUTS[key] = {
+      // swatch chip stands in for the old native <input type=color>
+      picker: { el: chipEl, set value(v) { chipEl.style.background = v; }, get value() { return chipEl.style.background; } },
+      text: col.querySelector('.reel-hex')
+    };
+    chipEl.addEventListener('click', (e) => {
+      e.preventDefault();
+      selectWheelToken(key);
+      pulsePaletteBar();
+    });
 
     setupReelInteractions(key);
     paintReel(key);
@@ -586,6 +593,25 @@ function setupReelInteractions(key) {
     if (e.key === 'ArrowUp') { e.preventDefault(); nudgeReel(key, 1); }
     if (e.key === 'ArrowDown') { e.preventDefault(); nudgeReel(key, -1); }
     if (e.key === 'Enter') selectWheelToken(key);
+  });
+
+  // Accept swatches dragged from the palette bar
+  st.col.addEventListener('dragover', (e) => {
+    if (isSpinning || !e.dataTransfer.types.includes('text/x-swatch')) return;
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'copy';
+    st.col.classList.add('drop-target');
+  });
+  st.col.addEventListener('dragleave', (e) => {
+    if (!st.col.contains(e.relatedTarget)) st.col.classList.remove('drop-target');
+  });
+  st.col.addEventListener('drop', (e) => {
+    st.col.classList.remove('drop-target');
+    const hex = e.dataTransfer.getData('text/x-swatch');
+    if (!/^#[0-9a-f]{6}$/i.test(hex)) return;
+    e.preventDefault();
+    paintToken(key, hex.toLowerCase());
+    selectWheelToken(key);
   });
 
   st.col.querySelectorAll('.reel-nudge').forEach(btn => {
@@ -812,6 +838,143 @@ function setupLever() {
   // Bulbs around the marquee
   const bulbs = document.querySelector('.marquee-bulbs');
   if (bulbs) for (let i = 0; i < 18; i++) bulbs.appendChild(document.createElement('i'));
+}
+
+
+// =====================================================================
+//  SWATCH PALETTE BAR (Inkscape-style)
+//  Fixed, distinct swatches. Rows are equal steps of CIE L*, so a row
+//  tells you roughly how much contrast a swatch will give against the
+//  canvas. Swatches that would break a contrast line for the selected
+//  reel are marked.
+// =====================================================================
+
+const PALETTE_ROWS_LSTAR = [97, 88, 76, 62, 46, 30, 14];
+const PALETTE_COLUMNS = [
+  { name: 'Grey', h: 0, s: 0, extremes: true },
+  { name: 'Slate', h: 215, s: 20 },
+  { name: 'Stone', h: 35, s: 16 },
+  { name: 'Red', h: 0, s: 72 },
+  { name: 'Orange', h: 24, s: 85 },
+  { name: 'Amber', h: 40, s: 90 },
+  { name: 'Yellow', h: 54, s: 90 },
+  { name: 'Lime', h: 84, s: 65 },
+  { name: 'Green', h: 130, s: 50 },
+  { name: 'Teal', h: 170, s: 60 },
+  { name: 'Cyan', h: 188, s: 70 },
+  { name: 'Sky', h: 202, s: 78 },
+  { name: 'Blue', h: 220, s: 72 },
+  { name: 'Indigo', h: 242, s: 60 },
+  { name: 'Violet', h: 265, s: 60 },
+  { name: 'Purple', h: 285, s: 55 },
+  { name: 'Magenta', h: 312, s: 60 },
+  { name: 'Rose', h: 340, s: 70 }
+];
+
+const paletteGrid = document.getElementById('paletteGrid');
+const paletteCurrent = document.getElementById('paletteCurrent');
+const paletteBar = document.getElementById('paletteBar');
+const paletteTargetChip = document.getElementById('paletteTargetChip');
+const paletteTargetName = document.getElementById('paletteTargetName');
+let paletteSwatches = [];
+
+function makeSwatch(hex, title) {
+  const sw = document.createElement('button');
+  sw.type = 'button';
+  sw.className = 'swatch';
+  sw.style.background = hex;
+  sw.dataset.hex = hex;
+  sw.draggable = true;
+  sw.setAttribute('aria-label', title);
+  sw.addEventListener('click', () => paintToken(selectedWheelToken, sw.dataset.hex));
+  sw.addEventListener('dragstart', (e) => {
+    e.dataTransfer.setData('text/x-swatch', sw.dataset.hex);
+    e.dataTransfer.setData('text/plain', sw.dataset.hex);
+    e.dataTransfer.effectAllowed = 'copy';
+  });
+  sw.addEventListener('mouseenter', () => { sw.title = swatchTooltip(sw.dataset.hex, title); });
+  return sw;
+}
+
+function buildPaletteBar() {
+  if (!paletteGrid) return;
+  paletteGrid.innerHTML = '';
+  paletteSwatches = [];
+  PALETTE_COLUMNS.forEach(col => {
+    PALETTE_ROWS_LSTAR.forEach((L, row) => {
+      let hex;
+      if (col.extremes && row === 0) hex = '#ffffff';
+      else if (col.extremes && row === PALETTE_ROWS_LSTAR.length - 1) hex = '#000000';
+      else hex = StyleEngine.colorWithLuminance(col.h, col.s, StyleEngine.lstarToLuminance(L));
+      const sw = makeSwatch(hex, `${col.name} ${Math.round(StyleEngine.getLstar(hex))}`);
+      paletteGrid.appendChild(sw);
+      paletteSwatches.push(sw);
+    });
+  });
+
+  // Current-palette group: the six live token colours
+  paletteCurrent.innerHTML = '';
+  TOKEN_ORDER.forEach(k => {
+    const sw = makeSwatch(tokens[k], TOKEN_META[k].name);
+    sw.classList.add('swatch-current');
+    sw.dataset.token = k;
+    sw.textContent = TOKEN_META[k].icon;
+    paletteCurrent.appendChild(sw);
+  });
+}
+
+function swatchTooltip(hex, name) {
+  const key = selectedWheelToken;
+  const lstar = Math.round(StyleEngine.getLstar(hex));
+  let line = '';
+  if (key === 'canvas') {
+    const score = StyleEngine.scorePalette({ ...tokens, canvas: hex });
+    line = `as land: ${score.passed}/${score.total} lines pass`;
+  } else {
+    const ratio = StyleEngine.getContrastRatio(tokens.canvas, hex);
+    const rule = StyleEngine.CONTRAST_RULES[key];
+    line = `${ratio.toFixed(2)}:1 vs land${rule ? (ratio >= rule.min ? ' ✓' : ` ✗ needs ${rule.min}`) : ''}`;
+  }
+  return `${name} · ${hex} · L*${lstar}\n${line}\nClick: paint ${TOKEN_META[key].name} · drag onto any reel`;
+}
+
+// Mark swatches that would lower the number of passing lines for the selected reel
+function updatePaletteUi() {
+  if (!paletteGrid) return;
+  const key = selectedWheelToken;
+  const current = (tokens[key] || '').toLowerCase();
+  const all = [...paletteSwatches, ...paletteCurrent.querySelectorAll('.swatch')];
+  all.forEach(sw => {
+    if (sw.dataset.token) {
+      sw.dataset.hex = tokens[sw.dataset.token];
+      sw.style.background = sw.dataset.hex;
+      sw.style.color = StyleEngine.getRelativeLuminance(sw.dataset.hex) > 0.35 ? '#000' : '#fff';
+    }
+    // Mark a swatch if, painted onto the selected reel, it would leave a broken contrast line:
+    // for most reels that is their own line; the canvas affects every line.
+    const trial = StyleEngine.scorePalette({ ...tokens, [key]: sw.dataset.hex });
+    const fails = key === 'canvas' ? trial.passed < trial.total : !trial.lines[key].pass;
+    sw.classList.toggle('would-fail', fails && !sw.dataset.token);
+    sw.classList.toggle('is-current', sw.dataset.hex.toLowerCase() === current && !sw.dataset.token);
+    sw.classList.toggle('is-target', sw.dataset.token === key);
+  });
+  if (paletteTargetChip) paletteTargetChip.style.background = tokens[key];
+  if (paletteTargetName) paletteTargetName.textContent = `${TOKEN_META[key].icon} ${TOKEN_META[key].name}`;
+}
+
+function paintToken(key, hex) {
+  if (isSpinning || !key) return;
+  if (tokens[key] && tokens[key].toLowerCase() === hex.toLowerCase()) return;
+  setTokenValue(key, hex.toLowerCase());
+  bumpLamp(key);
+  playSound('tick');
+}
+
+function pulsePaletteBar() {
+  if (!paletteBar) return;
+  paletteBar.classList.remove('pulse');
+  void paletteBar.offsetWidth;
+  paletteBar.classList.add('pulse');
 }
 
 // --- Adobe-Style Color Wheel ---

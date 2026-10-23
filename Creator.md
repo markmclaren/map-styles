@@ -430,4 +430,6 @@ The marquee shows lines passed; **JACKPOT** means every line passes and labels r
 
 **Fix contrast** uses `ensureContrast()`: tokens that already pass are untouched, and failing tokens move to the nearest (in L\*) colour of the same hue that meets the threshold, on whichever side of the canvas is closer.
 
+**Swatch palette bar.** Native colour pickers are replaced by an Inkscape-style bar docked along the bottom of the map. It shows fixed, distinct swatches: a column each for grey (with pure white and black), slate, stone and 15 hues. Rows are equal steps of CIE L\* (97 → 14), so the row tells you roughly how much contrast a swatch gives. Click a reel (or its colour chip) to choose what you're painting, then click a swatch, or drag any swatch straight onto a reel. Swatches with a red slash would break that reel's contrast line; for the canvas, a slash means at least one line would fail. The six small swatches at the left are the live palette, so you can drag one reel's colour onto another. Hex fields stay on each reel for exact values.
+
 **Controls:** pull the lever, press SPIN, or hit Space. HOLD (or keys 1–6) locks a reel. The harmony wheel below the cabinet still sets hue and saturation by dragging pins; the 🎯 base pin rotates the whole harmony. Sound effects are off by default (🔇 toggle).

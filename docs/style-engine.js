@@ -1017,6 +1017,8 @@ window.StyleEngine = {
   invertPaletteMode,
   autoBalanceContrast,
   getLstar,
+  lstarToLuminance,
+  colorWithLuminance,
   stepLightness,
   colorAtContrast,
   ensureContrast,
